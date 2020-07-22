@@ -4,7 +4,7 @@ module.exports = {
     node: true,
   },
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "import"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/ban-ts-comment": ["warn"],
     "@typescript-eslint/explicit-function-return-type": ["off"],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"],
     "no-console": ["warn"],
     "spaced-comment": [
       "error",
@@ -25,6 +26,23 @@ module.exports = {
     ],
     "comma-dangle": ["error", "always-multiline"],
     "no-shadow": ["warn"],
-    "sort-imports": ["error"],
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "unknown",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+        ],
+        alphabetize: {
+          order: "asc",
+        },
+      },
+    ],
   },
 };

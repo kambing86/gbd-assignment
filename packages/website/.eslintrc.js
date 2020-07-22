@@ -8,7 +8,7 @@ module.exports = {
     "prettier/@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "import"],
   rules: {
     "@typescript-eslint/ban-ts-comment": ["warn"],
     "@typescript-eslint/explicit-function-return-type": ["off"],
@@ -23,6 +23,23 @@ module.exports = {
     ],
     "comma-dangle": ["error", "always-multiline"],
     "no-shadow": ["warn"],
-    "sort-imports": ["error"],
+    "import/order": [
+      "error",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "unknown",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+        ],
+        alphabetize: {
+          order: "asc",
+        },
+      },
+    ],
   },
 };
