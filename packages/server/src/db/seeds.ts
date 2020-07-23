@@ -2,13 +2,13 @@ import SQL from "@nearform/sql";
 import argon2 from "@phc/argon2";
 import { DB } from "./getDB";
 
-export interface User {
+interface User {
   username: string;
   password: string;
   isAdmin: boolean;
 }
 
-export interface Product {
+interface Product {
   name: string;
   quantity: number;
   price: number;

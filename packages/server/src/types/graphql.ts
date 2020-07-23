@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLContext } from '~/types/context';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -13,9 +14,16 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  orders: Array<Order>;
   products: Array<Product>;
   productsOnShelf: Array<Product>;
   user?: Maybe<User>;
+};
+
+
+export type QueryOrdersArgs = {
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
 };
 
 
@@ -30,10 +38,31 @@ export type QueryProductsOnShelfArgs = {
   limit: Scalars['Int'];
 };
 
+export type Order = {
+  __typename?: 'Order';
+  id: Scalars['Int'];
+  userId: Scalars['Int'];
+  createdDate: Scalars['String'];
+  details: Array<OrderDetail>;
+};
+
+export type OrderDetail = {
+  __typename?: 'OrderDetail';
+  product: Product;
+  quantity: Scalars['Int'];
+  price: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createOrder?: Maybe<Scalars['Boolean']>;
   login?: Maybe<Scalars['String']>;
   updateProduct?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type MutationCreateOrderArgs = {
+  data: OrderInput;
 };
 
 
@@ -46,6 +75,15 @@ export type MutationLoginArgs = {
 export type MutationUpdateProductArgs = {
   id: Scalars['Int'];
   data: ProductInput;
+};
+
+export type OrderInput = {
+  details: Array<OrderDetailInput>;
+};
+
+export type OrderDetailInput = {
+  productId: Scalars['Int'];
+  quantity: Scalars['Int'];
 };
 
 export type Subscription = {
@@ -161,12 +199,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Mutation: ResolverTypeWrapper<{}>;
+  Order: ResolverTypeWrapper<Order>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  OrderDetail: ResolverTypeWrapper<OrderDetail>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  OrderInput: OrderInput;
+  OrderDetailInput: OrderDetailInput;
   Subscription: ResolverTypeWrapper<{}>;
   Product: ResolverTypeWrapper<Product>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   ProductInput: ProductInput;
   User: ResolverTypeWrapper<User>;
 };
@@ -175,33 +217,54 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
-  Mutation: {};
+  Order: Order;
   String: Scalars['String'];
+  OrderDetail: OrderDetail;
+  Float: Scalars['Float'];
+  Mutation: {};
   Boolean: Scalars['Boolean'];
+  OrderInput: OrderInput;
+  OrderDetailInput: OrderDetailInput;
   Subscription: {};
   Product: Product;
-  Float: Scalars['Float'];
   ProductInput: ProductInput;
   User: User;
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
   products?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
   productsOnShelf?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+export type OrderResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  createdDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  details?: Resolver<Array<ResolversTypes['OrderDetail']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type OrderDetailResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['OrderDetail'] = ResolversParentTypes['OrderDetail']> = {
+  product?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createOrder?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'data'>>;
   login?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
   updateProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'id' | 'data'>>;
 };
 
-export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
   product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
 };
 
-export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
+export type ProductResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -210,14 +273,16 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type Resolvers<ContextType = any> = {
+export type Resolvers<ContextType = GraphQLContext> = {
   Query?: QueryResolvers<ContextType>;
+  Order?: OrderResolvers<ContextType>;
+  OrderDetail?: OrderDetailResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
@@ -229,4 +294,4 @@ export type Resolvers<ContextType = any> = {
  * @deprecated
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
-export type IResolvers<ContextType = any> = Resolvers<ContextType>;
+export type IResolvers<ContextType = GraphQLContext> = Resolvers<ContextType>;

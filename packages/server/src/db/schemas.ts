@@ -1,6 +1,34 @@
 import SQL from "@nearform/sql";
 import { DB } from "./getDB";
 
+export interface DbUser {
+  id: number;
+  username: string;
+  password: string;
+  isAdmin: boolean;
+}
+
+export interface DbProduct {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+  isUp: boolean;
+}
+
+export interface DbOrder {
+  id: number;
+  userId: number;
+  createdDate: string;
+}
+
+export interface DbOrderDetail {
+  orderId: number;
+  productId: number;
+  quantity: number;
+  price: number;
+}
+
 export default async (db: DB): Promise<DB> => {
   const createUsers = SQL`
   CREATE TABLE Users

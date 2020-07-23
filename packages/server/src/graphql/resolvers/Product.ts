@@ -3,6 +3,7 @@ import { withFilter } from "apollo-server-express";
 import initDb from "~/db";
 import { Resolvers, Product } from "~/types/graphql";
 import pubsub from "../pubsub";
+import withAuthResolver from "../utils/withAuthResolver";
 
 export const PUBSUB_PRODUCT = "PUBSUB_PRODUCT";
 
@@ -29,8 +30,8 @@ export default {
     },
   },
   Mutation: {
-    updateProduct: async (_parent, args, context) => {
-      if (context.user === null || !context.user.isAdmin) {
+    updateProduct: withAuthResolver(async (_parent, args, context) => {
+      if (!context.user?.isAdmin) {
         throw new Error("not allow to update");
       }
       const { id, data } = args;
@@ -56,7 +57,7 @@ export default {
         pubsub.publish(PUBSUB_PRODUCT, { products: product, product });
       }
       return success;
-    },
+    }),
   },
   Subscription: {
     products: {
