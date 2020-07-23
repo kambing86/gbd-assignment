@@ -28,6 +28,16 @@ function getDB(filename: string) {
         });
       });
     },
+    get: <Result>(sql: SqlStatement): Promise<Result> => {
+      return new Promise((resolve, reject) => {
+        db.get(sql.sql, sql.values, (err, data) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(data);
+        });
+      });
+    },
     close: promisify(db.close).bind(db),
   };
 }

@@ -1,13 +1,14 @@
 import gql from "graphql-tag";
 
-const User = gql`
+export default gql`
   type Query {
-    user(username: String!, password: String!): User
+    user: User
+  }
+  type Mutation {
+    login(username: String!, password: String!): String
   }
   type User {
     username: String!
     isAdmin: Boolean!
   }
 `;
-
-export default User;

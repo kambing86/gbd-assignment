@@ -18,12 +18,15 @@ export default async (db: DB): Promise<DB> => {
     quantity INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     isUp BOOLEAN NOT NULL
-  )`;
+  );
+  CREATE INDEX isUpIndex 
+  ON Products(isUp);`;
   const createOrders = SQL`
   CREATE TABLE Orders
   (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER NOT NULL,
+    createdDate DATETIME NOT NULL,
     FOREIGN KEY(userId) REFERENCES Users(id)
   )`;
   const createOrderDetails = SQL`
