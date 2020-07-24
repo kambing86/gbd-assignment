@@ -24,20 +24,20 @@ export type Query = {
 
 
 export type QueryOrdersArgs = {
-  skip: Scalars['Int'];
-  limit: Scalars['Int'];
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
 };
 
 
 export type QueryProductsArgs = {
-  skip: Scalars['Int'];
-  limit: Scalars['Int'];
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
 };
 
 
 export type QueryProductsOnShelfArgs = {
-  skip: Scalars['Int'];
-  limit: Scalars['Int'];
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
 };
 
 export type Order = {

@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export default gql`
   type Query {
-    orders(skip: Int!, limit: Int!): [Order!]!
+    orders(skip: Int = 0, limit: Int = 10): [Order!]!
   }
   type Order {
     id: Int!
