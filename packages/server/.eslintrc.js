@@ -26,6 +26,9 @@ module.exports = {
     ],
     "comma-dangle": ["error", "always-multiline"],
     "no-shadow": ["warn"],
+    "sort-imports": ["error", {
+      ignoreDeclarationSort: true,
+    }],
     "import/order": [
       "error",
       {
