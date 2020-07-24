@@ -64,7 +64,7 @@ export default {
           let valid = true;
           for (const product of products) {
             const detail = details.find((d) => d.productId === product.id);
-            if (product.quantity < (detail?.quantity ?? 0)) {
+            if (!product.isUp || product.quantity < (detail?.quantity ?? 0)) {
               valid = false;
             }
           }

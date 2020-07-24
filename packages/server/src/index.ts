@@ -30,12 +30,11 @@ const port = 8010;
     },
     playground: false,
   });
-  const graphqlEndpoint = "/graphql";
   app.get(
-    "/graphql",
+    apolloServer.graphqlPath,
     expressPlayground({
-      endpoint: graphqlEndpoint,
-      subscriptionEndpoint: graphqlEndpoint,
+      endpoint: apolloServer.graphqlPath,
+      subscriptionEndpoint: apolloServer.graphqlPath,
     }),
   );
   apolloServer.applyMiddleware({ app });
