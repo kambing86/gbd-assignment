@@ -2,6 +2,7 @@ schema: src/graphql/typeDefs/*.ts
 generates:
   ./src/types/graphql.ts:
     plugins:
+      - add: "/* eslint-disable */"
       - typescript
       - typescript-resolvers:
           contextType: ~/types/context#GraphQLContext

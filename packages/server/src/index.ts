@@ -2,9 +2,9 @@ import http from "http";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import expressJwt from "express-jwt";
-import { secret, algorithm } from "./auth";
+import { algorithm, secret } from "./auth";
 import initDB from "./db";
-import { typeDefs, resolvers } from "./graphql";
+import { resolvers, typeDefs } from "./graphql";
 import logger from "./logger";
 
 const port = 8010;

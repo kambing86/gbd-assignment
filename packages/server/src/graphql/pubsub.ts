@@ -1,3 +1,12 @@
 import { PubSub } from "apollo-server-express";
+import { Product } from "~/types/graphql";
 
-export default new PubSub();
+const pubsub = new PubSub();
+
+export const PUBSUB_PRODUCT = "PUBSUB_PRODUCT";
+
+export function publishProduct(product: Product) {
+  pubsub.publish(PUBSUB_PRODUCT, { products: product, product });
+}
+
+export default pubsub;

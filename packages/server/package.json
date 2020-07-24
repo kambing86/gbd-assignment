@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@babel/register": "^7.10.5",
+    "@graphql-codegen/add": "^1.17.4",
     "@graphql-codegen/cli": "^1.17.3",
     "@graphql-codegen/typescript": "^1.17.3",
     "@graphql-codegen/typescript-resolvers": "^1.17.3",

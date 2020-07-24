@@ -1,16 +1,28 @@
+import SQL from "@nearform/sql";
 import getDB, { DB } from "./getDB";
 import buildSchemas from "./schemas";
 import createSeeds from "./seeds";
 
 export { DB };
 
-let dbInstance: DB | null = null;
+function dbFunc<Result>(
+  fn: (db: DB) => Promise<Result> | Result,
+): Promise<Result>;
+function dbFunc(): Promise<void>;
 
-export default async (): Promise<DB> => {
-  if (dbInstance != null) return dbInstance;
-  dbInstance = getDB(":memory:");
+async function dbFunc<Result>(fn?: (db: DB) => Promise<Result> | Result) {
+  const dbInstance = getDB("./database.db");
   await dbInstance.serialize();
-  await buildSchemas(dbInstance);
-  await createSeeds(dbInstance);
-  return dbInstance;
-};
+  try {
+    await dbInstance.all(SQL`SELECT * FROM Users`);
+  } catch {
+    // schema not exists
+    await buildSchemas(dbInstance);
+    await createSeeds(dbInstance);
+  }
+  const result = fn && (await fn(dbInstance));
+  dbInstance.close();
+  return result;
+}
+
+export default dbFunc;

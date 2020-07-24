@@ -46,7 +46,8 @@ export default async (db: DB): Promise<DB> => {
     quantity INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     isUp BOOLEAN NOT NULL
-  );
+  )`;
+  const createProductIndex = SQL`
   CREATE INDEX isUpIndex 
   ON Products(isUp);`;
   const createOrders = SQL`
@@ -71,6 +72,7 @@ export default async (db: DB): Promise<DB> => {
 
   await db.run(createUsers);
   await db.run(createProducts);
+  await db.run(createProductIndex);
   await db.run(createOrders);
   await db.run(createOrderDetails);
 

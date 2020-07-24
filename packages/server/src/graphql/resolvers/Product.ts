@@ -1,36 +1,35 @@
 import SQL, { glue } from "@nearform/sql";
 import { withFilter } from "apollo-server-express";
 import initDb from "~/db";
-import { Resolvers, Product } from "~/types/graphql";
-import pubsub from "../pubsub";
+import { DbProduct } from "~/db/schemas";
+import { Product, Resolvers } from "~/types/graphql";
+import pubsub, { PUBSUB_PRODUCT, publishProduct } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
-
-export const PUBSUB_PRODUCT = "PUBSUB_PRODUCT";
 
 export default {
   Query: {
-    products: async (_parent, args) => {
+    products: (_parent, args) => {
       const { skip, limit } = args;
-      const db = await initDb();
-      const products = await db.all(SQL`
-      SELECT * FROM Products
-      LIMIT ${limit} OFFSET ${skip}
-      `);
-      return products;
+      return initDb((db) => {
+        return db.all<DbProduct>(SQL`
+        SELECT * FROM Products
+        LIMIT ${limit} OFFSET ${skip}
+        `);
+      });
     },
-    productsOnShelf: async (_parent, args) => {
+    productsOnShelf: (_parent, args) => {
       const { skip, limit } = args;
-      const db = await initDb();
-      const products = await db.all(SQL`
-      SELECT * FROM Products
-      WHERE isUp = true
-      LIMIT ${limit} OFFSET ${skip}
-      `);
-      return products;
+      return initDb((db) => {
+        return db.all<DbProduct>(SQL`
+        SELECT * FROM Products
+        WHERE isUp = true
+        LIMIT ${limit} OFFSET ${skip}
+        `);
+      });
     },
   },
   Mutation: {
-    updateProduct: withAuthResolver(async (_parent, args, context) => {
+    updateProduct: withAuthResolver((_parent, args, context) => {
       if (!context.user?.isAdmin) {
         throw new Error("not allow to update");
       }
@@ -43,20 +42,21 @@ export default {
         ),
         ",",
       );
-      const db = await initDb();
-      const sqlStatement = SQL`
-      UPDATE Products
-      SET `.append(modifiers).append(SQL`
-      WHERE id = ${id}
-      `);
-      const result = await db.run(sqlStatement);
-      const success = Boolean(result.changes);
-      if (success) {
-        const product = await db.get<Product>(SQL`
-        SELECT * From Products WHERE id = ${id}`);
-        pubsub.publish(PUBSUB_PRODUCT, { products: product, product });
-      }
-      return success;
+      return initDb(async (db) => {
+        const sqlStatement = SQL`
+        UPDATE Products
+        SET `.append(modifiers).append(SQL`
+        WHERE id = ${id}
+        `);
+        const result = await db.run(sqlStatement);
+        const success = Boolean(result.changes);
+        if (success) {
+          const product = await db.get<DbProduct>(SQL`
+          SELECT * From Products WHERE id = ${id}`);
+          publishProduct(product);
+        }
+        return success;
+      });
     }),
   },
   Subscription: {
