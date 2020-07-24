@@ -21,7 +21,7 @@ async function dbFunc<Result>(fn?: (db: DB) => Promise<Result> | Result) {
     await createSeeds(dbInstance);
   }
   const result = fn && (await fn(dbInstance));
-  dbInstance.close();
+  await dbInstance.close();
   return result;
 }
 

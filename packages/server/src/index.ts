@@ -2,6 +2,7 @@ import http from "http";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import expressJwt from "express-jwt";
+import expressPlayground from "graphql-playground-middleware-express";
 import { algorithm, secret } from "./auth";
 import initDB from "./db";
 import { resolvers, typeDefs } from "./graphql";
@@ -27,7 +28,16 @@ const port = 8010;
       const user = req?.user ?? null;
       return { user };
     },
+    playground: false,
   });
+  const graphqlEndpoint = "/graphql";
+  app.get(
+    "/graphql",
+    expressPlayground({
+      endpoint: graphqlEndpoint,
+      subscriptionEndpoint: graphqlEndpoint,
+    }),
+  );
   apolloServer.applyMiddleware({ app });
   apolloServer.installSubscriptionHandlers(httpServer);
 

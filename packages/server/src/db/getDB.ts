@@ -6,8 +6,19 @@ function getDB(filename: string) {
   const sqlite3 = Sqlite3.verbose();
   const db = new sqlite3.Database(filename);
 
+  function serialize(): Promise<void>;
+  function serialize() {
+    return promisify(db.serialize).bind(db);
+  }
+
+  function close(): Promise<void>;
+  function close() {
+    return promisify(db.close).bind(db);
+  }
+
   return {
-    serialize: promisify(db.serialize).bind(db),
+    serialize,
+    close,
     run: (sql: SqlStatement): Promise<RunResult> => {
       return new Promise((resolve, reject) => {
         db.run(sql.sql, sql.values, function (err) {
@@ -38,7 +49,6 @@ function getDB(filename: string) {
         });
       });
     },
-    close: promisify(db.close).bind(db),
   };
 }
 
