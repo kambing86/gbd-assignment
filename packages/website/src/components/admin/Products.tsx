@@ -4,9 +4,9 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent } from "react";
-import Title from "./Title";
 
 // Generate Order Data
 function createData(
@@ -73,11 +73,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Orders() {
+const Products: React.FC = () => {
   const classes = useStyles();
   return (
     <>
-      <Title>Recent Orders</Title>
+      <Typography component="h2" variant="h6" color="primary" gutterBottom>
+        Products
+      </Typography>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -107,4 +109,6 @@ export default function Orders() {
       </div>
     </>
   );
-}
+};
+
+export default Products;

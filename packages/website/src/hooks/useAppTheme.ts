@@ -8,6 +8,7 @@ import { useCallback, useEffect } from "react";
 import { atom, useRecoilState } from "recoil";
 import useStateWithRef from "./helpers/useStateWithRef";
 
+// set it here https://material-ui.com/customization/default-theme/
 const getTheme = (type: PaletteType) => {
   const options: ThemeOptions =
     type === "dark"
@@ -31,7 +32,17 @@ const getTheme = (type: PaletteType) => {
             },
           },
         }
-      : { palette: { type } };
+      : {
+          palette: {
+            type,
+            action: {
+              hover: "rgba(0, 0, 0, 0.1)",
+              hoverOpacity: 0.1,
+              selected: "rgba(0, 0, 0, 0.2)",
+              selectedOpacity: 0.2,
+            },
+          },
+        };
   return createMuiTheme(options);
 };
 
@@ -50,7 +61,7 @@ const themeTypeState = atom<PaletteType>({
 // else will change the theme based on the machine dark mode
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [themeType, setThemeType] = useRecoilState<PaletteType>(themeTypeState);
+  const [themeType, setThemeType] = useRecoilState(themeTypeState);
   const [theme, setTheme] = useStateWithRef(getTheme(themeType));
   useEffect(() => {
     if (getSavedType() !== null) return;

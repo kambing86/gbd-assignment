@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 
-const NotFound: React.FC = () => {
+const Loading: React.FC = () => {
   return (
     <Grid
       container
@@ -14,4 +14,4 @@ const NotFound: React.FC = () => {
   );
 };
 
-export default NotFound;
+export default Loading;

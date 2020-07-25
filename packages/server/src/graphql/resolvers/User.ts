@@ -41,5 +41,11 @@ export default {
         return null;
       });
     },
+    logout(_parent, _args, context) {
+      context.res.cookie("token", "", {
+        httpOnly: true,
+      });
+      return true;
+    },
   },
 } as Resolvers;

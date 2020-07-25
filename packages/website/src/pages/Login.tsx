@@ -10,10 +10,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import React, { ChangeEvent, MouseEvent, useCallback } from "react";
-import Copyright from "../components/Copyright";
+import Copyright from "../components/common/Copyright";
 import useStateWithRef from "../hooks/helpers/useStateWithRef";
 import { useAuth } from "../hooks/useAuth";
-import { useSignIn } from "../hooks/useSignIn";
+import { useLogin } from "../hooks/useLogin";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,15 +48,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function Login() {
   useAuth();
   const classes = useStyles();
   const {
-    signIn,
+    login,
     savedUsername,
     isSaveUsername,
     setIsSaveUsername,
-  } = useSignIn();
+  } = useLogin();
   const [username, setUsername] = useStateWithRef<string>(savedUsername);
   const [password, setPassword] = useStateWithRef<string>("");
   const changeUsernameHandler = useCallback(
@@ -75,12 +75,12 @@ export default function SignIn() {
     (_event, val) => setIsSaveUsername(val),
     [setIsSaveUsername],
   );
-  const clickSignInHandler = useCallback(
+  const clickLoginHandler = useCallback(
     (event: MouseEvent) => {
       event.preventDefault();
-      signIn(username.current, password.current);
+      login(username.current, password.current);
     },
-    [signIn, username, password],
+    [login, username, password],
   );
 
   return (
@@ -92,7 +92,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Login
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
@@ -132,9 +132,9 @@ export default function SignIn() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={clickSignInHandler}
+              onClick={clickLoginHandler}
             >
-              Sign In
+              Login
             </Button>
             {/* <Grid container>
               <Grid item xs>

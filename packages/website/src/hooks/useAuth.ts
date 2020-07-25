@@ -1,6 +1,7 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useRoute } from "./helpers/useRoute";
+import { User, useUser } from "./useUser";
 
 const USER = gql`
   query {
@@ -11,7 +12,12 @@ const USER = gql`
   }
 `;
 
-export function useAuth() {
+export const CUSTOMER = "CUSTOMER";
+export const ADMIN = "ADMIN";
+type USER_TYPE = typeof CUSTOMER | typeof ADMIN;
+
+export function useAuth(userType?: USER_TYPE): User | undefined {
+  const [, setUser] = useUser();
   const { pushHistory } = useRoute();
   const resolveRef = useRef<() => void>();
   const [userQuery, userResult] = useLazyQuery(USER, {
@@ -25,25 +31,27 @@ export function useAuth() {
   const { data, error, loading } = userResult;
   useEffect(() => {
     if (!loading) {
-      if (data) {
+      if (error) {
+        pushHistory("/");
+      } else if (data) {
         const { user } = data;
         if (user !== null) {
-          if (user.isAdmin) {
-            pushHistory("/admin");
-          } else {
+          setUser(user);
+          if (userType === undefined) {
+            if (user.isAdmin) {
+              pushHistory("/admin");
+            } else {
+              pushHistory("/customer");
+            }
+          }
+          if (!user.isAdmin && userType === ADMIN) {
             pushHistory("/customer");
           }
         } else {
           pushHistory("/");
         }
-      } else if (error) {
-        pushHistory("/");
       }
     }
-  }, [pushHistory, data, error, loading]);
-  if (loading) {
-    throw new Promise((resolve) => {
-      resolveRef.current = resolve;
-    });
-  }
+  }, [pushHistory, data, error, loading, userType, setUser]);
+  return data?.user;
 }

@@ -6,6 +6,7 @@ export default gql`
   }
   type Mutation {
     login(username: String!, password: String!): User
+    logout: Boolean!
   }
   type User {
     username: String!

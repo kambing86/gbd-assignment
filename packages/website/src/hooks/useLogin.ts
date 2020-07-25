@@ -3,8 +3,8 @@ import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import useStateWithRef from "./helpers/useStateWithRef";
 
-const SIGN_IN = gql`
-  mutation SignIn($username: String!, $password: String!) {
+const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       username
       isAdmin
@@ -18,27 +18,27 @@ function getUsername() {
   return localStorage.getItem(USERNAME_KEY) || "";
 }
 
-export function useSignIn() {
+export function useLogin() {
   const history = useHistory();
-  const [signInMutation, signInResult] = useMutation(SIGN_IN);
+  const [loginMutation, loginResult] = useMutation(LOGIN);
   const [isSaveUsername, setIsSaveUsername] = useStateWithRef(false);
   const savedUsername = getUsername();
-  const signIn = useCallback(
+  const loginHandler = useCallback(
     (username: string, password: string) => {
       if (isSaveUsername.current) {
         localStorage.setItem(USERNAME_KEY, username);
       } else {
         localStorage.removeItem(USERNAME_KEY);
       }
-      signInMutation({
+      loginMutation({
         variables: { username, password },
       });
     },
-    [signInMutation, isSaveUsername],
+    [loginMutation, isSaveUsername],
   );
-  const { data, error, loading } = signInResult;
+  const { data, error, loading } = loginResult;
   useEffect(() => {
-    if (!loading && data) {
+    if (!loading && !error && data) {
       const { login } = data;
       if (login) {
         if (login.isAdmin) {
@@ -49,5 +49,10 @@ export function useSignIn() {
       }
     }
   }, [history, data, error, loading]);
-  return { signIn, savedUsername, isSaveUsername, setIsSaveUsername };
+  return {
+    login: loginHandler,
+    savedUsername,
+    isSaveUsername,
+    setIsSaveUsername,
+  };
 }
