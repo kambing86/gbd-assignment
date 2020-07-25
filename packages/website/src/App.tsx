@@ -1,26 +1,38 @@
-import "./App.css";
-import React from "react";
-import logo from "./logo.svg";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import React, { Suspense, lazy } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { Route, HashRouter as Router, Switch } from "react-router-dom";
+import { useAppTheme } from "./hooks/useAppTheme";
+import ErrorFallback from "./pages/ErrorFallback";
+import Loading from "./pages/Loading";
 
-function App() {
+const SignInPage = lazy(() => import("./pages/SignIn"));
+const AdminPage = lazy(() => import("./pages/Admin"));
+const CustomerPage = lazy(() => import("./pages/Customer"));
+const NotFoundPage = lazy(() => import("./pages/NotFound"));
+
+export default function App() {
+  const { theme } = useAppTheme();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => {
+          // reset the state of your app so the error doesn't happen again
+        }}
+      >
+        <Suspense fallback={<Loading />}>
+          <Router basename={process.env.PUBLIC_URL ?? ""}>
+            <Switch>
+              <Route exact path="/" component={SignInPage} />
+              <Route exact path="/admin" component={AdminPage} />
+              <Route exact path="/customer" component={CustomerPage} />
+              <Route component={NotFoundPage} />
+            </Switch>
+          </Router>
+        </Suspense>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
-
-export default App;

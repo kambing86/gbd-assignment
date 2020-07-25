@@ -58,7 +58,7 @@ export type OrderDetail = {
 export type Mutation = {
   __typename?: 'Mutation';
   createOrder?: Maybe<Scalars['Boolean']>;
-  login?: Maybe<Scalars['String']>;
+  login?: Maybe<User>;
   updateProduct?: Maybe<Scalars['Boolean']>;
 };
 
@@ -257,7 +257,7 @@ export type OrderDetailResolvers<ContextType = GraphQLContext, ParentType extend
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createOrder?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'data'>>;
-  login?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
+  login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
   updateProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'id' | 'data'>>;
 };
 

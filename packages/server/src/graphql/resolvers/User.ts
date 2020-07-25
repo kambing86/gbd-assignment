@@ -14,7 +14,7 @@ export default {
     }),
   },
   Mutation: {
-    login(_parent, args) {
+    login(_parent, args, context) {
       return initDb(async (db) => {
         const users = await db.all<DbUser>(
           SQL`SELECT * FROM Users WHERE username = ${args.username}`,
@@ -23,7 +23,7 @@ export default {
         const user = users[0];
         const match = await argon2.verify(user.password, args.password);
         if (match) {
-          return jwt.sign(
+          const token = jwt.sign(
             {
               id: user.id,
               username: user.username,
@@ -32,6 +32,11 @@ export default {
             secret,
             { algorithm, expiresIn: "1d" },
           );
+          context.res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 1,
+          });
+          return user;
         }
         return null;
       });

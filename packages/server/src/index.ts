@@ -1,6 +1,8 @@
 import http from "http";
 import { ApolloServer } from "apollo-server-express";
-import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Request } from "express";
 import expressJwt from "express-jwt";
 import expressPlayground from "graphql-playground-middleware-express";
 import { algorithm, secret } from "./auth";
@@ -12,21 +14,30 @@ const port = 8010;
 
 (async () => {
   const app = express();
+  app.use(cookieParser());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    }),
+  );
   app.use(
     expressJwt({
       secret,
       algorithms: [algorithm],
       credentialsRequired: false,
+      getToken: (req: Request) => req.cookies.token,
     }),
   );
   const httpServer = http.createServer(app);
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req }) => {
+    context: (expressContext) => {
+      const { req } = expressContext;
       // @ts-ignore
       const user = req?.user ?? null;
-      return { user };
+      return { ...expressContext, user };
     },
     playground: false,
   });
@@ -37,7 +48,7 @@ const port = 8010;
       subscriptionEndpoint: apolloServer.graphqlPath,
     }),
   );
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
   apolloServer.installSubscriptionHandlers(httpServer);
 
   await initDB();
