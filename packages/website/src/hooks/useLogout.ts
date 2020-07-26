@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useLoadingBackdrop } from "./useLoadingBackdrop";
 import { useUser } from "./useUser";
 
 const LOGOUT = gql`
@@ -9,22 +10,26 @@ const LOGOUT = gql`
   }
 `;
 
+const LOGOUT_LOADING_KEY = "logoutLoading";
+
 export function useLogout() {
+  const { setLoading } = useLoadingBackdrop(LOGOUT_LOADING_KEY);
   const history = useHistory();
-  const [logoutMutation, logoutResult] = useMutation(LOGOUT);
+  const [logoutMutation, logoutResult] = useMutation(LOGOUT, {
+    fetchPolicy: "no-cache",
+  });
   const logoutHandler = useCallback(() => {
+    setLoading(true);
     logoutMutation();
-  }, [logoutMutation]);
+  }, [logoutMutation, setLoading]);
   const { data, error, loading } = logoutResult;
   const [, setUser] = useUser();
   useEffect(() => {
-    if (!loading && !error && data) {
+    if (!loading && (error || data)) {
       setUser(undefined);
-      const { logout } = data;
-      if (logout) {
-        history.push("/");
-      }
+      history.push("/");
+      setLoading(false);
     }
-  }, [history, data, error, loading, setUser]);
+  }, [history, data, error, loading, setUser, setLoading]);
   return { logout: logoutHandler };
 }

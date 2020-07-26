@@ -1,6 +1,7 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRoute } from "./helpers/useRoute";
+import { useLoadingBackdrop } from "./useLoadingBackdrop";
 import { User, useUser } from "./useUser";
 
 const USER = gql`
@@ -16,22 +17,24 @@ export const CUSTOMER = "CUSTOMER";
 export const ADMIN = "ADMIN";
 type USER_TYPE = typeof CUSTOMER | typeof ADMIN;
 
+const AUTH_LOADING_KEY = "authLoading";
+
 export function useAuth(userType?: USER_TYPE): User | undefined {
+  const { setLoading } = useLoadingBackdrop(AUTH_LOADING_KEY);
   const [, setUser] = useUser();
   const { pushHistory } = useRoute();
-  const resolveRef = useRef<() => void>();
   const [userQuery, userResult] = useLazyQuery(USER, {
-    onCompleted: () => {
-      if (resolveRef.current) resolveRef.current();
-    },
+    fetchPolicy: "no-cache",
   });
   useEffect(() => {
+    setLoading(true);
     userQuery();
-  }, [userQuery]);
+  }, [userQuery, setLoading]);
   const { data, error, loading } = userResult;
   useEffect(() => {
-    if (!loading) {
+    if (!loading && (error || data)) {
       if (error) {
+        setUser(undefined);
         pushHistory("/");
       } else if (data) {
         const { user } = data;
@@ -51,7 +54,8 @@ export function useAuth(userType?: USER_TYPE): User | undefined {
           pushHistory("/");
         }
       }
+      setLoading(false);
     }
-  }, [pushHistory, data, error, loading, userType, setUser]);
+  }, [pushHistory, data, error, loading, userType, setUser, setLoading]);
   return data?.user;
 }

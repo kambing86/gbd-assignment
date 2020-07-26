@@ -2,6 +2,7 @@ import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import React, { Suspense, lazy } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Switch } from "react-router-dom";
+import LoadingBackdrop from "./components/common/LoadingBackdrop";
 import { useAppTheme } from "./hooks/useAppTheme";
 import Loading from "./pages/Loading";
 
@@ -33,6 +34,7 @@ export default function App() {
           </Router>
         </ErrorBoundary>
       </Suspense>
+      <LoadingBackdrop />
     </ThemeProvider>
   );
 }

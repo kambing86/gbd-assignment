@@ -35,6 +35,12 @@ const client = new ApolloClient({
   link: splitLink,
   queryDeduplication: false,
   defaultOptions: {
+    mutate: {
+      fetchPolicy: "no-cache",
+    },
+    query: {
+      fetchPolicy: "no-cache",
+    },
     watchQuery: {
       fetchPolicy: "cache-and-network",
     },
