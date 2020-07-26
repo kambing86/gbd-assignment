@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import useStateWithRef from "./helpers/useStateWithRef";
 import { useLoadingBackdrop } from "./useLoadingBackdrop";
+import { useUser } from "./useUser";
 
 const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -23,12 +24,15 @@ const LOGIN_LOADING_KEY = "loginLoading";
 
 export function useLogin() {
   const { setLoading } = useLoadingBackdrop(LOGIN_LOADING_KEY);
+  const [, setUser] = useUser();
   const history = useHistory();
   const [loginMutation, loginResult] = useMutation(LOGIN, {
     fetchPolicy: "no-cache",
   });
-  const [isSaveUsername, setIsSaveUsername] = useStateWithRef(false);
   const savedUsername = getUsername();
+  const [isSaveUsername, setIsSaveUsername] = useStateWithRef(
+    savedUsername !== "",
+  );
   const loginHandler = useCallback(
     (username: string, password: string) => {
       setLoading(true);
@@ -48,6 +52,7 @@ export function useLogin() {
     if (!loading && !error && data) {
       const { login } = data;
       if (login) {
+        setUser(login);
         if (login.isAdmin) {
           history.push("/admin");
         } else {
@@ -56,11 +61,11 @@ export function useLogin() {
       }
       setLoading(false);
     }
-  }, [history, data, error, loading, setLoading]);
+  }, [history, data, error, loading, setLoading, setUser]);
   return {
     login: loginHandler,
     savedUsername,
-    isSaveUsername,
+    isSaveUsername: isSaveUsername.current,
     setIsSaveUsername,
   };
 }

@@ -11,6 +11,7 @@ import React, { useMemo } from "react";
 import Copyright from "../components/common/Copyright";
 import MainLayout from "../components/common/MainLayout";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
+import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function Customer() {
-  const user = useAuth(CUSTOMER);
+  useAuth(CUSTOMER);
+  const [user] = useUser();
   const classes = useStyles();
   const title = useMemo(() => `Hello ${user?.username}`, [user]);
 

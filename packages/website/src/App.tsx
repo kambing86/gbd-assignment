@@ -1,19 +1,41 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Switch } from "react-router-dom";
 import LoadingBackdrop from "./components/common/LoadingBackdrop";
 import { useAppTheme } from "./hooks/useAppTheme";
 import Loading from "./pages/Loading";
 
-const ErrorPage = lazy(() => import("./pages/ErrorFallback"));
-const LoginPage = lazy(() => import("./pages/Login"));
-const AdminPage = lazy(() => import("./pages/Admin"));
-const CustomerPage = lazy(() => import("./pages/Customer"));
-const NotFoundPage = lazy(() => import("./pages/NotFound"));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyReactComponent = React.ComponentType<any>;
+const lazyPreload: (() => Promise<{ default: AnyReactComponent }>)[] = [];
+
+// check https://medium.com/hackernoon/lazy-loading-and-preloading-components-in-react-16-6-804de091c82d
+function lazyWithPreload<T extends AnyReactComponent>(
+  factory: () => Promise<{ default: T }>,
+): React.LazyExoticComponent<T> {
+  const Component = React.lazy(factory);
+  lazyPreload.push(factory);
+  return Component;
+}
+
+function preloadAll() {
+  for (const preload of lazyPreload) {
+    preload();
+  }
+}
+
+const ErrorPage = lazyWithPreload(() => import("./pages/ErrorFallback"));
+const LoginPage = lazyWithPreload(() => import("./pages/Login"));
+const AdminPage = lazyWithPreload(() => import("./pages/Admin"));
+const CustomerPage = lazyWithPreload(() => import("./pages/Customer"));
+const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
   const { theme } = useAppTheme();
+  useEffect(() => {
+    setTimeout(preloadAll, 2000);
+  }, []);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

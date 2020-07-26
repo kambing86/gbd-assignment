@@ -35,6 +35,7 @@ const port = 8010;
     resolvers,
     context: (expressContext) => {
       const { req } = expressContext;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const user = req?.user ?? null;
       return { ...expressContext, user };

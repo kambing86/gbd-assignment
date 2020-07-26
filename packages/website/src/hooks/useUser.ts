@@ -1,6 +1,6 @@
 import { atom, useRecoilState } from "recoil";
 
-export interface User {
+interface User {
   username: string;
   isAdmin: boolean;
 }

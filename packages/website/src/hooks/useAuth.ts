@@ -1,8 +1,8 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRoute } from "./helpers/useRoute";
 import { useLoadingBackdrop } from "./useLoadingBackdrop";
-import { User, useUser } from "./useUser";
+import { useUser } from "./useUser";
 
 const USER = gql`
   query {
@@ -19,27 +19,32 @@ type USER_TYPE = typeof CUSTOMER | typeof ADMIN;
 
 const AUTH_LOADING_KEY = "authLoading";
 
-export function useAuth(userType?: USER_TYPE): User | undefined {
+// if userType if undefined, it's used by login to redirect user
+export function useAuth(userType?: USER_TYPE) {
   const { setLoading } = useLoadingBackdrop(AUTH_LOADING_KEY);
-  const [, setUser] = useUser();
+  const [userState, setUserState] = useUser();
+  const userRef = useRef(userState);
   const { pushHistory } = useRoute();
   const [userQuery, userResult] = useLazyQuery(USER, {
     fetchPolicy: "no-cache",
   });
   useEffect(() => {
-    setLoading(true);
+    // only show loading if user data is not ready
+    if (userRef.current === undefined) {
+      setLoading(true);
+    }
     userQuery();
   }, [userQuery, setLoading]);
   const { data, error, loading } = userResult;
   useEffect(() => {
     if (!loading && (error || data)) {
       if (error) {
-        setUser(undefined);
+        setUserState(undefined);
         pushHistory("/");
       } else if (data) {
         const { user } = data;
         if (user !== null) {
-          setUser(user);
+          setUserState(user);
           if (userType === undefined) {
             if (user.isAdmin) {
               pushHistory("/admin");
@@ -56,6 +61,5 @@ export function useAuth(userType?: USER_TYPE): User | undefined {
       }
       setLoading(false);
     }
-  }, [pushHistory, data, error, loading, userType, setUser, setLoading]);
-  return data?.user;
+  }, [pushHistory, data, error, loading, userType, setUserState, setLoading]);
 }
