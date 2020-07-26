@@ -32,15 +32,69 @@ const initUsers = async () => {
 
 const products: Product[] = [
   {
+    name: "Macbook Pro 13 inch",
+    price: 1899,
+    quantity: 10,
+    isUp: true,
+  },
+  {
     name: "Macbook Pro 16 inch",
-    price: 2999,
+    price: 3499,
+    quantity: 5,
+    isUp: true,
+  },
+  {
+    name: "iPhone 11 Pro",
+    price: 1649,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "iPhone 11 Pro Max",
+    price: 1799,
+    quantity: 5,
+    isUp: true,
+  },
+  {
+    name: "iPhone 11",
+    price: 1149,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "iPhone SE",
+    price: 649,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "iPad Pro 11 inch",
+    price: 1199,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "iPad Pro 12.9 inch",
+    price: 1499,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "iPad Air",
+    price: 749,
     quantity: 10,
     isUp: true,
   },
   {
     name: "HP Spectre x360",
-    price: 2999,
-    quantity: 5,
+    price: 2399,
+    quantity: 10,
+    isUp: true,
+  },
+  {
+    name: "Surface Pro 7",
+    price: 1388,
+    quantity: 10,
     isUp: true,
   },
 ];

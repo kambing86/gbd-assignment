@@ -14,7 +14,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Product, useProducts } from "../../hooks/useProducts";
+import { Product, useGetProducts } from "../../hooks/useProducts";
 import EditProductDialog from "./EditProductDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,7 @@ const ITEM_PER_PAGE = 10;
 
 const ProductList: React.FC = () => {
   const classes = useStyles();
-  const [productsResult, getProducts] = useProducts();
+  const [productsResult, getProducts] = useGetProducts();
   const [page, setPage] = useState(1);
   useEffect(() => {
     getProducts(ITEM_PER_PAGE * (page - 1), ITEM_PER_PAGE);

@@ -4,7 +4,7 @@ import {
   useLazyQuery,
   useMutation,
 } from "@apollo/client";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 const PRODUCTS = gql`
   query Products($skip: Int!, $limit: Int!) {
@@ -29,6 +29,18 @@ const UPDATE_PRODUCT = gql`
   }
 `;
 
+const PRODUCTS_SUBSCRIPTION = gql`
+  subscription products {
+    products {
+      id
+      name
+      quantity
+      price
+      isUp
+    }
+  }
+`;
+
 export interface Product {
   id: number;
   name: string;
@@ -46,7 +58,14 @@ interface QueryData {
   };
 }
 
-export const useProducts = (): [
+const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
+  if (oldProduct.id === newProduct.id) {
+    return newProduct;
+  }
+  return oldProduct;
+};
+
+export const useGetProducts = (): [
   LazyQueryResult<QueryData, { skip: number; limit: number }>,
   (skip: number, limit: number) => void,
 ] => {
@@ -65,6 +84,28 @@ export const useProducts = (): [
     },
     [productsQuery],
   );
+  const { subscribeToMore, loading, called } = productsResult;
+  useEffect(() => {
+    if (called && !loading && subscribeToMore) {
+      subscribeToMore({
+        document: PRODUCTS_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          const newProduct = subscriptionData.data.products as Product;
+          return {
+            ...prev,
+            products: {
+              ...prev.products,
+              rows: prev.products.rows.map((old) =>
+                mapOldToNewProduct(old, newProduct),
+              ),
+            },
+          };
+        },
+      });
+    }
+  }, [subscribeToMore, loading, called]);
   return [productsResult, getProducts];
 };
 
