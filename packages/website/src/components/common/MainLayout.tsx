@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import Copyright from "./Copyright";
 import TopSideBar from "./TopSideBar";
 
 const useStyles = makeStyles((theme) => ({
@@ -10,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
+    display: "flex",
+    flexDirection: "column",
+  },
+  contentWrapper: {
+    flexGrow: 1,
   },
   appBarSpacer: theme.mixins.toolbar,
   container: {
@@ -22,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
+  footer: {
+    padding: theme.spacing(4),
+  },
 }));
 
 const MainLayout: React.FC<{ title: string }> = ({ title, children }) => {
@@ -30,8 +39,13 @@ const MainLayout: React.FC<{ title: string }> = ({ title, children }) => {
     <div className={classes.root}>
       <TopSideBar title={title} />
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        {children}
+        <div className={classes.contentWrapper}>
+          <div className={classes.appBarSpacer} />
+          {children}
+        </div>
+        <footer className={classes.footer}>
+          <Copyright />
+        </footer>
       </main>
     </div>
   );

@@ -8,7 +8,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useMemo } from "react";
-import Copyright from "../components/common/Copyright";
 import MainLayout from "../components/common/MainLayout";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useUser } from "../hooks/useUser";
@@ -134,22 +133,6 @@ export default function Customer() {
           ))}
         </Grid>
       </Container>
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="textSecondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </footer>
-      {/* End footer */}
     </MainLayout>
   );
 }

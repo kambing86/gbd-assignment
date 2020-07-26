@@ -15,9 +15,10 @@ import DarkThemeIcon from "@material-ui/icons/Brightness7";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React, { useCallback } from "react";
+import { useRoute } from "../../hooks/helpers/useRoute";
 import { useAppTheme } from "../../hooks/useAppTheme";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useLogout } from "../../hooks/useLogout";
@@ -96,6 +97,10 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
   const { theme, toggleDarkMode } = useAppTheme();
   const { logout } = useLogout();
   const [user] = useUser();
+  const { pushHistory } = useRoute();
+  const clickCartHandler = useCallback(() => {
+    pushHistory("/customer/cart");
+  }, [pushHistory]);
   return (
     <>
       <AppBar
@@ -124,11 +129,13 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
           >
             {title}
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+          {user && !user.isAdmin && (
+            <IconButton color="inherit" onClick={clickCartHandler}>
+              <Badge badgeContent={4} color="secondary">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+          )}
           <IconButton color="inherit" onClick={toggleDarkMode}>
             {theme.palette.type === "light" ? (
               <LightThemeIcon />

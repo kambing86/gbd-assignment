@@ -17,8 +17,8 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   orders: Array<Order>;
-  products: Array<Product>;
-  productsOnShelf: Array<Product>;
+  products: ProductResult;
+  productsOnShelf: ProductResult;
   user?: Maybe<User>;
 };
 
@@ -57,10 +57,16 @@ export type OrderDetail = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProduct?: Maybe<Scalars['Boolean']>;
   createOrder?: Maybe<Scalars['Boolean']>;
   login?: Maybe<User>;
   logout: Scalars['Boolean'];
   updateProduct?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type MutationAddProductArgs = {
+  data: ProductInput;
 };
 
 
@@ -98,6 +104,14 @@ export type Subscription = {
 
 export type SubscriptionProductArgs = {
   id: Scalars['Int'];
+};
+
+export type ProductResult = {
+  __typename?: 'ProductResult';
+  rows: Array<Product>;
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  total: Scalars['Int'];
 };
 
 export type Product = {
@@ -211,6 +225,7 @@ export type ResolversTypes = {
   OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
   Subscription: ResolverTypeWrapper<{}>;
+  ProductResult: ResolverTypeWrapper<ProductResult>;
   Product: ResolverTypeWrapper<Product>;
   ProductInput: ProductInput;
   User: ResolverTypeWrapper<User>;
@@ -229,6 +244,7 @@ export type ResolversParentTypes = {
   OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
   Subscription: {};
+  ProductResult: ProductResult;
   Product: Product;
   ProductInput: ProductInput;
   User: User;
@@ -236,8 +252,8 @@ export type ResolversParentTypes = {
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
-  products?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
-  productsOnShelf?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
+  products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
+  productsOnShelf?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
@@ -257,6 +273,7 @@ export type OrderDetailResolvers<ContextType = GraphQLContext, ParentType extend
 };
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddProductArgs, 'data'>>;
   createOrder?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'data'>>;
   login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -266,6 +283,14 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
   product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
+};
+
+export type ProductResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ProductResult'] = ResolversParentTypes['ProductResult']> = {
+  rows?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType>;
+  skip?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type ProductResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
@@ -289,6 +314,7 @@ export type Resolvers<ContextType = GraphQLContext> = {
   OrderDetail?: OrderDetailResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  ProductResult?: ProductResultResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };

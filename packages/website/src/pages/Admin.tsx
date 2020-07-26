@@ -1,11 +1,9 @@
-import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-import Products from "../components/admin/Products";
-import Copyright from "../components/common/Copyright";
+import ProductList from "../components/admin/ProductList";
 import MainLayout from "../components/common/MainLayout";
 import { ADMIN, useAuth } from "../hooks/useAuth";
 
@@ -18,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
     overflow: "auto",
   },
-  appBarSpacer: theme.mixins.toolbar,
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
@@ -37,18 +34,14 @@ export default function Admin() {
 
   return (
     <MainLayout title="Admin">
-      <div className={classes.appBarSpacer} />
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <Products />
+              <ProductList />
             </Paper>
           </Grid>
         </Grid>
-        <Box pt={4}>
-          <Copyright />
-        </Box>
       </Container>
     </MainLayout>
   );

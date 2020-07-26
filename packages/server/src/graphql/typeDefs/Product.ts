@@ -2,15 +2,22 @@ import gql from "graphql-tag";
 
 export default gql`
   type Query {
-    products(skip: Int = 0, limit: Int = 10): [Product!]!
-    productsOnShelf(skip: Int = 0, limit: Int = 10): [Product!]!
+    products(skip: Int = 0, limit: Int = 10): ProductResult!
+    productsOnShelf(skip: Int = 0, limit: Int = 10): ProductResult!
   }
   type Mutation {
+    addProduct(data: ProductInput!): Boolean
     updateProduct(id: Int!, data: ProductInput!): Boolean
   }
   type Subscription {
     products: Product!
     product(id: Int!): Product!
+  }
+  type ProductResult {
+    rows: [Product!]!
+    skip: Int!
+    limit: Int!
+    total: Int!
   }
   type Product {
     id: Int!
