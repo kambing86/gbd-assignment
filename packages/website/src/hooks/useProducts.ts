@@ -12,6 +12,25 @@ const PRODUCTS = gql`
       rows {
         id
         name
+        image
+        quantity
+        price
+        isUp
+      }
+      skip
+      limit
+      total
+    }
+  }
+`;
+
+const PRODUCTS_ON_SHELF = gql`
+  query Products($skip: Int!, $limit: Int!) {
+    products: productsOnShelf(skip: $skip, limit: $limit) {
+      rows {
+        id
+        name
+        image
         quantity
         price
         isUp
@@ -29,11 +48,12 @@ const UPDATE_PRODUCT = gql`
   }
 `;
 
-const PRODUCTS_SUBSCRIPTION = gql`
+export const PRODUCTS_SUBSCRIPTION = gql`
   subscription products {
     products {
       id
       name
+      image
       quantity
       price
       isUp
@@ -44,6 +64,7 @@ const PRODUCTS_SUBSCRIPTION = gql`
 export interface Product {
   id: number;
   name: string;
+  image: string | null;
   quantity: number;
   price: number;
   isUp: boolean;
@@ -58,21 +79,27 @@ interface QueryData {
   };
 }
 
-const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
+export const mapOldToNewProduct = (
+  oldProduct: Product,
+  newProduct: Product,
+) => {
   if (oldProduct.id === newProduct.id) {
     return newProduct;
   }
   return oldProduct;
 };
 
-export const useGetProducts = (): [
+// onShelfOnly is for initialize only
+export const useGetProducts = (
+  onShelfOnly?: boolean,
+): [
   LazyQueryResult<QueryData, { skip: number; limit: number }>,
   (skip: number, limit: number) => void,
 ] => {
   const [productsQuery, productsResult] = useLazyQuery<
     QueryData,
     { skip: number; limit: number }
-  >(PRODUCTS);
+  >(onShelfOnly ? PRODUCTS_ON_SHELF : PRODUCTS);
   const getProducts = useCallback(
     (skip: number, limit: number) => {
       productsQuery({
@@ -93,19 +120,23 @@ export const useGetProducts = (): [
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const newProduct = subscriptionData.data.products as Product;
+          let rows = prev.products.rows.map((old) =>
+            mapOldToNewProduct(old, newProduct),
+          );
+          if (onShelfOnly) {
+            rows = rows.filter((r) => r.isUp);
+          }
           return {
             ...prev,
             products: {
               ...prev.products,
-              rows: prev.products.rows.map((old) =>
-                mapOldToNewProduct(old, newProduct),
-              ),
+              rows,
             },
           };
         },
       });
     }
-  }, [subscribeToMore, loading, called]);
+  }, [subscribeToMore, loading, called]); // eslint-disable-line react-hooks/exhaustive-deps
   return [productsResult, getProducts];
 };
 

@@ -103,7 +103,7 @@ export default function Login() {
               id="username"
               label="Username"
               name="username"
-              autoFocus
+              autoFocus={savedUsername === "" ? true : false}
               value={username.current}
               onChange={changeUsernameHandler}
             />
@@ -117,6 +117,7 @@ export default function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
+              autoFocus={savedUsername === "" ? false : true}
               value={password.current}
               onChange={changePasswordHandler}
             />

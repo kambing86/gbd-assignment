@@ -9,12 +9,11 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useMemo } from "react";
+import React, { MouseEvent, useCallback, useMemo, useRef } from "react";
 import MainLayout from "../components/common/MainLayout";
+import PlaceOrder from "../components/customer/PlaceOrder";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useCart } from "../hooks/useCart";
-import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
-import { Product } from "../hooks/useProducts";
+import { useCart, useCartWithProduct } from "../hooks/useCart";
 import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
   },
-  itemGrid: {
-    width: "100%",
-  },
   loadingGrid: {
+    padding: theme.spacing(8),
     width: "100%",
     textAlign: "center",
+  },
+  itemGrid: {
+    width: "100%",
   },
   card: {
     height: "100%",
@@ -54,47 +54,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ITEMS_PER_PAGE = 8;
-
-export default function Customer() {
+export default function Cart() {
   useAuth(CUSTOMER);
   const [user] = useUser();
   const classes = useStyles();
   const title = useMemo(() => `Hello ${user?.username}`, [user]);
-  const { addToCart } = useCart();
-  const productClicked = useCallback(
-    (product?: Product, action?: string) => {
-      if (action === "addToCart" && product) {
-        addToCart(product);
+  const { removeFromCart } = useCart();
+  const { cartProducts, isReady } = useCartWithProduct();
+  const productsRef = useRef(cartProducts);
+  productsRef.current = cartProducts;
+  const itemClickHandler = useCallback(
+    (event: MouseEvent) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const dataset = event.currentTarget.dataset as Dataset;
+      const id = Number(dataset.id);
+      const action = dataset.action;
+      const product = productsRef.current?.find((p) => p.id === id);
+      if (product && action === "removeFromCart") {
+        removeFromCart(product);
       }
     },
-    [addToCart],
+    [productsRef, removeFromCart],
   );
-  const {
-    productsResult,
-    enablePrevPage,
-    enableNextPage,
-    itemClickHandler,
-    pageClickHandler,
-  } = usePaginatedProducts({
-    itemsPerPage: ITEMS_PER_PAGE,
-    productClicked,
-    onShelfOnly: true,
-  });
-  const { loading, data } = productsResult;
 
   return (
     <MainLayout title={title}>
-      <Container className={classes.cardGrid} maxWidth="md">
-        <Grid container spacing={2}>
-          {loading && (
-            <Grid item className={classes.loadingGrid}>
-              <CircularProgress />
-            </Grid>
-          )}
-          {!loading &&
-            data &&
-            data.products.rows.map((product) => (
+      {!isReady && (
+        <Grid item className={classes.loadingGrid}>
+          <CircularProgress />
+        </Grid>
+      )}
+      {isReady && (
+        <Container className={classes.cardGrid} maxWidth="md">
+          <PlaceOrder />
+          <Grid container spacing={2}>
+            {cartProducts.map((product) => (
               <Grid
                 item
                 className={classes.itemGrid}
@@ -128,7 +123,7 @@ export default function Customer() {
                       <Typography gutterBottom variant="h6" component="h3">
                         {`$ ${product.price.toFixed(2)}`}
                       </Typography>
-                      <Typography>Quantity: {product.quantity}</Typography>
+                      <Typography>In Cart: {product.quantity}</Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions>
@@ -136,35 +131,19 @@ export default function Customer() {
                       size="small"
                       color="primary"
                       data-id={product.id}
-                      data-action="addToCart"
+                      data-action="removeFromCart"
                       onClick={itemClickHandler}
                     >
-                      Add to Cart
+                      Remove From Cart
                     </Button>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
-        </Grid>
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enablePrevPage}
-          data-action="prev"
-        >
-          Prev
-        </Button>
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enableNextPage}
-          data-action="next"
-        >
-          Next
-        </Button>
-      </Container>
+            {cartProducts.length > 4 && <PlaceOrder />}
+          </Grid>
+        </Container>
+      )}
     </MainLayout>
   );
 }

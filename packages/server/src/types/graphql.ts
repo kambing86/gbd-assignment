@@ -18,6 +18,7 @@ export type Query = {
   __typename?: 'Query';
   orders: Array<Order>;
   products: ProductResult;
+  productsByIds: Array<Product>;
   productsOnShelf: ProductResult;
   user?: Maybe<User>;
 };
@@ -32,6 +33,11 @@ export type QueryOrdersArgs = {
 export type QueryProductsArgs = {
   skip?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryProductsByIdsArgs = {
+  ids: Array<Scalars['Int']>;
 };
 
 
@@ -118,6 +124,7 @@ export type Product = {
   __typename?: 'Product';
   id: Scalars['Int'];
   name: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
   quantity: Scalars['Int'];
   price: Scalars['Float'];
   isUp: Scalars['Boolean'];
@@ -125,6 +132,7 @@ export type Product = {
 
 export type ProductInput = {
   name?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
   quantity?: Maybe<Scalars['Int']>;
   price?: Maybe<Scalars['Float']>;
   isUp?: Maybe<Scalars['Boolean']>;
@@ -253,6 +261,7 @@ export type ResolversParentTypes = {
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
   products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
+  productsByIds?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsByIdsArgs, 'ids'>>;
   productsOnShelf?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
@@ -296,6 +305,7 @@ export type ProductResultResolvers<ContextType = GraphQLContext, ParentType exte
 export type ProductResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   isUp?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;

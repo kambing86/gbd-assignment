@@ -26,7 +26,7 @@ const addLoadingKey = (loading: LoadingState, key: string) => {
 };
 
 const subtractLoadingKey = (loading: LoadingState, key: string) => {
-  let returnObj = loading;
+  let returnObj = { ...loading };
   if (loading[key]) {
     returnObj = {
       ...loading,

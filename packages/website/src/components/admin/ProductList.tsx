@@ -7,14 +7,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, {
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Product, useGetProducts } from "../../hooks/useProducts";
+import React, { useCallback, useState } from "react";
+import { usePaginatedProducts } from "../../hooks/usePaginatedProducts";
+import { Product } from "../../hooks/useProducts";
 import EditProductDialog from "./EditProductDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,45 +25,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ITEM_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 const ProductList: React.FC = () => {
   const classes = useStyles();
-  const [productsResult, getProducts] = useGetProducts();
-  const [page, setPage] = useState(1);
-  useEffect(() => {
-    getProducts(ITEM_PER_PAGE * (page - 1), ITEM_PER_PAGE);
-  }, [getProducts, page]);
-  const { loading, data } = productsResult;
-  const enableNextPage = Boolean(
-    !loading && data && data.products.total > page * data.products.limit,
-  );
-  const productsRef = useRef<Product[] | undefined>(data?.products.rows);
-  productsRef.current = data?.products.rows;
-  const rowClickHandler = useCallback(
-    (event) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const id = Number(event.currentTarget.dataset.id);
-      const product = productsRef.current?.find((p) => p.id === id);
-      setEditProduct(product);
-    },
-    [productsRef],
-  );
-  const pageHandler = useCallback(
-    (event: MouseEvent) => {
-      event.preventDefault();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (event.currentTarget.dataset.action === "next") {
-        setPage((p) => p + 1);
-      } else {
-        setPage((p) => p - 1);
-      }
-    },
-    [setPage],
-  );
   const [editProduct, setEditProduct] = useState<Product>();
+  const {
+    productsResult,
+    enablePrevPage,
+    enableNextPage,
+    itemClickHandler,
+    pageClickHandler,
+  } = usePaginatedProducts({
+    itemsPerPage: ITEMS_PER_PAGE,
+    productClicked: setEditProduct,
+  });
+  const { loading, data } = productsResult;
   const closeEditHandler = useCallback(() => {
     setEditProduct(undefined);
   }, []);
@@ -95,7 +67,7 @@ const ProductList: React.FC = () => {
                 hover={true}
                 className={classes.tableRow}
                 data-id={row.id}
-                onClick={rowClickHandler}
+                onClick={itemClickHandler}
               >
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.isUp.toString()}</TableCell>
@@ -112,8 +84,8 @@ const ProductList: React.FC = () => {
         <Button
           color="primary"
           href="#"
-          onClick={pageHandler}
-          disabled={page === 1}
+          onClick={pageClickHandler}
+          disabled={!enablePrevPage}
           data-action="prev"
         >
           Prev
@@ -121,7 +93,7 @@ const ProductList: React.FC = () => {
         <Button
           color="primary"
           href="#"
-          onClick={pageHandler}
+          onClick={pageClickHandler}
           disabled={!enableNextPage}
           data-action="next"
         >

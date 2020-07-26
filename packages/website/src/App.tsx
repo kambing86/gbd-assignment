@@ -2,6 +2,7 @@ import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import React, { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Switch } from "react-router-dom";
+import CommonDialog from "./components/common/CommonDialog";
 import LoadingBackdrop from "./components/common/LoadingBackdrop";
 import { useAppTheme } from "./hooks/useAppTheme";
 import Loading from "./pages/Loading";
@@ -29,6 +30,7 @@ const ErrorPage = lazyWithPreload(() => import("./pages/ErrorFallback"));
 const LoginPage = lazyWithPreload(() => import("./pages/Login"));
 const AdminPage = lazyWithPreload(() => import("./pages/Admin"));
 const CustomerPage = lazyWithPreload(() => import("./pages/Customer"));
+const CartPage = lazyWithPreload(() => import("./pages/Cart"));
 const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
@@ -51,11 +53,13 @@ export default function App() {
               <Route exact path="/" component={LoginPage} />
               <Route exact path="/admin" component={AdminPage} />
               <Route exact path="/customer" component={CustomerPage} />
+              <Route exact path="/customer/cart" component={CartPage} />
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
         </ErrorBoundary>
       </Suspense>
+      <CommonDialog />
       <LoadingBackdrop />
     </ThemeProvider>
   );

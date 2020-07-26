@@ -46,6 +46,23 @@ export default {
         };
       });
     },
+    productsByIds: (_parent, args) => {
+      const { ids } = args;
+      if (ids.length > 10) {
+        throw new Error("too many ids");
+      }
+      return initDb((db) => {
+        const allProductIds = glue(
+          ids.map((id) => SQL`${id}`),
+          ",",
+        );
+        return db.all<DbProduct>(
+          SQL`SELECT * FROM Products WHERE id in (`
+            .append(allProductIds)
+            .append(SQL`)`),
+        );
+      });
+    },
   },
   Mutation: {
     updateProduct: withAuthResolver((_parent, args, context) => {

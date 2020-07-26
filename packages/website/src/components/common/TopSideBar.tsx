@@ -20,6 +20,7 @@ import clsx from "clsx";
 import React, { useCallback } from "react";
 import { useRoute } from "../../hooks/helpers/useRoute";
 import { useAppTheme } from "../../hooks/useAppTheme";
+import { totalCartCount, useCart } from "../../hooks/useCart";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useLogout } from "../../hooks/useLogout";
 import { useUser } from "../../hooks/useUser";
@@ -98,6 +99,7 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
   const { logout } = useLogout();
   const [user] = useUser();
   const { pushHistory } = useRoute();
+  const { cart } = useCart();
   const clickCartHandler = useCallback(() => {
     pushHistory("/customer/cart");
   }, [pushHistory]);
@@ -131,7 +133,7 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
           </Typography>
           {user && !user.isAdmin && (
             <IconButton color="inherit" onClick={clickCartHandler}>
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={totalCartCount(cart)} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>

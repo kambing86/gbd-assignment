@@ -11,6 +11,7 @@ export interface DbUser {
 export interface DbProduct {
   id: number;
   name: string;
+  image: string | null;
   quantity: number;
   price: number;
   isUp: boolean;
@@ -43,6 +44,7 @@ export default async (db: DB): Promise<DB> => {
   (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    image TEXT,
     quantity INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     isUp BOOLEAN NOT NULL

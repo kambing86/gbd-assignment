@@ -124,10 +124,15 @@ const EditProductDialog: React.FC<Props> = ({ open, handleClose, product }) => {
       <form noValidate onSubmit={submitHandler}>
         <DialogContent>{allInputs}</DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="secondary">
+          <Button
+            variant="contained"
+            autoFocus
+            onClick={handleClose}
+            color="secondary"
+          >
             Cancel
           </Button>
-          <Button autoFocus type="submit" color="primary">
+          <Button variant="contained" autoFocus type="submit" color="primary">
             Update
           </Button>
         </DialogActions>
