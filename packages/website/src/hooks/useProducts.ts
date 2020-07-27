@@ -70,7 +70,7 @@ export interface Product {
   isUp: boolean;
 }
 
-interface QueryData {
+export interface GetProductsData {
   products: {
     rows: Product[];
     skip: number;
@@ -93,11 +93,11 @@ export const mapOldToNewProduct = (
 export const useGetProducts = (
   onShelfOnly?: boolean,
 ): [
-  LazyQueryResult<QueryData, { skip: number; limit: number }>,
+  LazyQueryResult<GetProductsData, { skip: number; limit: number }>,
   (skip: number, limit: number) => void,
 ] => {
   const [productsQuery, productsResult] = useLazyQuery<
-    QueryData,
+    GetProductsData,
     { skip: number; limit: number }
   >(onShelfOnly ? PRODUCTS_ON_SHELF : PRODUCTS);
   const getProducts = useCallback(

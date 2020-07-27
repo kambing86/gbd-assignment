@@ -21,7 +21,7 @@ const PRODUCTS_BY_IDS = gql`
   }
 `;
 
-interface Cart {
+export interface Cart {
   [id: string]: number;
 }
 
@@ -67,6 +67,15 @@ export const useCartWithProduct = () => {
     PRODUCTS_BY_IDS,
   );
   const { loading, data, subscribeToMore, called } = result;
+  // sync cartProducts without waiting for query
+  // only triggered when cart changed
+  useEffect(() => {
+    const ids = Object.keys(cart).map((id) => Number(id));
+    const filtered = cartProducts
+      .filter((p) => ids.includes(p.id))
+      .map((p) => ({ ...p, quantity: cart[String(p.id)] }));
+    setCartProducts(filtered);
+  }, [cart]); // eslint-disable-line react-hooks/exhaustive-deps
   // query when cart products is not complete
   // only triggered when cart changed
   useEffect(() => {
@@ -76,15 +85,6 @@ export const useCartWithProduct = () => {
       query({ variables: { ids } });
     }
   }, [cart, query]); // eslint-disable-line react-hooks/exhaustive-deps
-  // remove from cart products when cart is removed
-  // only triggered when cart changed
-  useEffect(() => {
-    const ids = Object.keys(cart).map((id) => Number(id));
-    const filtered = cartProducts.filter((p) => ids.includes(p.id));
-    if (filtered.length < cartProducts.length) {
-      setCartProducts(filtered);
-    }
-  }, [cart]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
       subscribeToMore({
@@ -147,6 +147,7 @@ export const useCart = () => {
       setCart((prev) => {
         const existing = prev[id] ?? 0;
         if (product.quantity <= existing) {
+          open("Sorry", "No more stock");
           return prev;
         }
         if (existing) {
@@ -202,8 +203,11 @@ export const useCart = () => {
     },
     [setCart],
   );
+  const clearCart = useCallback(() => {
+    setCart({});
+  }, [setCart]);
   useEffect(() => {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }, [cart]);
-  return { cart, addToCart, removeFromCart, fixCart };
+  return { cart, addToCart, removeFromCart, fixCart, clearCart };
 };

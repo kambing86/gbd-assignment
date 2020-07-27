@@ -26,7 +26,15 @@ const port = 8010;
       secret,
       algorithms: [algorithm],
       credentialsRequired: false,
-      getToken: (req: Request) => req.cookies.token,
+      getToken: (req: Request) => {
+        if (
+          req.headers.authorization &&
+          req.headers.authorization.split(" ")[0] === "Bearer"
+        ) {
+          return req.headers.authorization.split(" ")[1];
+        }
+        return req.cookies.token;
+      },
     }),
   );
   const httpServer = http.createServer(app);

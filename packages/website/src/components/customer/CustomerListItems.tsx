@@ -1,3 +1,4 @@
+import OrderIcon from "@material-ui/icons/ListAlt";
 import ExploreIcon from "@material-ui/icons/ShoppingBasket";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import React from "react";
@@ -11,6 +12,7 @@ const CustomerListItems: React.FC = () => (
       text="Cart"
       icon={<ShoppingCartIcon />}
     />
+    <SideBarLink path="/customer/order" text="Order" icon={<OrderIcon />} />
   </>
 );
 

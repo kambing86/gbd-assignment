@@ -71,7 +71,8 @@ export default function Customer() {
     [addToCart],
   );
   const {
-    productsResult,
+    rowsData,
+    loading,
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
@@ -81,7 +82,6 @@ export default function Customer() {
     productClicked,
     onShelfOnly: true,
   });
-  const { loading, data } = productsResult;
 
   return (
     <MainLayout title={title}>
@@ -93,8 +93,8 @@ export default function Customer() {
             </Grid>
           )}
           {!loading &&
-            data &&
-            data.products.rows.map((product) => (
+            rowsData &&
+            rowsData.rows.map((product) => (
               <Grid
                 item
                 className={classes.itemGrid}

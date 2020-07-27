@@ -31,7 +31,8 @@ const ProductList: React.FC = () => {
   const classes = useStyles();
   const [editProduct, setEditProduct] = useState<Product>();
   const {
-    productsResult,
+    rowsData,
+    loading,
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
@@ -40,7 +41,6 @@ const ProductList: React.FC = () => {
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked: setEditProduct,
   });
-  const { loading, data } = productsResult;
   const closeEditHandler = useCallback(() => {
     setEditProduct(undefined);
   }, []);
@@ -50,7 +50,7 @@ const ProductList: React.FC = () => {
         Products
       </Typography>
       {loading && <CircularProgress className={classes.loading} />}
-      {!loading && data && (
+      {!loading && rowsData && (
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -61,18 +61,18 @@ const ProductList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.products.rows.map((row) => (
+            {rowsData.rows.map((product) => (
               <TableRow
-                key={row.id}
+                key={product.id}
                 hover={true}
                 className={classes.tableRow}
-                data-id={row.id}
+                data-id={product.id}
                 onClick={itemClickHandler}
               >
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.isUp.toString()}</TableCell>
-                <TableCell align="right">{row.quantity}</TableCell>
-                <TableCell align="right">{`$ ${row.price.toFixed(
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.isUp.toString()}</TableCell>
+                <TableCell align="right">{product.quantity}</TableCell>
+                <TableCell align="right">{`$ ${product.price.toFixed(
                   2,
                 )}`}</TableCell>
               </TableRow>

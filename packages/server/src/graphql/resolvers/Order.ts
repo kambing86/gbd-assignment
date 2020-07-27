@@ -22,24 +22,39 @@ async function getOrderDetails(db: DB, order: DbOrder) {
   );
 }
 
+async function getOrders(db: DB, id: number, skip: number, limit: number) {
+  const orders = await db.all<DbOrder>(SQL`
+  SELECT * FROM Orders
+  WHERE userId = ${id}
+  LIMIT ${limit} OFFSET ${skip}
+  `);
+  return Promise.all(
+    orders.map(async (o) => ({
+      ...o,
+      details: await getOrderDetails(db, o),
+    })),
+  );
+}
+
+async function getTotalOrders(db: DB, id: number) {
+  const data = await db.get<{ COUNT: number }>(
+    SQL`SELECT COUNT(*) as COUNT FROM Orders
+    WHERE userId = ${id}`,
+  );
+  return data.COUNT;
+}
+
 export default {
   Query: {
     orders: withAuthResolver((_parent, args, context) => {
       const { skip, limit } = args;
+      const allowLimit = limit > 20 ? 20 : limit;
       const { user } = context;
       const id = user?.id ?? 0;
       return initDb(async (db) => {
-        const orders = await db.all<DbOrder>(SQL`
-        SELECT * FROM Orders
-        WHERE userId = ${id}
-        LIMIT ${limit} OFFSET ${skip}
-        `);
-        return Promise.all(
-          orders.map(async (o) => ({
-            ...o,
-            details: await getOrderDetails(db, o),
-          })),
-        );
+        const orders = await getOrders(db, id, skip, allowLimit);
+        const total = await getTotalOrders(db, id);
+        return { rows: orders, skip, limit: allowLimit, total };
       });
     }),
   },

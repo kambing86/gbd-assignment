@@ -88,6 +88,11 @@ export default function Cart() {
       {isReady && (
         <Container className={classes.cardGrid} maxWidth="md">
           <PlaceOrder />
+          {cartProducts.length === 0 && (
+            <Typography variant="h5" align="center">
+              Your cart is empty
+            </Typography>
+          )}
           <Grid container spacing={2}>
             {cartProducts.map((product) => (
               <Grid

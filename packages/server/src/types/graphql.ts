@@ -16,7 +16,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  orders: Array<Order>;
+  orders: OrderResult;
   products: ProductResult;
   productsByIds: Array<Product>;
   productsOnShelf: ProductResult;
@@ -44,6 +44,14 @@ export type QueryProductsByIdsArgs = {
 export type QueryProductsOnShelfArgs = {
   skip?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+};
+
+export type OrderResult = {
+  __typename?: 'OrderResult';
+  rows: Array<Order>;
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  total: Scalars['Int'];
 };
 
 export type Order = {
@@ -224,6 +232,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  OrderResult: ResolverTypeWrapper<OrderResult>;
   Order: ResolverTypeWrapper<Order>;
   String: ResolverTypeWrapper<Scalars['String']>;
   OrderDetail: ResolverTypeWrapper<OrderDetail>;
@@ -243,6 +252,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
+  OrderResult: OrderResult;
   Order: Order;
   String: Scalars['String'];
   OrderDetail: OrderDetail;
@@ -259,11 +269,19 @@ export type ResolversParentTypes = {
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
+  orders?: Resolver<ResolversTypes['OrderResult'], ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
   products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
   productsByIds?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsByIdsArgs, 'ids'>>;
   productsOnShelf?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
+export type OrderResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['OrderResult'] = ResolversParentTypes['OrderResult']> = {
+  rows?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
+  skip?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type OrderResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = {
@@ -320,6 +338,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 
 export type Resolvers<ContextType = GraphQLContext> = {
   Query?: QueryResolvers<ContextType>;
+  OrderResult?: OrderResultResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
   OrderDetail?: OrderDetailResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

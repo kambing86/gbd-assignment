@@ -4,10 +4,18 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useDialog } from "../../hooks/useDialog";
 
+const useStyles = makeStyles((theme) => ({
+  notSelected: {
+    userSelect: "none",
+  },
+}));
+
 const CommonDialog: React.FC = () => {
+  const classes = useStyles();
   const { state, close } = useDialog();
   return (
     <Dialog
@@ -16,9 +24,14 @@ const CommonDialog: React.FC = () => {
       aria-describedby="alert-dialog-description"
       disableBackdropClick={true}
     >
-      <DialogTitle id="alert-dialog-title">{state.title}</DialogTitle>
+      <DialogTitle className={classes.notSelected} id="alert-dialog-title">
+        {state.title}
+      </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText
+          className={classes.notSelected}
+          id="alert-dialog-description"
+        >
           {state.description}
         </DialogContentText>
       </DialogContent>

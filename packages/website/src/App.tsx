@@ -31,6 +31,7 @@ const LoginPage = lazyWithPreload(() => import("./pages/Login"));
 const AdminPage = lazyWithPreload(() => import("./pages/Admin"));
 const CustomerPage = lazyWithPreload(() => import("./pages/Customer"));
 const CartPage = lazyWithPreload(() => import("./pages/Cart"));
+const OrderPage = lazyWithPreload(() => import("./pages/Order"));
 const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
               <Route exact path="/admin" component={AdminPage} />
               <Route exact path="/customer" component={CustomerPage} />
               <Route exact path="/customer/cart" component={CartPage} />
+              <Route exact path="/customer/order" component={OrderPage} />
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
