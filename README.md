@@ -22,6 +22,11 @@ yarn && yarn workspace server start
 yarn && yarn workspace website start
 ```
 
+## Test Accounts
+
+- test1 / P@ssw0rd
+- admin / admin
+
 ## Other commands
 
 - `lerna run lint`
