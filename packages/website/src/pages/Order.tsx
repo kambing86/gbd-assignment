@@ -1,18 +1,28 @@
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import MainLayout from "../components/common/MainLayout";
+import OrderDetailDialog from "../components/customer/OrderDetailDialog";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { Order as OrderStructure, getTotalAmount } from "../hooks/useOrder";
+import {
+  Order as OrderStructure,
+  getLocalDate,
+  getTotalAmount,
+} from "../hooks/useOrder";
 import { usePaginatedOrders } from "../hooks/usePaginatedOrders";
 import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
+  cardGrid: {
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8),
+  },
   loading: {
     textAlign: "center",
     padding: theme.spacing(2),
@@ -34,9 +44,7 @@ const ITEMS_PER_PAGE = 10;
 
 const Order: React.FC = () => {
   useAuth(CUSTOMER);
-  const dataClicked = useCallback((order?: OrderStructure) => {
-    // console.log(order);
-  }, []);
+  const [viewOrder, setViewOrder] = useState<OrderStructure>();
   const {
     rowsData,
     loading,
@@ -44,79 +52,95 @@ const Order: React.FC = () => {
     enableNextPage,
     itemClickHandler,
     pageClickHandler,
-  } = usePaginatedOrders(ITEMS_PER_PAGE, dataClicked);
+  } = usePaginatedOrders(ITEMS_PER_PAGE, setViewOrder);
   const [user] = useUser();
   const classes = useStyles();
   const title = useMemo(() => `Hello ${user?.username}`, [user]);
-  // console.log({ rowsData });
+  const closeDialogHandler = useCallback(() => {
+    setViewOrder(undefined);
+  }, []);
+  const hasData = (rowsData?.rows.length ?? 0) > 0;
 
   return (
     <MainLayout title={title}>
-      {loading && (
-        <div className={classes.loading}>
-          <CircularProgress />
+      <Container className={classes.cardGrid} maxWidth="md">
+        {loading && (
+          <div className={classes.loading}>
+            <CircularProgress />
+          </div>
+        )}
+        {!loading && !hasData && (
+          <Typography variant="h5" align="center">
+            You have no order yet
+          </Typography>
+        )}
+        {!loading && rowsData && hasData && (
+          <List className={classes.root}>
+            {rowsData.rows.map((order) => (
+              <ListItem
+                key={order.id}
+                button
+                alignItems="flex-start"
+                data-id={order.id}
+                onClick={itemClickHandler}
+              >
+                <ListItemText
+                  primary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="h6"
+                        color="textPrimary"
+                      >
+                        Order created:
+                      </Typography>
+                      {` ${getLocalDate(order.createdDate)}`}
+                    </>
+                  }
+                  secondary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="textPrimary"
+                      >
+                        Total amount:
+                      </Typography>
+                      {` $ ${getTotalAmount(order).toFixed(2)}`}
+                    </>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+        <div className={classes.seeMore}>
+          <Button
+            color="primary"
+            href="#"
+            onClick={pageClickHandler}
+            disabled={!enablePrevPage}
+            data-action="prev"
+          >
+            Prev
+          </Button>
+          <Button
+            color="primary"
+            href="#"
+            onClick={pageClickHandler}
+            disabled={!enableNextPage}
+            data-action="next"
+          >
+            Next
+          </Button>
         </div>
-      )}
-      {!loading && rowsData && (
-        <List className={classes.root}>
-          {rowsData.rows.map((r) => (
-            <ListItem
-              key={r.id}
-              button
-              alignItems="flex-start"
-              data-id={r.id}
-              onClick={itemClickHandler}
-            >
-              <ListItemText
-                primary={
-                  <>
-                    <Typography
-                      component="span"
-                      variant="h6"
-                      color="textPrimary"
-                    >
-                      Order created:
-                    </Typography>
-                    {` ${r.createdDate}`}
-                  </>
-                }
-                secondary={
-                  <>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      color="textPrimary"
-                    >
-                      Total cmount:
-                    </Typography>
-                    {` $ ${getTotalAmount(r).toFixed(2)}`}
-                  </>
-                }
-              />
-            </ListItem>
-          ))}
-        </List>
-      )}
-      <div className={classes.seeMore}>
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enablePrevPage}
-          data-action="prev"
-        >
-          Prev
-        </Button>
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enableNextPage}
-          data-action="next"
-        >
-          Next
-        </Button>
-      </div>
+        {viewOrder !== undefined && (
+          <OrderDetailDialog
+            handleClose={closeDialogHandler}
+            order={viewOrder}
+          />
+        )}
+      </Container>
     </MainLayout>
   );
 };

@@ -48,7 +48,7 @@ const UPDATE_PRODUCT = gql`
   }
 `;
 
-export const PRODUCTS_SUBSCRIPTION = gql`
+const PRODUCTS_SUBSCRIPTION = gql`
   subscription products {
     products {
       id
@@ -79,10 +79,7 @@ export interface GetProductsData {
   };
 }
 
-export const mapOldToNewProduct = (
-  oldProduct: Product,
-  newProduct: Product,
-) => {
+const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
   if (oldProduct.id === newProduct.id) {
     return newProduct;
   }
@@ -159,4 +156,59 @@ export const useUpdateProduct = () => {
     [mutation],
   );
   return { result, updateProduct };
+};
+
+const PRODUCTS_BY_IDS = gql`
+  query ProductsByIds($ids: [Int!]!) {
+    products: productsByIds(ids: $ids) {
+      id
+      name
+      image
+      quantity
+      price
+      isUp
+    }
+  }
+`;
+
+export const useGetProductsByIds = (): [
+  LazyQueryResult<
+    {
+      products: Product[];
+    },
+    {
+      ids: number[];
+    }
+  >,
+  (ids: number[]) => void,
+] => {
+  const [query, result] = useLazyQuery<
+    { products: Product[] },
+    { ids: number[] }
+  >(PRODUCTS_BY_IDS);
+  const { called, loading, subscribeToMore } = result;
+  useEffect(() => {
+    if (called && !loading && subscribeToMore) {
+      subscribeToMore({
+        document: PRODUCTS_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          const newProduct = subscriptionData.data.products as Product;
+          return {
+            products: prev.products.map((old) =>
+              mapOldToNewProduct(old, newProduct),
+            ),
+          };
+        },
+      });
+    }
+  }, [called, loading, subscribeToMore]);
+  const getProductsByIds = useCallback(
+    (ids: number[]) => {
+      query({ variables: { ids } });
+    },
+    [query],
+  );
+  return [result, getProductsByIds];
 };

@@ -99,8 +99,8 @@ export default function Cart() {
                 item
                 className={classes.itemGrid}
                 key={product.id}
-                sm={12}
-                md={6}
+                sm={6}
+                md={4}
                 lg={3}
               >
                 <Card className={classes.card}>

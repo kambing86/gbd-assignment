@@ -1,25 +1,7 @@
-import { gql, useLazyQuery } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { atom, useRecoilState } from "recoil";
 import { useDialog } from "./useDialog";
-import {
-  PRODUCTS_SUBSCRIPTION,
-  Product,
-  mapOldToNewProduct,
-} from "./useProducts";
-
-const PRODUCTS_BY_IDS = gql`
-  query ProductsByIds($ids: [Int!]!) {
-    products: productsByIds(ids: $ids) {
-      id
-      name
-      image
-      quantity
-      price
-      isUp
-    }
-  }
-`;
+import { Product, useGetProductsByIds } from "./useProducts";
 
 export interface Cart {
   [id: string]: number;
@@ -63,10 +45,9 @@ export const useCartWithProduct = () => {
   const cartRef = useRef(cart);
   cartRef.current = cart;
   const [cartProducts, setCartProducts] = useRecoilState(cartProductsState);
-  const [query, result] = useLazyQuery<{ products: Product[] }>(
-    PRODUCTS_BY_IDS,
-  );
-  const { loading, data, subscribeToMore, called } = result;
+  const [result, getProductsByIds] = useGetProductsByIds();
+  const { loading, data } = result;
+
   // sync cartProducts without waiting for query
   // only triggered when cart changed
   useEffect(() => {
@@ -76,32 +57,17 @@ export const useCartWithProduct = () => {
       .map((p) => ({ ...p, quantity: cart[String(p.id)] }));
     setCartProducts(filtered);
   }, [cart]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // query when cart products is not complete
   // only triggered when cart changed
   useEffect(() => {
     const ids = Object.keys(cart).map((id) => Number(id));
     const filtered = cartProducts.filter((p) => ids.includes(p.id));
     if (filtered.length < ids.length) {
-      query({ variables: { ids } });
+      getProductsByIds(ids);
     }
-  }, [cart, query]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (called && !loading && subscribeToMore) {
-      subscribeToMore({
-        document: PRODUCTS_SUBSCRIPTION,
-        updateQuery: (prev, { subscriptionData }) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newProduct = subscriptionData.data.products as Product;
-          return {
-            products: prev.products.map((old) =>
-              mapOldToNewProduct(old, newProduct),
-            ),
-          };
-        },
-      });
-    }
-  }, [subscribeToMore, loading, called]);
+  }, [cart, getProductsByIds]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!loading && data) {
       const { products } = data;
@@ -128,6 +94,7 @@ export const useCartWithProduct = () => {
       }
     }
   }, [loading, data, setCartProducts, cartRef, fixCart]);
+
   const isReady = useMemo(() => {
     const ids = Object.keys(cart).map((id) => Number(id));
     return !ids.some((id) => !cartProducts.find((p) => p.id === id));
@@ -197,6 +164,9 @@ export const useCart = () => {
         const product = cartProducts.find((p) => p.id === id);
         if (product && inCart > product.quantity) {
           cartObj[key] = product.quantity;
+        }
+        if (cartObj[key] === 0) {
+          delete cartObj[key];
         }
       }
       setCart(cartObj);

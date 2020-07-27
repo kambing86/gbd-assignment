@@ -27,7 +27,7 @@ import { useUser } from "../../hooks/useUser";
 import AdminListItems from "../admin/AdminListItems";
 import CustomerListItems from "../customer/CustomerListItems";
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {

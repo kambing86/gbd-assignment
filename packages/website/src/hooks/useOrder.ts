@@ -5,8 +5,10 @@ import {
   useLazyQuery,
   useMutation,
 } from "@apollo/client";
-import { useCallback } from "react";
+import moment from "moment";
+import { useCallback, useEffect, useState } from "react";
 import { Cart } from "./useCart";
+import { Product, useGetProductsByIds } from "./useProducts";
 
 const CREATE_ORDER = gql`
   mutation CreateOrder($data: OrderInput!) {
@@ -89,6 +91,10 @@ interface OrderDetail {
   price: number;
 }
 
+export const getLocalDate = (date: string) => {
+  return moment.utc(date).local().format("YYYY-MM-DD hh:mm:ss A");
+};
+
 export const getTotalAmount = (order: Order) => {
   let amount = 0;
   const { details } = order;
@@ -124,4 +130,28 @@ export const useGetOrders = (): [
     [query],
   );
   return [result, getOrders];
+};
+
+export const useGetOrderDetails = (order: Order) => {
+  const [result, getProductsByIds] = useGetProductsByIds();
+  const [productDetails, setProductDetails] = useState<Product[]>();
+  useEffect(() => {
+    const ids = order.details.map((d) => d.product.id);
+    getProductsByIds(ids);
+  }, [order, getProductsByIds]);
+  const { loading, data } = result;
+  useEffect(() => {
+    if (!loading && data) {
+      const details = data.products.map((p) => {
+        const detail = order.details.find((d) => d.product.id === p.id);
+        return {
+          ...p,
+          quantity: detail?.quantity ?? 0,
+          price: detail?.price ?? 0,
+        };
+      });
+      setProductDetails(details);
+    }
+  }, [loading, data, order]);
+  return { productDetails, loading };
 };

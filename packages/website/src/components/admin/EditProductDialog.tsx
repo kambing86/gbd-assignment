@@ -80,6 +80,7 @@ function useProductInput(product: Product) {
         autoFocus
         value={value}
         type={valueType === "number" ? "number" : "text"}
+        inputProps={valueType === "number" ? { min: 0 } : {}}
         onChange={changeHandler}
       />
     );
@@ -88,12 +89,11 @@ function useProductInput(product: Product) {
 }
 
 interface Props {
-  open: boolean;
   handleClose: () => void;
   product: Product;
 }
 
-const EditProductDialog: React.FC<Props> = ({ open, handleClose, product }) => {
+const EditProductDialog: React.FC<Props> = ({ handleClose, product }) => {
   const { productState, allInputs } = useProductInput(product);
   const productRef = useRef(productState);
   productRef.current = productState;
@@ -115,7 +115,7 @@ const EditProductDialog: React.FC<Props> = ({ open, handleClose, product }) => {
     <Dialog
       maxWidth={"md"}
       fullWidth={true}
-      open={open}
+      open={true}
       onClose={handleClose}
       aria-labelledby="responsive-dialog-title"
       disableBackdropClick={true}

@@ -41,7 +41,7 @@ const ProductList: React.FC = () => {
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked: setEditProduct,
   });
-  const closeEditHandler = useCallback(() => {
+  const closeDialogHandler = useCallback(() => {
     setEditProduct(undefined);
   }, []);
   return (
@@ -102,8 +102,7 @@ const ProductList: React.FC = () => {
       </div>
       {editProduct !== undefined && (
         <EditProductDialog
-          open={true}
-          handleClose={closeEditHandler}
+          handleClose={closeDialogHandler}
           product={editProduct}
         />
       )}
