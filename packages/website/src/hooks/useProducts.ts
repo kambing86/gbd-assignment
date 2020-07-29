@@ -121,9 +121,9 @@ export const useGetProductsByIds = (): [
           // @ts-ignore
           const newProduct = subscriptionData.data.products as Product;
           return {
-            products: prev.products.map((old) => {
-              return mapOldToNewProduct(old, newProduct);
-            }),
+            products: prev.products.map((old) =>
+              mapOldToNewProduct(old, newProduct),
+            ),
           };
         },
       });

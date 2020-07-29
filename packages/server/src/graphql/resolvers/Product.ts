@@ -6,10 +6,6 @@ import { Product, Resolvers } from "~/types/graphql";
 import pubsub, { PUBSUB_PRODUCT, publishProduct } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
-type CountData = {
-  COUNT: number;
-};
-
 interface Options {
   onShelf?: boolean | null;
 }
