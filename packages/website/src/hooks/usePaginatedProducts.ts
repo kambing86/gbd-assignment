@@ -1,6 +1,7 @@
 import { useCallback } from "react";
+import { GraphQLGetProductsQuery } from "../graphql/types-and-hooks";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
-import { GetProductsData, Product, useGetProducts } from "./useProducts";
+import { Product, useGetProducts } from "./useProducts";
 
 interface options {
   itemsPerPage: number;
@@ -18,7 +19,7 @@ export const usePaginatedProducts = ({
   productClicked,
   onShelfOnly,
 }: options) => {
-  const mapData = useCallback((queryData: GetProductsData): RowsData<
+  const mapData = useCallback((queryData: GraphQLGetProductsQuery): RowsData<
     Product
   > => {
     return queryData.products;

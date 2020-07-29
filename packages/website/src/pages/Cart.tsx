@@ -13,7 +13,7 @@ import React, { MouseEvent, useCallback, useMemo, useRef } from "react";
 import MainLayout from "../components/common/MainLayout";
 import PlaceOrder from "../components/customer/PlaceOrder";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useCart, useCartWithProduct } from "../hooks/useCart";
+import { useCart } from "../hooks/useCart";
 import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
@@ -59,8 +59,7 @@ export default function Cart() {
   const [user] = useUser();
   const classes = useStyles();
   const title = useMemo(() => `Hello ${user?.username}`, [user]);
-  const { removeFromCart } = useCart();
-  const { cartProducts, isReady } = useCartWithProduct();
+  const { removeFromCart, cartProducts, isReady } = useCart();
   const productsRef = useRef(cartProducts);
   productsRef.current = cartProducts;
   const itemClickHandler = useCallback(

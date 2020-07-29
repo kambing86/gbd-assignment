@@ -1,30 +1,24 @@
-import {
-  LazyQueryResult,
-  MutationResult,
-  gql,
-  useLazyQuery,
-  useMutation,
-} from "@apollo/client";
+import { LazyQueryResult, MutationResult } from "@apollo/client";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
+import { ValuesType } from "utility-types";
+import {
+  Exact,
+  GraphQLCreateOrderMutation,
+  GraphQLGetOrdersQuery,
+  useCreateOrderMutation,
+  useGetOrdersLazyQuery,
+} from "../graphql/types-and-hooks";
 import { Cart } from "./useCart";
 import { Product, useGetProductsByIds } from "./useProducts";
 
-const CREATE_ORDER = gql`
-  mutation CreateOrder($data: OrderInput!) {
-    createOrder(data: $data)
-  }
-`;
-
-interface CreateOrderData {
-  createOrder: boolean;
-}
+export type Order = ValuesType<GraphQLGetOrdersQuery["orders"]["rows"]>;
 
 export const useCreateOrder = (): [
-  MutationResult<CreateOrderData>,
+  MutationResult<GraphQLCreateOrderMutation>,
   (cart: Cart) => void,
 ] => {
-  const [mutation, result] = useMutation<CreateOrderData>(CREATE_ORDER, {
+  const [mutation, result] = useCreateOrderMutation({
     fetchPolicy: "no-cache",
   });
   const createOrder = useCallback(
@@ -47,50 +41,6 @@ export const useCreateOrder = (): [
   return [result, createOrder];
 };
 
-const GET_ORDERS = gql`
-  query GetOrders($skip: Int!, $limit: Int!) {
-    orders(skip: $skip, limit: $limit) {
-      rows {
-        id
-        createdDate
-        details {
-          product {
-            id
-          }
-          quantity
-          price
-        }
-      }
-      skip
-      limit
-      total
-    }
-  }
-`;
-
-export type GetOrdersData = {
-  orders: {
-    rows: Order[];
-    skip: number;
-    limit: number;
-    total: number;
-  };
-};
-
-export interface Order {
-  id: number;
-  createdDate: string;
-  details: OrderDetail[];
-}
-
-interface OrderDetail {
-  product: {
-    id: number;
-  };
-  quantity: number;
-  price: number;
-}
-
 export const getLocalDate = (date: string) => {
   return moment.utc(date).local().format("YYYY-MM-DD hh:mm:ss A");
 };
@@ -106,18 +56,15 @@ export const getTotalAmount = (order: Order) => {
 
 export const useGetOrders = (): [
   LazyQueryResult<
-    GetOrdersData,
-    {
+    GraphQLGetOrdersQuery,
+    Exact<{
       skip: number;
       limit: number;
-    }
+    }>
   >,
   (skip: number, limit: number) => void,
 ] => {
-  const [query, result] = useLazyQuery<
-    GetOrdersData,
-    { skip: number; limit: number }
-  >(GET_ORDERS);
+  const [query, result] = useGetOrdersLazyQuery();
   const getOrders = useCallback(
     (skip: number, limit: number) => {
       query({

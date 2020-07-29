@@ -13,15 +13,15 @@ type PaginatedQuery<T, V> = [
   (skip: number, limit: number) => void,
 ];
 
-type Data = {
+interface Data {
   id: number;
-};
+}
 
-export type RowsData<D extends Data> = {
+export interface RowsData<D extends Data> {
   rows: D[];
   total: number;
   limit: number;
-};
+}
 
 type Options<D extends Data, T, V> = {
   itemsPerPage: number;

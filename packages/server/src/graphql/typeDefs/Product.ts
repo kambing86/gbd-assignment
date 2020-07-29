@@ -1,9 +1,8 @@
-import gql from "graphql-tag";
+import { gql } from "apollo-server-express";
 
 export default gql`
   type Query {
-    products(skip: Int = 0, limit: Int = 10): ProductResult!
-    productsOnShelf(skip: Int = 0, limit: Int = 10): ProductResult!
+    products(skip: Int = 0, limit: Int = 10, onShelf: Boolean): ProductResult!
     productsByIds(ids: [Int!]!): [Product!]!
   }
   type Mutation {

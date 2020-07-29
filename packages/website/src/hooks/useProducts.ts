@@ -1,83 +1,18 @@
-import {
-  LazyQueryResult,
-  gql,
-  useLazyQuery,
-  useMutation,
-} from "@apollo/client";
+import { LazyQueryResult, MutationResult } from "@apollo/client";
 import { useCallback, useEffect } from "react";
+import { PRODUCTS_SUBSCRIPTION } from "../graphql/documents/product";
+import {
+  Exact,
+  GraphQLGetProductsQuery,
+  GraphQLProduct,
+  GraphQLProductsByIdsQuery,
+  GraphQLUpdateProductMutation,
+  useGetProductsLazyQuery,
+  useProductsByIdsLazyQuery,
+  useUpdateProductMutation,
+} from "../graphql/types-and-hooks";
 
-const PRODUCTS = gql`
-  query Products($skip: Int!, $limit: Int!) {
-    products(skip: $skip, limit: $limit) {
-      rows {
-        id
-        name
-        image
-        quantity
-        price
-        isUp
-      }
-      skip
-      limit
-      total
-    }
-  }
-`;
-
-const PRODUCTS_ON_SHELF = gql`
-  query Products($skip: Int!, $limit: Int!) {
-    products: productsOnShelf(skip: $skip, limit: $limit) {
-      rows {
-        id
-        name
-        image
-        quantity
-        price
-        isUp
-      }
-      skip
-      limit
-      total
-    }
-  }
-`;
-
-const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($id: Int!, $data: ProductInput!) {
-    updateProduct(id: $id, data: $data)
-  }
-`;
-
-const PRODUCTS_SUBSCRIPTION = gql`
-  subscription products {
-    products {
-      id
-      name
-      image
-      quantity
-      price
-      isUp
-    }
-  }
-`;
-
-export interface Product {
-  id: number;
-  name: string;
-  image: string | null;
-  quantity: number;
-  price: number;
-  isUp: boolean;
-}
-
-export interface GetProductsData {
-  products: {
-    rows: Product[];
-    skip: number;
-    limit: number;
-    total: number;
-  };
-}
+export type Product = GraphQLProduct;
 
 const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
   if (oldProduct.id === newProduct.id) {
@@ -86,27 +21,32 @@ const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
   return oldProduct;
 };
 
-// onShelfOnly is for initialize only
+// onShelf is for initialize only
 export const useGetProducts = (
-  onShelfOnly?: boolean,
+  onShelf?: boolean,
 ): [
-  LazyQueryResult<GetProductsData, { skip: number; limit: number }>,
+  LazyQueryResult<
+    GraphQLGetProductsQuery,
+    Exact<{
+      skip: number;
+      limit: number;
+      onShelf?: boolean | null | undefined;
+    }>
+  >,
   (skip: number, limit: number) => void,
 ] => {
-  const [productsQuery, productsResult] = useLazyQuery<
-    GetProductsData,
-    { skip: number; limit: number }
-  >(onShelfOnly ? PRODUCTS_ON_SHELF : PRODUCTS);
+  const [productsQuery, productsResult] = useGetProductsLazyQuery();
   const getProducts = useCallback(
     (skip: number, limit: number) => {
       productsQuery({
         variables: {
           skip,
           limit,
+          onShelf,
         },
       });
     },
-    [productsQuery],
+    [productsQuery, onShelf],
   );
   const { subscribeToMore, loading, called } = productsResult;
   useEffect(() => {
@@ -120,7 +60,7 @@ export const useGetProducts = (
           let rows = prev.products.rows.map((old) =>
             mapOldToNewProduct(old, newProduct),
           );
-          if (onShelfOnly) {
+          if (onShelf) {
             rows = rows.filter((r) => r.isUp);
           }
           return {
@@ -133,12 +73,15 @@ export const useGetProducts = (
         },
       });
     }
-  }, [subscribeToMore, loading, called]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [subscribeToMore, loading, called, onShelf]);
   return [productsResult, getProducts];
 };
 
-export const useUpdateProduct = () => {
-  const [mutation, result] = useMutation(UPDATE_PRODUCT);
+export const useUpdateProduct = (): [
+  MutationResult<GraphQLUpdateProductMutation>,
+  (product: Product) => void,
+] => {
+  const [mutation, result] = useUpdateProductMutation();
   const updateProduct = useCallback(
     (product: Product) => {
       mutation({
@@ -155,37 +98,19 @@ export const useUpdateProduct = () => {
     },
     [mutation],
   );
-  return { result, updateProduct };
+  return [result, updateProduct];
 };
-
-const PRODUCTS_BY_IDS = gql`
-  query ProductsByIds($ids: [Int!]!) {
-    products: productsByIds(ids: $ids) {
-      id
-      name
-      image
-      quantity
-      price
-      isUp
-    }
-  }
-`;
 
 export const useGetProductsByIds = (): [
   LazyQueryResult<
-    {
-      products: Product[];
-    },
-    {
+    GraphQLProductsByIdsQuery,
+    Exact<{
       ids: number[];
-    }
+    }>
   >,
   (ids: number[]) => void,
 ] => {
-  const [query, result] = useLazyQuery<
-    { products: Product[] },
-    { ids: number[] }
-  >(PRODUCTS_BY_IDS);
+  const [query, result] = useProductsByIdsLazyQuery();
   const { called, loading, subscribeToMore } = result;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {

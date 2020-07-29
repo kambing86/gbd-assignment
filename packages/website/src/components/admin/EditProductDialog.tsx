@@ -97,7 +97,7 @@ const EditProductDialog: React.FC<Props> = ({ handleClose, product }) => {
   const { productState, allInputs } = useProductInput(product);
   const productRef = useRef(productState);
   productRef.current = productState;
-  const { result, updateProduct } = useUpdateProduct();
+  const [result, updateProduct] = useUpdateProduct();
   const submitHandler = useCallback(
     (event: FormEvent) => {
       event.preventDefault();
