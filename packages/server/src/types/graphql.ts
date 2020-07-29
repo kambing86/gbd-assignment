@@ -19,7 +19,6 @@ export type Query = {
   orders: OrderResult;
   products: ProductResult;
   productsByIds: Array<Product>;
-  productsOnShelf: ProductResult;
   user?: Maybe<User>;
 };
 
@@ -33,17 +32,12 @@ export type QueryOrdersArgs = {
 export type QueryProductsArgs = {
   skip?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  onShelf?: Maybe<Scalars['Boolean']>;
 };
 
 
 export type QueryProductsByIdsArgs = {
   ids: Array<Scalars['Int']>;
-};
-
-
-export type QueryProductsOnShelfArgs = {
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
 };
 
 export type OrderResult = {
@@ -232,13 +226,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   OrderResult: ResolverTypeWrapper<OrderResult>;
   Order: ResolverTypeWrapper<Order>;
   String: ResolverTypeWrapper<Scalars['String']>;
   OrderDetail: ResolverTypeWrapper<OrderDetail>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
   Subscription: ResolverTypeWrapper<{}>;
@@ -252,13 +246,13 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
+  Boolean: Scalars['Boolean'];
   OrderResult: OrderResult;
   Order: Order;
   String: Scalars['String'];
   OrderDetail: OrderDetail;
   Float: Scalars['Float'];
   Mutation: {};
-  Boolean: Scalars['Boolean'];
   OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
   Subscription: {};
@@ -272,7 +266,6 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   orders?: Resolver<ResolversTypes['OrderResult'], ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
   products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
   productsByIds?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsByIdsArgs, 'ids'>>;
-  productsOnShelf?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsOnShelfArgs, 'skip' | 'limit'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 

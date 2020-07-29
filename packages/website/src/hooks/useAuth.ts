@@ -1,17 +1,8 @@
-import { gql, useLazyQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
+import { useGetUserLazyQuery } from "../graphql/types-and-hooks";
 import { useRoute } from "./helpers/useRoute";
 import { useLoadingBackdrop } from "./useLoadingBackdrop";
 import { useUser } from "./useUser";
-
-const USER = gql`
-  query {
-    user {
-      username
-      isAdmin
-    }
-  }
-`;
 
 export const CUSTOMER = "CUSTOMER";
 export const ADMIN = "ADMIN";
@@ -25,7 +16,7 @@ export function useAuth(userType?: USER_TYPE) {
   const [userState, setUserState] = useUser();
   const userRef = useRef(userState);
   const { pushHistory } = useRoute();
-  const [userQuery, userResult] = useLazyQuery(USER, {
+  const [userQuery, userResult] = useGetUserLazyQuery({
     fetchPolicy: "no-cache",
   });
   useEffect(() => {
@@ -43,7 +34,7 @@ export function useAuth(userType?: USER_TYPE) {
         pushHistory("/");
       } else if (data) {
         const { user } = data;
-        if (user !== null) {
+        if (user) {
           setUserState(user);
           if (userType === undefined) {
             if (user.isAdmin) {

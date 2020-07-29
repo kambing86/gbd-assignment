@@ -4,12 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useRoute } from "../../hooks/helpers/useRoute";
-import {
-  totalAmountCount,
-  totalCartCount,
-  useCart,
-  useCartWithProduct,
-} from "../../hooks/useCart";
+import { totalAmountCount, totalCartCount, useCart } from "../../hooks/useCart";
 import { useCreateOrder } from "../../hooks/useOrder";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,10 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
 const PlaceOrder: React.FC = () => {
   const classes = useStyles();
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart, cartProducts } = useCart();
   const cartRef = useRef(cart);
   cartRef.current = cart;
-  const { cartProducts } = useCartWithProduct();
   const [result, createOrder] = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
     createOrder(cartRef.current);

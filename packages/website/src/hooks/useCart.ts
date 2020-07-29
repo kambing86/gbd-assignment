@@ -40,70 +40,8 @@ export const totalAmountCount = (cartProducts: Product[]) => {
   return amount;
 };
 
-export const useCartWithProduct = () => {
-  const { cart, fixCart } = useCart();
-  const cartRef = useRef(cart);
-  cartRef.current = cart;
-  const [cartProducts, setCartProducts] = useRecoilState(cartProductsState);
-  const [result, getProductsByIds] = useGetProductsByIds();
-  const { loading, data } = result;
-
-  // sync cartProducts without waiting for query
-  // only triggered when cart changed
-  useEffect(() => {
-    const ids = Object.keys(cart).map((id) => Number(id));
-    const filtered = cartProducts
-      .filter((p) => ids.includes(p.id))
-      .map((p) => ({ ...p, quantity: cart[String(p.id)] }));
-    setCartProducts(filtered);
-  }, [cart]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // query when cart products is not complete
-  // only triggered when cart changed
-  useEffect(() => {
-    const ids = Object.keys(cart).map((id) => Number(id));
-    const filtered = cartProducts.filter((p) => ids.includes(p.id));
-    if (filtered.length < ids.length) {
-      getProductsByIds(ids);
-    }
-  }, [cart, getProductsByIds]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!loading && data) {
-      const { products } = data;
-      let valid = true;
-      const returnObj = products.map((p) => {
-        const inCart = cartRef.current[String(p.id)];
-        if (p.quantity < inCart) {
-          valid = false;
-          return {
-            ...p,
-            quantity: p.quantity,
-          };
-        }
-        return {
-          ...p,
-          quantity: inCart,
-        };
-      }) as Product[];
-      if (valid) {
-        setCartProducts(returnObj);
-      }
-      if (!valid) {
-        fixCart(returnObj);
-      }
-    }
-  }, [loading, data, setCartProducts, cartRef, fixCart]);
-
-  const isReady = useMemo(() => {
-    const ids = Object.keys(cart).map((id) => Number(id));
-    return !ids.some((id) => !cartProducts.find((p) => p.id === id));
-  }, [cartProducts, cart]);
-  return { cartProducts, isReady };
-};
-
 // limit to 10 different types of product
-export const useCart = () => {
+const useCartInLocalStorage = () => {
   const [cart, setCart] = useRecoilState(cartState);
   const cartRef = useRef(cart);
   const { open } = useDialog();
@@ -162,11 +100,13 @@ export const useCart = () => {
         const id = Number(key);
         const inCart = cartObj[key];
         const product = cartProducts.find((p) => p.id === id);
-        if (product && inCart > product.quantity) {
-          cartObj[key] = product.quantity;
-        }
-        if (cartObj[key] === 0) {
-          delete cartObj[key];
+        if (product) {
+          if (inCart > product.quantity) {
+            cartObj[key] = product.quantity;
+          }
+          if (!product.isUp || cartObj[key] === 0) {
+            delete cartObj[key];
+          }
         }
       }
       setCart(cartObj);
@@ -180,4 +120,75 @@ export const useCart = () => {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }, [cart]);
   return { cart, addToCart, removeFromCart, fixCart, clearCart };
+};
+
+export const useCart = () => {
+  const {
+    cart,
+    addToCart,
+    removeFromCart,
+    fixCart,
+    clearCart,
+  } = useCartInLocalStorage();
+  const cartRef = useRef(cart);
+  cartRef.current = cart;
+  const [cartProducts, setCartProducts] = useRecoilState(cartProductsState);
+  const [result, getProductsByIds] = useGetProductsByIds();
+  const { loading, data } = result;
+
+  // sync cartProducts without waiting for query
+  // only triggered when cart changed
+  useEffect(() => {
+    const ids = Object.keys(cart).map((id) => Number(id));
+    setCartProducts((prev) => {
+      const filtered = prev
+        .filter((p) => ids.includes(p.id))
+        .map((p) => ({ ...p, quantity: cart[String(p.id)] }));
+      return filtered;
+    });
+  }, [cart, setCartProducts]);
+
+  useEffect(() => {
+    const ids = Object.keys(cart).map((id) => Number(id));
+    getProductsByIds(ids);
+  }, [cart, getProductsByIds]);
+
+  useEffect(() => {
+    if (!loading && data) {
+      const { products } = data;
+      let valid = true;
+      const returnObj = products.map((p) => {
+        const inCart = cartRef.current[String(p.id)];
+        if (!p.isUp) {
+          valid = false;
+        }
+        if (p.quantity === 0 && inCart === 0) {
+          valid = false;
+        }
+        if (p.quantity < inCart) {
+          valid = false;
+          return {
+            ...p,
+            quantity: p.quantity,
+          };
+        }
+        return {
+          ...p,
+          quantity: inCart,
+        };
+      }) as Product[];
+      if (valid) {
+        setCartProducts(returnObj);
+      }
+      if (!valid) {
+        fixCart(returnObj);
+      }
+    }
+  }, [loading, data, setCartProducts, cartRef, fixCart]);
+
+  const isReady = useMemo(() => {
+    const ids = Object.keys(cart).map((id) => Number(id));
+    return !ids.some((id) => !cartProducts.find((p) => p.id === id));
+  }, [cartProducts, cart]);
+  return { cart, addToCart, removeFromCart, clearCart, cartProducts, isReady };
 };

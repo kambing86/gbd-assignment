@@ -6,9 +6,33 @@ import { Product, Resolvers } from "~/types/graphql";
 import pubsub, { PUBSUB_PRODUCT, publishProduct } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
-async function getTotalProducts(db: DB) {
+type CountData = {
+  COUNT: number;
+};
+
+interface Options {
+  onShelf?: boolean | null;
+}
+
+async function getProducts(
+  db: DB,
+  skip: number,
+  limit: number,
+  options: Options,
+) {
+  const { onShelf } = options;
+  const sqlStatement = SQL`SELECT * FROM Products`
+    .append(onShelf ? SQL` WHERE isUp = true` : SQL``)
+    .append(SQL` LIMIT ${limit} OFFSET ${skip}`);
+  return db.all<DbProduct>(sqlStatement);
+}
+
+async function getTotalProducts(db: DB, options: Options) {
+  const { onShelf } = options;
   const data = await db.get<{ COUNT: number }>(
-    SQL`SELECT COUNT(*) as COUNT FROM Products`,
+    SQL`SELECT COUNT(*) as COUNT FROM Products`.append(
+      onShelf ? SQL` WHERE isUp = true` : SQL``,
+    ),
   );
   return data.COUNT;
 }
@@ -16,33 +40,14 @@ async function getTotalProducts(db: DB) {
 export default {
   Query: {
     products: (_parent, args) => {
-      const { skip, limit } = args;
+      const { skip, limit, onShelf } = args;
       const allowLimit = limit > 20 ? 20 : limit;
       return initDb(async (db) => {
         return {
-          rows: await db.all<DbProduct>(SQL`
-          SELECT * FROM Products
-          LIMIT ${allowLimit} OFFSET ${skip}
-          `),
+          rows: await getProducts(db, skip, allowLimit, { onShelf }),
           skip,
           limit: allowLimit,
-          total: await getTotalProducts(db),
-        };
-      });
-    },
-    productsOnShelf: (_parent, args) => {
-      const { skip, limit } = args;
-      const allowLimit = limit > 20 ? 20 : limit;
-      return initDb(async (db) => {
-        return {
-          rows: await db.all<DbProduct>(SQL`
-          SELECT * FROM Products
-          WHERE isUp = true
-          LIMIT ${allowLimit} OFFSET ${skip}
-          `),
-          skip,
-          limit: allowLimit,
-          total: await getTotalProducts(db),
+          total: await getTotalProducts(db, { onShelf }),
         };
       });
     },
