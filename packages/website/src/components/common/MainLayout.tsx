@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLayout: React.FC<{ title: string }> = ({ title, children }) => {
+const MainLayout: React.FC = ({ children }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <TopSideBar title={title} />
+      <TopSideBar />
       <main className={classes.content}>
         <div className={classes.contentWrapper}>
           <div className={classes.appBarSpacer} />

@@ -10,7 +10,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent } from "react";
 import { GraphQLProduct } from "../../graphql/types-and-hooks";
-import { RowsData } from "../../hooks/helpers/usePaginatedQuery";
 
 const useStyles = makeStyles((theme) => ({
   loadingGrid: {
@@ -47,11 +46,19 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   loading: boolean;
-  rowsData?: RowsData<GraphQLProduct>;
+  products?: GraphQLProduct[];
   itemClickHandler: (event: MouseEvent) => void;
+  buttonAction: string;
+  buttonText: string;
 }
 
-const Products: React.FC<Props> = ({ loading, rowsData, itemClickHandler }) => {
+const Products: React.FC<Props> = ({
+  loading,
+  products = [],
+  itemClickHandler,
+  buttonAction,
+  buttonText,
+}) => {
   const classes = useStyles();
   return (
     <Grid container spacing={2}>
@@ -61,8 +68,7 @@ const Products: React.FC<Props> = ({ loading, rowsData, itemClickHandler }) => {
         </Grid>
       )}
       {!loading &&
-        rowsData &&
-        rowsData.rows.map((product) => (
+        products.map((product) => (
           <Grid
             item
             className={classes.itemGrid}
@@ -102,10 +108,10 @@ const Products: React.FC<Props> = ({ loading, rowsData, itemClickHandler }) => {
                   size="small"
                   color="primary"
                   data-id={product.id}
-                  data-action="addToCart"
+                  data-action={buttonAction}
                   onClick={itemClickHandler}
                 >
-                  Add to Cart
+                  {buttonText}
                 </Button>
               </CardActions>
             </Card>

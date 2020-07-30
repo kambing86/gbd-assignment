@@ -6,7 +6,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import MainLayout from "../components/common/MainLayout";
 import OrderDetailDialog from "../components/customer/OrderDetailDialog";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
@@ -16,7 +16,6 @@ import {
   getTotalAmount,
 } from "../hooks/useOrder";
 import { usePaginatedOrders } from "../hooks/usePaginatedOrders";
-import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -53,16 +52,15 @@ const Order: React.FC = () => {
     itemClickHandler,
     pageClickHandler,
   } = usePaginatedOrders(ITEMS_PER_PAGE, setViewOrder);
-  const [user] = useUser();
+
   const classes = useStyles();
-  const title = useMemo(() => `Hello ${user?.username}`, [user]);
   const closeDialogHandler = useCallback(() => {
     setViewOrder(undefined);
   }, []);
   const hasData = (rowsData?.rows.length ?? 0) > 0;
 
   return (
-    <MainLayout title={title}>
+    <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">
         {loading && (
           <div className={classes.loading}>

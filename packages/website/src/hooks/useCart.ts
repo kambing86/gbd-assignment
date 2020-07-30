@@ -185,9 +185,16 @@ export const useCart = () => {
     }
   }, [loading, data, setCartProducts, cartRef, fixCart]);
 
-  const isReady = useMemo(() => {
+  const isLoading = useMemo(() => {
     const ids = Object.keys(cart).map((id) => Number(id));
-    return !ids.some((id) => !cartProducts.find((p) => p.id === id));
+    return ids.some((id) => !cartProducts.find((p) => p.id === id));
   }, [cartProducts, cart]);
-  return { cart, addToCart, removeFromCart, clearCart, cartProducts, isReady };
+  return {
+    cart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    cartProducts,
+    loading: isLoading,
+  };
 };

@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
+const TopSideBar: React.FC = () => {
   const classes = useStyles();
   const [open, setOpen] = useDrawer();
   const handleDrawerOpen = useCallback(() => {
@@ -123,7 +123,7 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
             noWrap
             className={classes.title}
           >
-            {title}
+            {`Hello ${user?.username}`}
           </Typography>
           {isCustomer && <CartIcon />}
           <IconButton color="inherit" onClick={toggleDarkMode}>

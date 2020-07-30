@@ -8,7 +8,6 @@ import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
 import { Product } from "../hooks/useProducts";
-import { useUser } from "../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -21,7 +20,6 @@ const ITEMS_PER_PAGE = 8;
 
 const Customer: React.FC = () => {
   useAuth(CUSTOMER);
-  const [user] = useUser();
   const classes = useStyles();
   const { addToCart } = useCart();
   const productClicked = useCallback(
@@ -46,9 +44,17 @@ const Customer: React.FC = () => {
   });
 
   return (
-    <MainLayout title={`Hello ${user?.username}`}>
+    <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">
-        <Products {...{ loading, rowsData, itemClickHandler }} />
+        <Products
+          {...{
+            loading,
+            products: rowsData?.rows,
+            itemClickHandler,
+            buttonAction: "addToCart",
+            buttonText: "Add to Cart",
+          }}
+        />
         <Button
           color="primary"
           href="#"

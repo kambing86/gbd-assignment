@@ -33,7 +33,7 @@ export default function Admin() {
   const classes = useStyles();
 
   return (
-    <MainLayout title="Admin">
+    <MainLayout>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
