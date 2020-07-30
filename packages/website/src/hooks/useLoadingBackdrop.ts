@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import { atom, useRecoilState } from "recoil";
-import { useRefInSync } from "./helpers/useRefInSync";
+import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
 interface LoadingState {
   [key: string]: number;
@@ -40,7 +39,7 @@ const subtractLoadingKey = (loading: LoadingState, key: string) => {
   return returnObj;
 };
 
-export const shouldShowLoading = (loading: LoadingState) => {
+const shouldShowLoading = (loading: LoadingState) => {
   for (const key in loading) {
     if (loading[key]) {
       return true;
@@ -49,19 +48,23 @@ export const shouldShowLoading = (loading: LoadingState) => {
   return false;
 };
 
-export const useLoadingBackdrop = (loadingKey?: string) => {
-  const [loading, setLoading] = useRecoilState(loadingState);
-  const loadingRef = useRefInSync(loading);
+export const useSetLoadingBackdrop = (loadingKey: string) => {
+  const setLoading = useSetRecoilState(loadingState);
   const setLoadingCallback = useCallback(
     (isLoading: boolean) => {
       if (loadingKey === undefined) return;
       if (isLoading) {
-        setLoading(addLoadingKey(loadingRef.current, loadingKey));
+        setLoading((prev) => addLoadingKey(prev, loadingKey));
       } else {
-        setLoading(subtractLoadingKey(loadingRef.current, loadingKey));
+        setLoading((prev) => subtractLoadingKey(prev, loadingKey));
       }
     },
-    [loadingKey, setLoading, loadingRef],
+    [loadingKey, setLoading],
   );
-  return { loading, setLoading: setLoadingCallback };
+  return setLoadingCallback;
+};
+
+export const useGetLoading = () => {
+  const loading = useRecoilValue(loadingState);
+  return shouldShowLoading(loading);
 };

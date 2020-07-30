@@ -6,7 +6,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-import { useDialog } from "../../hooks/useDialog";
+import { useGetDialog, useSetDialog } from "../../hooks/useDialog";
 
 const useStyles = makeStyles((theme) => ({
   notSelected: {
@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
 
 const CommonDialog: React.FC = () => {
   const classes = useStyles();
-  const { state, close } = useDialog();
+  const state = useGetDialog();
+  const { close } = useSetDialog();
   return (
     <Dialog
       open={state.open}

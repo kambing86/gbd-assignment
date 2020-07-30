@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { atom, useRecoilState } from "recoil";
+import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
 interface DialogState {
   open: boolean;
@@ -17,8 +17,8 @@ const dialogState = atom<DialogState>({
   },
 });
 
-export const useDialog = () => {
-  const [state, setState] = useRecoilState(dialogState);
+export const useSetDialog = () => {
+  const setState = useSetRecoilState(dialogState);
   const open = useCallback(
     (title: string, description: string) => {
       setState({
@@ -32,5 +32,10 @@ export const useDialog = () => {
   const close = useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));
   }, [setState]);
-  return { state, open, close };
+  return { open, close };
+};
+
+export const useGetDialog = () => {
+  const state = useRecoilValue(dialogState);
+  return state;
 };

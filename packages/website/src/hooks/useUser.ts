@@ -1,4 +1,4 @@
-import { atom, useRecoilState } from "recoil";
+import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
 interface User {
   username: string;
@@ -12,6 +12,10 @@ const userState = atom<User | undefined>({
   default: undefined,
 });
 
-export const useUser = () => {
-  return useRecoilState(userState);
+export const useGetUser = () => {
+  return useRecoilValue(userState);
+};
+
+export const useSetUser = () => {
+  return useSetRecoilState(userState);
 };

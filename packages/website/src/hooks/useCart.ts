@@ -6,7 +6,7 @@ import {
   useSetRecoilState,
 } from "recoil";
 import { useRefInSync } from "./helpers/useRefInSync";
-import { useDialog } from "./useDialog";
+import { useSetDialog } from "./useDialog";
 import { Product, useGetProductsByIds } from "./useProducts";
 
 export interface Cart {
@@ -38,10 +38,13 @@ export const totalCartCount = (cart: Cart) => {
   return count;
 };
 
-export const totalAmountCount = (cartProducts: Product[]) => {
+export const totalAmountCount = (cart: Cart, cartProducts: Product[]) => {
   let amount = 0;
   for (const product of cartProducts) {
-    amount += product.quantity * product.price;
+    const quantity = cart[String(product.id)];
+    if (quantity > 0) {
+      amount += quantity * product.price;
+    }
   }
   return amount;
 };
@@ -56,7 +59,7 @@ const useGetCartInLocalStorage = () => {
 
 // limit to 10 different types of product
 export const useSetCart = () => {
-  const { open } = useDialog();
+  const { open } = useSetDialog();
   const setCart = useSetRecoilState(cartState);
   const addToCart = useCallback(
     (product: Product) => {

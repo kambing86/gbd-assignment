@@ -19,7 +19,7 @@ import React, { useCallback, useMemo } from "react";
 import { useAppTheme } from "../../hooks/useAppTheme";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useLogout } from "../../hooks/useLogout";
-import { useUser } from "../../hooks/useUser";
+import { useGetUser } from "../../hooks/useUser";
 import AdminListItems from "../admin/AdminListItems";
 import CartIcon from "../customer/CartIcon";
 import CustomerListItems from "../customer/CustomerListItems";
@@ -94,7 +94,7 @@ const TopSideBar: React.FC = () => {
   }, [setOpen]);
   const { theme, toggleDarkMode } = useAppTheme();
   const { logout } = useLogout();
-  const [user] = useUser();
+  const user = useGetUser();
   const isAdmin = useMemo(() => Boolean(user?.isAdmin), [user]);
   const isCustomer = useMemo(() => Boolean(user && !user.isAdmin), [user]);
   return (

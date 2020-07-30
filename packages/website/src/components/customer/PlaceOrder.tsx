@@ -44,7 +44,7 @@ const PlaceOrder: React.FC = () => {
     <Grid container className={classes.grid}>
       <div>
         <Typography>
-          Total amount: $ {totalAmountCount(cartProducts).toFixed(2)}
+          Total amount: $ {totalAmountCount(cart, cartProducts).toFixed(2)}
         </Typography>
         <Typography>Total items: {totalCartCount(cart)}</Typography>
       </div>

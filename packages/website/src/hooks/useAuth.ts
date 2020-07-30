@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useGetUserLazyQuery } from "../graphql/types-and-hooks";
 import { useRoute } from "./helpers/useRoute";
-import { useLoadingBackdrop } from "./useLoadingBackdrop";
-import { useUser } from "./useUser";
+import { useSetLoadingBackdrop } from "./useLoadingBackdrop";
+import { useGetUser, useSetUser } from "./useUser";
 
 export const CUSTOMER = "CUSTOMER";
 export const ADMIN = "ADMIN";
@@ -12,9 +12,10 @@ const AUTH_LOADING_KEY = "authLoading";
 
 // if userType if undefined, it's used by login page to redirect user
 export function useAuth(userType?: USER_TYPE) {
-  const { setLoading } = useLoadingBackdrop(AUTH_LOADING_KEY);
-  const [userState, setUserState] = useUser();
+  const setLoading = useSetLoadingBackdrop(AUTH_LOADING_KEY);
+  const userState = useGetUser();
   const userRef = useRef(userState);
+  const setUserState = useSetUser();
   const { pushHistory } = useRoute();
   const [userQuery, userResult] = useGetUserLazyQuery({
     fetchPolicy: "no-cache",
