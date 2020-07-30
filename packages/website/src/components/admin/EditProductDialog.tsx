@@ -11,9 +11,9 @@ import React, {
   FormEvent,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
+import { useRefInSync } from "../../hooks/helpers/useRefInSync";
 import { Product, useUpdateProduct } from "../../hooks/useProducts";
 
 interface Field {
@@ -95,15 +95,14 @@ interface Props {
 
 const EditProductDialog: React.FC<Props> = ({ handleClose, product }) => {
   const { productState, allInputs } = useProductInput(product);
-  const productRef = useRef(productState);
-  productRef.current = productState;
+  const productRef = useRefInSync(productState);
   const [result, updateProduct] = useUpdateProduct();
   const submitHandler = useCallback(
     (event: FormEvent) => {
       event.preventDefault();
       updateProduct(productRef.current);
     },
-    [updateProduct],
+    [updateProduct, productRef],
   );
   const { loading, data } = result;
   useEffect(() => {

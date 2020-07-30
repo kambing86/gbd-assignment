@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { useRefInSync } from "./useRefInSync";
 
 /*
 this hook is for 2 purposes
@@ -60,8 +61,7 @@ function useStateWithRef<T>(
   React.Dispatch<React.SetStateAction<T | undefined>>,
 ] {
   const [state, setState] = useState(initialValue);
-  const stateRef = useRef(state);
-  stateRef.current = state;
+  const stateRef = useRefInSync(state);
   return [stateRef, setState];
 }
 

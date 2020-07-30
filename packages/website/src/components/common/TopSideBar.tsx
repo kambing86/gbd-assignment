@@ -1,5 +1,4 @@
 import AppBar from "@material-ui/core/AppBar";
-import Badge from "@material-ui/core/Badge";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,16 +14,14 @@ import DarkThemeIcon from "@material-ui/icons/Brightness7";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import MenuIcon from "@material-ui/icons/Menu";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
-import React, { useCallback } from "react";
-import { useRoute } from "../../hooks/helpers/useRoute";
+import React, { useCallback, useMemo } from "react";
 import { useAppTheme } from "../../hooks/useAppTheme";
-import { totalCartCount, useCart } from "../../hooks/useCart";
 import { useDrawer } from "../../hooks/useDrawer";
 import { useLogout } from "../../hooks/useLogout";
 import { useUser } from "../../hooks/useUser";
 import AdminListItems from "../admin/AdminListItems";
+import CartIcon from "../customer/CartIcon";
 import CustomerListItems from "../customer/CustomerListItems";
 
 const drawerWidth = 180;
@@ -98,11 +95,8 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
   const { theme, toggleDarkMode } = useAppTheme();
   const { logout } = useLogout();
   const [user] = useUser();
-  const { pushHistory } = useRoute();
-  const { cart } = useCart();
-  const clickCartHandler = useCallback(() => {
-    pushHistory("/customer/cart");
-  }, [pushHistory]);
+  const isAdmin = useMemo(() => Boolean(user?.isAdmin), [user]);
+  const isCustomer = useMemo(() => Boolean(user && !user.isAdmin), [user]);
   return (
     <>
       <AppBar
@@ -131,13 +125,7 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
           >
             {title}
           </Typography>
-          {user && !user.isAdmin && (
-            <IconButton color="inherit" onClick={clickCartHandler}>
-              <Badge badgeContent={totalCartCount(cart)} color="secondary">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-          )}
+          {isCustomer && <CartIcon />}
           <IconButton color="inherit" onClick={toggleDarkMode}>
             {theme.palette.type === "light" ? (
               <LightThemeIcon />
@@ -161,9 +149,8 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
         </div>
         <Divider />
         <List>
-          {/* <AdminListItems /> */}
-          {user?.isAdmin && <AdminListItems />}
-          {user && !user.isAdmin && <CustomerListItems />}
+          {isAdmin && <AdminListItems />}
+          {isCustomer && <CustomerListItems />}
         </List>
         <Divider />
         <List>
@@ -179,4 +166,4 @@ const TopSideBar: React.FC<{ title: string }> = ({ title }) => {
   );
 };
 
-export default TopSideBar;
+export default React.memo(TopSideBar);

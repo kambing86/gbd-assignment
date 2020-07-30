@@ -62,7 +62,7 @@ const themeTypeState = atom<PaletteType>({
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [themeType, setThemeType] = useRecoilState(themeTypeState);
-  const [theme, setTheme] = useStateWithRef(getTheme(themeType));
+  const [themeRef, setTheme] = useStateWithRef(getTheme(themeType));
   useEffect(() => {
     if (getSavedType() !== null) return;
     if (prefersDarkMode) {
@@ -79,19 +79,19 @@ export const useAppTheme = () => {
     }
   }, [themeType, setTheme]);
   const toggleDarkMode = useCallback(() => {
-    if (theme.current.palette.type === "light") {
+    if (themeRef.current.palette.type === "light") {
       localStorage.setItem(THEME_TYPE_KEY, "dark");
       setThemeType("dark");
     } else {
       localStorage.setItem(THEME_TYPE_KEY, "light");
       setThemeType("light");
     }
-  }, [theme, setThemeType]);
+  }, [themeRef, setThemeType]);
   // for debugging
   // useEffect(() => {
   //   // @ts-ignore
   //   window.theme = theme.current;
   // }, [theme, theme.current]);
   // useDebugValue(theme);
-  return { theme: theme.current, toggleDarkMode };
+  return { theme: themeRef.current, toggleDarkMode };
 };

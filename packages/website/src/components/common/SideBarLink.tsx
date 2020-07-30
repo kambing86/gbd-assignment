@@ -25,4 +25,4 @@ const SideBarLink: React.FC<{
   );
 };
 
-export default SideBarLink;
+export default React.memo(SideBarLink);

@@ -9,9 +9,10 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { MouseEvent, useCallback, useMemo, useRef } from "react";
+import React, { MouseEvent, useCallback, useMemo } from "react";
 import MainLayout from "../components/common/MainLayout";
 import PlaceOrder from "../components/customer/PlaceOrder";
+import { useRefInSync } from "../hooks/helpers/useRefInSync";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { useUser } from "../hooks/useUser";
@@ -60,8 +61,7 @@ export default function Cart() {
   const classes = useStyles();
   const title = useMemo(() => `Hello ${user?.username}`, [user]);
   const { removeFromCart, cartProducts, isReady } = useCart();
-  const productsRef = useRef(cartProducts);
-  productsRef.current = cartProducts;
+  const productsRef = useRefInSync(cartProducts);
   const itemClickHandler = useCallback(
     (event: MouseEvent) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

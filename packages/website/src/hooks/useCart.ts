@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
+import { useRefInSync } from "./helpers/useRefInSync";
 import { useDialog } from "./useDialog";
 import { Product, useGetProductsByIds } from "./useProducts";
 
@@ -43,9 +44,8 @@ export const totalAmountCount = (cartProducts: Product[]) => {
 // limit to 10 different types of product
 const useCartInLocalStorage = () => {
   const [cart, setCart] = useRecoilState(cartState);
-  const cartRef = useRef(cart);
+  const cartRef = useRefInSync(cart);
   const { open } = useDialog();
-  cartRef.current = cart;
   const addToCart = useCallback(
     (product: Product) => {
       const id = String(product.id);
@@ -111,7 +111,7 @@ const useCartInLocalStorage = () => {
       }
       setCart(cartObj);
     },
-    [setCart],
+    [setCart, cartRef],
   );
   const clearCart = useCallback(() => {
     setCart({});
@@ -130,8 +130,7 @@ export const useCart = () => {
     fixCart,
     clearCart,
   } = useCartInLocalStorage();
-  const cartRef = useRef(cart);
-  cartRef.current = cart;
+  const cartRef = useRefInSync(cart);
   const [cartProducts, setCartProducts] = useRecoilState(cartProductsState);
   const [result, getProductsByIds] = useGetProductsByIds();
   const { loading, data } = result;

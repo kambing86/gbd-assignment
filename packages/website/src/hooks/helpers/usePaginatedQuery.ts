@@ -1,12 +1,6 @@
 import { LazyQueryResult } from "@apollo/client";
-import {
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useRefInSync } from "./useRefInSync";
 
 type PaginatedQuery<T, V> = [
   LazyQueryResult<T, V>,
@@ -48,8 +42,7 @@ export const usePaginatedQuery = <D extends Data, T, V>(
     if (!rowsData) return false;
     return Boolean(rowsData.total > page * rowsData.limit);
   }, [rowsData, page]);
-  const rowsDataRef = useRef<D[] | undefined>(rowsData?.rows);
-  rowsDataRef.current = rowsData?.rows;
+  const rowsDataRef = useRefInSync(rowsData?.rows);
   const itemClickHandler = useCallback(
     (event: MouseEvent) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

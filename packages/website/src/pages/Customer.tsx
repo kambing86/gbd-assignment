@@ -1,16 +1,9 @@
 import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import MainLayout from "../components/common/MainLayout";
+import Products from "../components/customer/Products";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
 import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
@@ -22,45 +15,14 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
   },
-  itemGrid: {
-    width: "100%",
-  },
-  loadingGrid: {
-    width: "100%",
-    textAlign: "center",
-  },
-  card: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  cardAction: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "start",
-  },
-  cardMedia: {
-    paddingTop: "100%",
-    width: "100%",
-  },
-  cardContent: {
-    flexGrow: 1,
-    display: "flex",
-    flexDirection: "column",
-  },
-  productName: {
-    flexGrow: 1,
-  },
 }));
 
 const ITEMS_PER_PAGE = 8;
 
-export default function Customer() {
+const Customer: React.FC = () => {
   useAuth(CUSTOMER);
   const [user] = useUser();
   const classes = useStyles();
-  const title = useMemo(() => `Hello ${user?.username}`, [user]);
   const { addToCart } = useCart();
   const productClicked = useCallback(
     (product?: Product, action?: string) => {
@@ -84,68 +46,9 @@ export default function Customer() {
   });
 
   return (
-    <MainLayout title={title}>
+    <MainLayout title={`Hello ${user?.username}`}>
       <Container className={classes.cardGrid} maxWidth="md">
-        <Grid container spacing={2}>
-          {loading && (
-            <Grid item className={classes.loadingGrid}>
-              <CircularProgress />
-            </Grid>
-          )}
-          {!loading &&
-            rowsData &&
-            rowsData.rows.map((product) => (
-              <Grid
-                item
-                className={classes.itemGrid}
-                key={product.id}
-                sm={6}
-                md={4}
-                lg={3}
-              >
-                <Card className={classes.card}>
-                  <CardActionArea
-                    className={classes.cardAction}
-                    data-id={product.id}
-                    onClick={itemClickHandler}
-                  >
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image={
-                        product.image ?? "https://source.unsplash.com/random"
-                      }
-                      title="Image title"
-                    />
-                    <CardContent className={classes.cardContent}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="h2"
-                        className={classes.productName}
-                      >
-                        {product.name}
-                      </Typography>
-                      <Typography gutterBottom variant="h6" component="h3">
-                        {`$ ${product.price.toFixed(2)}`}
-                      </Typography>
-                      <Typography>Quantity: {product.quantity}</Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      color="primary"
-                      data-id={product.id}
-                      data-action="addToCart"
-                      onClick={itemClickHandler}
-                    >
-                      Add to Cart
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
+        <Products {...{ loading, rowsData, itemClickHandler }} />
         <Button
           color="primary"
           href="#"
@@ -167,4 +70,6 @@ export default function Customer() {
       </Container>
     </MainLayout>
   );
-}
+};
+
+export default React.memo(Customer);

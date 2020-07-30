@@ -10,7 +10,7 @@ type USER_TYPE = typeof CUSTOMER | typeof ADMIN;
 
 const AUTH_LOADING_KEY = "authLoading";
 
-// if userType if undefined, it's used by login to redirect user
+// if userType if undefined, it's used by login page to redirect user
 export function useAuth(userType?: USER_TYPE) {
   const { setLoading } = useLoadingBackdrop(AUTH_LOADING_KEY);
   const [userState, setUserState] = useUser();
@@ -29,26 +29,24 @@ export function useAuth(userType?: USER_TYPE) {
   const { data, error, loading } = userResult;
   useEffect(() => {
     if (!loading && (error || data)) {
-      if (error) {
-        setUserState(undefined);
-        pushHistory("/");
-      } else if (data) {
-        const { user } = data;
-        if (user) {
-          setUserState(user);
-          if (userType === undefined) {
-            if (user.isAdmin) {
-              pushHistory("/admin");
-            } else {
-              pushHistory("/customer");
-            }
-          }
-          if (!user.isAdmin && userType === ADMIN) {
+      const user = data?.user;
+      if (user) {
+        setUserState(user);
+        // for login page
+        if (userType === undefined) {
+          if (user.isAdmin) {
+            pushHistory("/admin");
+          } else {
             pushHistory("/customer");
           }
-        } else {
-          pushHistory("/");
         }
+        // for customer who went into admin pages
+        if (!user.isAdmin && userType === ADMIN) {
+          pushHistory("/customer");
+        }
+      } else {
+        setUserState(undefined);
+        pushHistory("/");
       }
       setLoading(false);
     }

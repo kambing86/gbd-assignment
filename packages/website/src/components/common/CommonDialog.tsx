@@ -44,4 +44,4 @@ const CommonDialog: React.FC = () => {
   );
 };
 
-export default CommonDialog;
+export default React.memo(CommonDialog);

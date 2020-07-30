@@ -24,4 +24,4 @@ const LoadingBackdrop: React.FC = () => {
   );
 };
 
-export default LoadingBackdrop;
+export default React.memo(LoadingBackdrop);
