@@ -7,7 +7,7 @@ import PlaceOrder from "../components/customer/PlaceOrder";
 import Products from "../components/customer/Products";
 import { useRefInSync } from "../hooks/helpers/useRefInSync";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useCart } from "../hooks/useCart";
+import { useGetCart, useSetCart } from "../hooks/useCart";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -50,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { removeFromCart, cartProducts, loading } = useCart();
+  const { removeFromCart } = useSetCart();
+  const { cartProducts, loading } = useGetCart();
   const productsRef = useRefInSync(cartProducts);
   const itemClickHandler = useCallback(
     (event: MouseEvent) => {

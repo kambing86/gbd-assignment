@@ -5,7 +5,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useEffect } from "react";
 import { useRefInSync } from "../../hooks/helpers/useRefInSync";
 import { useRoute } from "../../hooks/helpers/useRoute";
-import { totalAmountCount, totalCartCount, useCart } from "../../hooks/useCart";
+import {
+  totalAmountCount,
+  totalCartCount,
+  useGetCart,
+  useSetCart,
+} from "../../hooks/useCart";
 import { useCreateOrder } from "../../hooks/useOrder";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
 
 const PlaceOrder: React.FC = () => {
   const classes = useStyles();
-  const { cart, clearCart, cartProducts } = useCart();
+  const { cart, cartProducts } = useGetCart();
+  const { clearCart } = useSetCart();
   const cartRef = useRefInSync(cart);
   const [result, createOrder] = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
@@ -49,4 +55,4 @@ const PlaceOrder: React.FC = () => {
   ) : null;
 };
 
-export default PlaceOrder;
+export default React.memo(PlaceOrder);

@@ -5,7 +5,7 @@ import React, { useCallback } from "react";
 import MainLayout from "../components/common/MainLayout";
 import Products from "../components/customer/Products";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useCart } from "../hooks/useCart";
+import { useSetCart } from "../hooks/useCart";
 import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
 import { Product } from "../hooks/useProducts";
 
@@ -21,7 +21,7 @@ const ITEMS_PER_PAGE = 8;
 const Customer: React.FC = () => {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { addToCart } = useCart();
+  const { addToCart } = useSetCart();
   const productClicked = useCallback(
     (product?: Product, action?: string) => {
       if (action === "addToCart" && product) {
