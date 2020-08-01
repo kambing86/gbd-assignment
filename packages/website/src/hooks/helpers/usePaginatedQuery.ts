@@ -50,8 +50,8 @@ export const usePaginatedQuery = <D extends Data, T, V>(
       const dataset = event.currentTarget.dataset as Dataset;
       const id = Number(dataset.id);
       const action = dataset.action;
-      const product = rowsDataRef.current?.find((r) => r.id === id);
-      dataClicked?.(product, action);
+      const rowData = rowsDataRef.current?.find((r) => r.id === id);
+      dataClicked?.(rowData, action);
     },
     [rowsDataRef, dataClicked],
   );

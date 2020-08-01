@@ -2,7 +2,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent } from "react";
-import { GraphQLProduct } from "../../graphql/types-and-hooks";
+import { RecoilState } from "recoil";
+import { Product as ProductData } from "../../hooks/useProducts";
 import Product from "./Product";
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   loading: boolean;
-  products?: GraphQLProduct[];
+  productIds?: number[];
+  getProduct: (param: number) => RecoilState<ProductData | undefined>;
   itemClickHandler: (event: MouseEvent) => void;
   buttonAction: string;
   buttonText: string;
@@ -22,7 +24,8 @@ interface Props {
 
 const Products: React.FC<Props> = ({
   loading,
-  products = [],
+  productIds = [],
+  getProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
@@ -35,18 +38,18 @@ const Products: React.FC<Props> = ({
           <CircularProgress />
         </Grid>
       )}
-      {!loading &&
-        products.map((product) => (
-          <Product
-            key={product.id}
-            {...{
-              product,
-              itemClickHandler,
-              buttonAction,
-              buttonText,
-            }}
-          />
-        ))}
+      {productIds.map((id) => (
+        <Product
+          key={id}
+          {...{
+            id,
+            getProduct,
+            itemClickHandler,
+            buttonAction,
+            buttonText,
+          }}
+        />
+      ))}
     </Grid>
   );
 };

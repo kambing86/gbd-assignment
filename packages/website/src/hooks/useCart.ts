@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   atom,
-  useRecoilState,
+  atomFamily,
+  useRecoilCallback,
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
@@ -14,7 +15,6 @@ export interface Cart {
 }
 
 const CART_KEY = "cart";
-const CART_PRODUCTS_KEY = "cartProducts";
 
 function getCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "{}") as Cart;
@@ -23,11 +23,6 @@ function getCart() {
 const cartState = atom<Cart>({
   key: CART_KEY,
   default: getCart(),
-});
-
-const cartProductsState = atom<Product[]>({
-  key: CART_PRODUCTS_KEY,
-  default: [],
 });
 
 export const totalCartCount = (cart: Cart) => {
@@ -52,9 +47,47 @@ export const totalAmountCount = (cart: Cart, cartProducts: Product[]) => {
 const useGetCartInLocalStorage = () => {
   const cart = useRecoilValue(cartState);
   useEffect(() => {
+    console.log("setItem");
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }, [cart]);
   return cart;
+};
+
+export const cartProductsFamily = atomFamily<Product | undefined, number>({
+  key: "cartProductsFamily",
+  default: undefined,
+});
+
+function updater(newProduct: Product, prev?: Product) {
+  if (prev === undefined) {
+    return newProduct;
+  }
+  if (newProduct.isUp !== prev.isUp || newProduct.quantity !== prev.quantity) {
+    return newProduct;
+  }
+  return prev;
+}
+
+export const useCartProductsState = () => {
+  const getCartProduct = useRecoilCallback(
+    ({ snapshot }) => async (id: number) => {
+      const recoilState = cartProductsFamily(id);
+      return await snapshot.getPromise(recoilState);
+    },
+    [],
+  );
+  const setCartProduct = useRecoilCallback(
+    ({ snapshot, set }) => async (id: number, newProduct: Product) => {
+      const recoilState = cartProductsFamily(id);
+      const prev = await snapshot.getPromise(recoilState);
+      const product = updater(newProduct, prev);
+      if (prev !== product) {
+        set(recoilState, product);
+      }
+    },
+    [],
+  );
+  return { getCartProduct, setCartProduct };
 };
 
 // limit to 10 different types of product
@@ -140,38 +173,25 @@ export const useSetCart = () => {
   return { addToCart, removeFromCart, fixCart, clearCart };
 };
 
-const useCartProductsState = () => {
-  return useRecoilState(cartProductsState);
-};
-
 export const useGetCart = () => {
   const cart = useGetCartInLocalStorage();
   const cartRef = useRefInSync(cart);
   const { fixCart } = useSetCart();
-  const [cartProducts, setCartProducts] = useCartProductsState();
+  const { getCartProduct, setCartProduct } = useCartProductsState();
   const [result, getProductsByIds] = useGetProductsByIds();
   const { loading, data } = result;
 
   // only triggered when cart changed
   useEffect(() => {
     const ids = Object.keys(cart).map((id) => Number(id));
-    // sync cartProducts without waiting for query
-    setCartProducts((prev) => {
-      const filtered = prev
-        .filter((p) => ids.includes(p.id))
-        .map((p) => ({ ...p, quantity: cart[String(p.id)] }));
-      return filtered;
-    });
-    // query
     getProductsByIds(ids);
-  }, [cart, setCartProducts, getProductsByIds]);
-
+  }, [cart, getProductsByIds]);
   useEffect(() => {
     if (!loading && data) {
       const { products } = data;
       let valid = true;
       const currentCart = cartRef.current;
-      const returnObj = products.map((p) => {
+      const newCartProducts = products.map((p) => {
         const inCart = currentCart[String(p.id)];
         if (!p.isUp) {
           valid = false;
@@ -189,21 +209,30 @@ export const useGetCart = () => {
         };
       }) as Product[];
       if (valid) {
-        setCartProducts(returnObj);
-      }
-      if (!valid) {
-        fixCart(returnObj);
+        for (const product of newCartProducts) {
+          setCartProduct(product.id, product);
+        }
+      } else {
+        fixCart(newCartProducts);
       }
     }
-  }, [loading, data, setCartProducts, cartRef, fixCart]);
-
-  const isLoading = useMemo(() => {
-    const ids = Object.keys(cart).map((id) => Number(id));
-    return ids.some((id) => !cartProducts.find((p) => p.id === id));
-  }, [cart, cartProducts]);
+  }, [loading, data, setCartProduct, cartRef, fixCart]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      const ids = Object.keys(cart).map((id) => Number(id));
+      for (const id of ids) {
+        const notFound = (await getCartProduct(id)) === undefined;
+        if (notFound) {
+          setIsLoading(true);
+          return;
+        }
+      }
+      setIsLoading(false);
+    })();
+  }, [cart, loading, data, getCartProduct, setIsLoading]);
   return {
     cart,
-    cartProducts,
     loading: isLoading,
   };
 };

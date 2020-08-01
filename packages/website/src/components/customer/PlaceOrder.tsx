@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PlaceOrder: React.FC = () => {
   const classes = useStyles();
-  const { cart, cartProducts } = useGetCart();
+  const { cart } = useGetCart();
   const { clearCart } = useSetCart();
   const cartRef = useRefInSync(cart);
   const [result, createOrder] = useCreateOrder();
@@ -40,11 +40,11 @@ const PlaceOrder: React.FC = () => {
       }
     }
   }, [loading, data, clearCart, pushHistory]);
-  return cartProducts.length > 0 ? (
+  return Object.keys(cart).length > 0 ? (
     <Grid container className={classes.grid}>
       <div>
         <Typography>
-          Total amount: $ {totalAmountCount(cart, cartProducts).toFixed(2)}
+          {/* Total amount: $ {totalAmountCount(cart, cartProducts).toFixed(2)} */}
         </Typography>
         <Typography>Total items: {totalCartCount(cart)}</Typography>
       </div>

@@ -8,7 +8,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent } from "react";
-import { GraphQLProduct } from "../../graphql/types-and-hooks";
+import { RecoilState, useRecoilValue } from "recoil";
+import { Product as ProductData } from "../../hooks/useProducts";
 
 const useStyles = makeStyles((theme) => ({
   itemGrid: {
@@ -40,19 +41,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  product: GraphQLProduct;
+  id: number;
+  getProduct: (param: number) => RecoilState<ProductData | undefined>;
   itemClickHandler: (event: MouseEvent) => void;
   buttonAction: string;
   buttonText: string;
 }
 
 const Product: React.FC<Props> = ({
-  product,
+  id,
+  getProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
 }) => {
   const classes = useStyles();
+  const product = useRecoilValue(getProduct(id));
+  if (product === undefined) return null;
   return (
     <Grid item className={classes.itemGrid} sm={6} md={4} lg={3}>
       <Card className={classes.card}>

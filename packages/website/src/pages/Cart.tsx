@@ -1,13 +1,17 @@
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { MouseEvent, useCallback } from "react";
+import React, { MouseEvent, useCallback, useMemo } from "react";
 import MainLayout from "../components/common/MainLayout";
 import PlaceOrder from "../components/customer/PlaceOrder";
 import Products from "../components/customer/Products";
-import { useRefInSync } from "../hooks/helpers/useRefInSync";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useGetCart, useSetCart } from "../hooks/useCart";
+import {
+  cartProductsFamily,
+  useCartProductsState,
+  useGetCart,
+  useSetCart,
+} from "../hooks/useCart";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -50,29 +54,34 @@ const useStyles = makeStyles((theme) => ({
 export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
+  const { cart, loading } = useGetCart();
   const { removeFromCart } = useSetCart();
-  const { cartProducts, loading } = useGetCart();
-  const productsRef = useRefInSync(cartProducts);
+  const { getCartProduct } = useCartProductsState();
+  // const productsRef = useRefInSync(cartProducts);
   const itemClickHandler = useCallback(
-    (event: MouseEvent) => {
+    async (event: MouseEvent) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const dataset = event.currentTarget.dataset as Dataset;
       const id = Number(dataset.id);
       const action = dataset.action;
-      const product = productsRef.current?.find((p) => p.id === id);
+      const product = await getCartProduct(id);
       if (product && action === "removeFromCart") {
         removeFromCart(product);
       }
     },
-    [productsRef, removeFromCart],
+    [getCartProduct, removeFromCart],
   );
+  const checkDuplicate = JSON.stringify(Object.keys(cart));
+  const productIds = useMemo(() => {
+    return Object.keys(cart).map((id) => Number(id));
+  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">
         {!loading && <PlaceOrder />}
-        {!loading && cartProducts.length === 0 && (
+        {!loading && productIds.length === 0 && (
           <Typography variant="h5" align="center">
             Your cart is empty
           </Typography>
@@ -80,13 +89,14 @@ export default function Cart() {
         <Products
           {...{
             loading,
-            products: cartProducts,
+            productIds,
+            getProduct: cartProductsFamily,
             itemClickHandler,
             buttonAction: "removeFromCart",
             buttonText: "Remove from Cart",
           }}
         />
-        {!loading && cartProducts.length > 4 && <PlaceOrder />}
+        {!loading && productIds.length > 4 && <PlaceOrder />}
       </Container>
     </MainLayout>
   );

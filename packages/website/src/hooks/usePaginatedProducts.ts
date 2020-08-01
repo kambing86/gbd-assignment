@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { atomFamily, useRecoilCallback } from "recoil";
 import { GraphQLGetProductsQuery } from "../graphql/types-and-hooks";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
@@ -13,6 +14,11 @@ interface Dataset {
   [key: string]: string;
 }
 
+export const paginatedProductFamily = atomFamily<Product | undefined, number>({
+  key: "paginatedProductFamily",
+  default: undefined,
+});
+
 // onShelfOnly is for initialize only
 export const usePaginatedProducts = ({
   itemsPerPage,
@@ -24,10 +30,29 @@ export const usePaginatedProducts = ({
   > => {
     return queryData.products;
   }, []);
-  return usePaginatedQuery({
+  const result = usePaginatedQuery({
     itemsPerPage,
     paginatedQuery: useGetProducts(onShelfOnly),
     mapData,
     dataClicked: productClicked,
   });
+  const { rowsData } = result;
+  const setProduct = useRecoilCallback(
+    ({ snapshot, set }) => async (product: Product) => {
+      const { id } = product;
+      const recoilState = paginatedProductFamily(id);
+      const prev = await snapshot.getPromise(recoilState);
+      if (prev !== product) {
+        set(recoilState, product);
+      }
+    },
+    [],
+  );
+  useEffect(() => {
+    if (rowsData === undefined) return;
+    for (const product of rowsData.rows) {
+      setProduct(product);
+    }
+  }, [rowsData, setProduct]);
+  return result;
 };

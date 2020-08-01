@@ -1,12 +1,15 @@
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import MainLayout from "../components/common/MainLayout";
 import Products from "../components/customer/Products";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useSetCart } from "../hooks/useCart";
-import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
+import {
+  paginatedProductFamily,
+  usePaginatedProducts,
+} from "../hooks/usePaginatedProducts";
 import { Product } from "../hooks/useProducts";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +45,10 @@ const Customer: React.FC = () => {
     productClicked,
     onShelfOnly: true,
   });
+  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const productIds = useMemo(() => {
+    return rowsData?.rows.map((r) => r.id);
+  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <MainLayout>
@@ -49,7 +56,8 @@ const Customer: React.FC = () => {
         <Products
           {...{
             loading,
-            products: rowsData?.rows,
+            productIds,
+            getProduct: paginatedProductFamily,
             itemClickHandler,
             buttonAction: "addToCart",
             buttonText: "Add to Cart",
