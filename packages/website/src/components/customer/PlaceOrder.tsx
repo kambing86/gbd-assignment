@@ -21,11 +21,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlaceOrder: React.FC = () => {
+interface Props {
+  isLoading: boolean;
+}
+
+const PlaceOrder: React.FC<Props> = ({ isLoading }) => {
   const classes = useStyles();
-  const { cart } = useGetCart();
-  const { clearCart } = useSetCart();
+  const { cart, cartProducts } = useGetCart();
   const cartRef = useRefInSync(cart);
+  const { clearCart } = useSetCart();
   const [result, createOrder] = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
     createOrder(cartRef.current);
@@ -44,11 +48,16 @@ const PlaceOrder: React.FC = () => {
     <Grid container className={classes.grid}>
       <div>
         <Typography>
-          {/* Total amount: $ {totalAmountCount(cart, cartProducts).toFixed(2)} */}
+          Total amount: $ {totalAmountCount(cart, cartProducts).toFixed(2)}
         </Typography>
         <Typography>Total items: {totalCartCount(cart)}</Typography>
       </div>
-      <Button variant="contained" color="primary" onClick={placeOrderHandler}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={placeOrderHandler}
+        disabled={isLoading}
+      >
         Place Order
       </Button>
     </Grid>

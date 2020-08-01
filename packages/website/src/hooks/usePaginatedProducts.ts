@@ -10,10 +10,6 @@ interface options {
   onShelfOnly?: boolean;
 }
 
-interface Dataset {
-  [key: string]: string;
-}
-
 export const paginatedProductFamily = atomFamily<Product | undefined, number>({
   key: "paginatedProductFamily",
   default: undefined,

@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useMemo } from "react";
@@ -16,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
+  },
+  loadingGrid: {
+    textAlign: "center",
   },
 }));
 
@@ -47,40 +51,46 @@ const Customer: React.FC = () => {
   });
   const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
   const productIds = useMemo(() => {
-    return rowsData?.rows.map((r) => r.id);
+    return rowsData?.rows.map((r) => r.id) || [];
   }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">
-        <Products
-          {...{
-            loading,
-            productIds,
-            getProduct: paginatedProductFamily,
-            itemClickHandler,
-            buttonAction: "addToCart",
-            buttonText: "Add to Cart",
-          }}
-        />
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enablePrevPage}
-          data-action="prev"
-        >
-          Prev
-        </Button>
-        <Button
-          color="primary"
-          href="#"
-          onClick={pageClickHandler}
-          disabled={!enableNextPage}
-          data-action="next"
-        >
-          Next
-        </Button>
+        <>
+          {loading && productIds.length === 0 && (
+            <div className={classes.loadingGrid}>
+              <CircularProgress />
+            </div>
+          )}
+          <Products
+            {...{
+              productIds,
+              getProduct: paginatedProductFamily,
+              itemClickHandler,
+              buttonAction: "addToCart",
+              buttonText: "Add to Cart",
+            }}
+          />
+          <Button
+            color="primary"
+            href="#"
+            onClick={pageClickHandler}
+            disabled={!enablePrevPage}
+            data-action="prev"
+          >
+            Prev
+          </Button>
+          <Button
+            color="primary"
+            href="#"
+            onClick={pageClickHandler}
+            disabled={!enableNextPage}
+            data-action="next"
+          >
+            Next
+          </Button>
+        </>
       </Container>
     </MainLayout>
   );

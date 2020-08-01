@@ -25,7 +25,7 @@ export const useCreateOrder = (): [
     (cart: Cart) => {
       const payload = Object.entries(cart).map(([id, quantity]) => ({
         productId: Number(id),
-        quantity,
+        quantity: quantity as number,
       }));
       if (payload.length === 0) return;
       mutation({
