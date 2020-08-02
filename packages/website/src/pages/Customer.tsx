@@ -4,13 +4,10 @@ import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback, useMemo } from "react";
 import MainLayout from "../components/common/MainLayout";
-import Products from "../components/customer/Products";
+import ProductGrid from "../components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
 import { useSetCart } from "../hooks/useCart";
-import {
-  paginatedProductFamily,
-  usePaginatedProducts,
-} from "../hooks/usePaginatedProducts";
+import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
 import { Product } from "../hooks/useProducts";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +41,7 @@ const Customer: React.FC = () => {
     enableNextPage,
     itemClickHandler,
     pageClickHandler,
+    paginatedProductFamily,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked,
@@ -63,7 +61,7 @@ const Customer: React.FC = () => {
               <CircularProgress />
             </div>
           )}
-          <Products
+          <ProductGrid
             {...{
               productIds,
               getProduct: paginatedProductFamily,

@@ -5,14 +5,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent, useCallback, useMemo } from "react";
 import MainLayout from "../components/common/MainLayout";
 import PlaceOrder from "../components/customer/PlaceOrder";
-import Products from "../components/customer/Products";
+import ProductGrid from "../components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import {
-  cartProductsFamily,
-  useCartProductsState,
-  useGetCart,
-  useSetCart,
-} from "../hooks/useCart";
+import { useCartProductsState, useGetCart, useSetCart } from "../hooks/useCart";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -27,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { cart, cartProducts, loading } = useGetCart();
+  const { cart, cartProducts, loading, cartProductsFamily } = useGetCart();
   const { removeFromCart } = useSetCart();
   const { getCartProductAsync } = useCartProductsState();
   const itemClickHandler = useCallback(
@@ -78,7 +73,7 @@ export default function Cart() {
             <PlaceOrder isLoading={isLoading} />
           )}
           {isReady && (
-            <Products
+            <ProductGrid
               {...{
                 productIds,
                 getProduct: cartProductsFamily,

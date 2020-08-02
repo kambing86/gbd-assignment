@@ -48,7 +48,7 @@ interface Props {
   buttonText: string;
 }
 
-const Product: React.FC<Props> = ({
+const ProductItem: React.FC<Props> = ({
   id,
   getProduct,
   itemClickHandler,
@@ -102,4 +102,4 @@ const Product: React.FC<Props> = ({
   );
 };
 
-export default React.memo(Product);
+export default React.memo(ProductItem);

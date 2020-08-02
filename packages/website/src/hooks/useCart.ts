@@ -148,7 +148,7 @@ const cartProductsState = atom<CartProduct>({
   default: {},
 });
 
-export const cartProductsFamily = atomFamily<Product | undefined, number>({
+const cartProductsFamily = atomFamily<Product | undefined, number>({
   key: "cartProductsFamily",
   default: undefined,
 });
@@ -194,16 +194,32 @@ export const useGetCart = () => {
   const cart = useRecoilValue(cartState);
   const cartRef = useRefInSync(cart);
   const cartProducts = useRecoilValue(cartProductsState);
+  const cartProductsRef = useRefInSync(cartProducts);
   const { fixCart } = useSetCart();
   const { setCartProduct } = useCartProductsState();
   const [result, getProductsByIds] = useGetProductsByIds();
-  const { loading, data } = result;
+  const { called, loading, data } = result;
+  const calledRef = useRefInSync(called);
 
   // only triggered when cart changed
   useEffect(() => {
     const ids = Object.keys(cart).map((id) => Number(id));
+    if (calledRef.current) {
+      const readyIds = Object.keys(cartProductsRef.current).map((id) =>
+        Number(id),
+      );
+      let allReady = true;
+      for (const id of ids) {
+        if (!readyIds.includes(id)) {
+          allReady = false;
+        }
+      }
+      if (allReady) {
+        return;
+      }
+    }
     getProductsByIds(ids);
-  }, [cart, getProductsByIds]);
+  }, [cart, calledRef, cartProductsRef, getProductsByIds]);
   useEffect(() => {
     if (!loading && data) {
       const { products } = data;
@@ -237,5 +253,6 @@ export const useGetCart = () => {
     cart,
     cartProducts,
     loading,
+    cartProductsFamily,
   };
 };

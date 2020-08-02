@@ -1,23 +1,16 @@
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { usePaginatedProducts } from "../../hooks/usePaginatedProducts";
 import { Product } from "../../hooks/useProducts";
 import EditProductDialog from "./EditProductDialog";
+import ProductTable from "./ProductTable";
 
 const useStyles = makeStyles((theme) => ({
   loading: {
     alignSelf: "center",
-  },
-  tableRow: {
-    cursor: "pointer",
   },
   seeMore: {
     textAlign: "right",
@@ -37,6 +30,7 @@ const ProductList: React.FC = () => {
     enableNextPage,
     itemClickHandler,
     pageClickHandler,
+    paginatedProductFamily,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked: setEditProduct,
@@ -44,42 +38,23 @@ const ProductList: React.FC = () => {
   const closeDialogHandler = useCallback(() => {
     setEditProduct(undefined);
   }, []);
+  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const productIds = useMemo(() => {
+    return rowsData?.rows.map((r) => r.id) || [];
+  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
         Products
       </Typography>
       {loading && <CircularProgress className={classes.loading} />}
-      {!loading && rowsData && (
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>On Shelf</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Price</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowsData.rows.map((product) => (
-              <TableRow
-                key={product.id}
-                hover={true}
-                className={classes.tableRow}
-                data-id={product.id}
-                onClick={itemClickHandler}
-              >
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.isUp.toString()}</TableCell>
-                <TableCell align="right">{product.quantity}</TableCell>
-                <TableCell align="right">{`$ ${product.price.toFixed(
-                  2,
-                )}`}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+      <ProductTable
+        {...{
+          productIds,
+          getProduct: paginatedProductFamily,
+          itemClickHandler,
+        }}
+      />
       <div className={classes.seeMore}>
         <Button
           color="primary"

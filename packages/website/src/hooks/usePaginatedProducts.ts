@@ -10,7 +10,7 @@ interface options {
   onShelfOnly?: boolean;
 }
 
-export const paginatedProductFamily = atomFamily<Product | undefined, number>({
+const paginatedProductFamily = atomFamily<Product | undefined, number>({
   key: "paginatedProductFamily",
   default: undefined,
 });
@@ -50,5 +50,5 @@ export const usePaginatedProducts = ({
       setProduct(product);
     }
   }, [rowsData, setProduct]);
-  return result;
+  return { ...result, paginatedProductFamily };
 };
