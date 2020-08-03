@@ -2,7 +2,7 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import MainLayout from "../components/common/MainLayout";
 import ProductGrid from "../components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "../hooks/useAuth";
@@ -35,23 +35,18 @@ const Customer: React.FC = () => {
     [addToCart],
   );
   const {
-    rowsData,
     loading,
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
     pageClickHandler,
+    productIds,
     paginatedProductFamily,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked,
     onShelfOnly: true,
   });
-  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
-  const productIds = useMemo(() => {
-    return rowsData?.rows.map((r) => r.id) || [];
-  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">

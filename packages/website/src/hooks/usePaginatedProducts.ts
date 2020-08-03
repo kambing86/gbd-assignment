@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { atomFamily, useRecoilCallback } from "recoil";
 import { GraphQLGetProductsQuery } from "../graphql/types-and-hooks";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
@@ -50,5 +50,9 @@ export const usePaginatedProducts = ({
       setProduct(product);
     }
   }, [rowsData, setProduct]);
-  return { ...result, paginatedProductFamily };
+  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const productIds = useMemo(() => {
+    return rowsData?.rows.map((r) => r.id) || [];
+  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
+  return { ...result, productIds, paginatedProductFamily };
 };
