@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   SetterOrUpdater,
   atom,
@@ -49,7 +49,7 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProduct) => {
   return amount;
 };
 
-function useSaveCart(setCart: SetterOrUpdater<Cart>) {
+function saveCartToLocalStorage(setCart: SetterOrUpdater<Cart>) {
   return (updater: (prev: Cart) => Cart) => {
     setCart((prev) => {
       const nextCart = updater(prev);
@@ -62,11 +62,14 @@ function useSaveCart(setCart: SetterOrUpdater<Cart>) {
 // limit to 10 different types of product
 export const useSetCart = () => {
   const { open } = useSetDialog();
-  const setCart = useSaveCart(useSetRecoilState(cartState));
+  const setCart = useSetRecoilState(cartState);
+  const saveAndSetCart = useMemo(() => {
+    return saveCartToLocalStorage(setCart);
+  }, [setCart]);
   const addToCart = useCallback(
     (product: Product) => {
       const id = String(product.id);
-      setCart((prev) => {
+      saveAndSetCart((prev) => {
         const existing = prev[id] ?? 0;
         if (product.quantity <= existing) {
           open("Sorry", "No more stock");
@@ -89,12 +92,12 @@ export const useSetCart = () => {
         };
       });
     },
-    [setCart, open],
+    [saveAndSetCart, open],
   );
   const removeFromCart = useCallback(
     (product: Product) => {
       const id = String(product.id);
-      setCart((prev) => {
+      saveAndSetCart((prev) => {
         let returnObj = { ...prev };
         const quantity = prev[id];
         if (quantity) {
@@ -109,11 +112,11 @@ export const useSetCart = () => {
         return returnObj;
       });
     },
-    [setCart],
+    [saveAndSetCart],
   );
   const fixCart = useCallback(
     (cartProducts: Product[]) => {
-      setCart((prev) => {
+      saveAndSetCart((prev) => {
         const cartObj = { ...prev };
         for (const key in cartObj) {
           const inCart = cartObj[key] as number;
@@ -135,11 +138,11 @@ export const useSetCart = () => {
         return cartObj;
       });
     },
-    [setCart],
+    [saveAndSetCart],
   );
   const clearCart = useCallback(() => {
-    setCart(() => ({}));
-  }, [setCart]);
+    saveAndSetCart(() => ({}));
+  }, [saveAndSetCart]);
   return { addToCart, removeFromCart, fixCart, clearCart };
 };
 
