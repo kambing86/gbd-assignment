@@ -5,8 +5,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
+import { useGetDialog, useSetDialog } from "hooks/useDialog";
 import React from "react";
-import { useGetDialog, useSetDialog } from "../../hooks/useDialog";
 
 const useStyles = makeStyles((theme) => ({
   notSelected: {

@@ -1,6 +1,6 @@
 import ProductsIcon from "@material-ui/icons/Kitchen";
+import SideBarLink from "components/common/SideBarLink";
 import React from "react";
-import SideBarLink from "../common/SideBarLink";
 
 const AdminListItems: React.FC = () => (
   <>

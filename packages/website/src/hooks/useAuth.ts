@@ -1,5 +1,5 @@
+import { useGetUserLazyQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
-import { useGetUserLazyQuery } from "../graphql/types-and-hooks";
 import { useRoute } from "./helpers/useRoute";
 import { useSetLoadingBackdrop } from "./useLoadingBackdrop";
 import { useGetUser, useSetUser } from "./useUser";

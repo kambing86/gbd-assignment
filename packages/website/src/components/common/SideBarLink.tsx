@@ -1,8 +1,8 @@
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import { useRoute } from "hooks/helpers/useRoute";
 import React, { useCallback } from "react";
-import { useRoute } from "../../hooks/helpers/useRoute";
 
 const SideBarLink: React.FC<{
   path: string;

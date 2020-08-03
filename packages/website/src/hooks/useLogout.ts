@@ -1,6 +1,6 @@
+import { useLogoutMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { useLogoutMutation } from "../graphql/types-and-hooks";
 import { useSetLoadingBackdrop } from "./useLoadingBackdrop";
 import { useSetUser } from "./useUser";
 

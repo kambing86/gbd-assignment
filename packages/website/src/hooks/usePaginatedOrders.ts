@@ -1,5 +1,5 @@
+import { GraphQLGetOrdersQuery } from "graphql/types-and-hooks";
 import { useCallback } from "react";
-import { GraphQLGetOrdersQuery } from "../graphql/types-and-hooks";
 import { usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Order, useGetOrders } from "./useOrder";
 

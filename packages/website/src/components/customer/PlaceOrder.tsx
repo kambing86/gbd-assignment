@@ -2,16 +2,16 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback, useEffect } from "react";
-import { useRefInSync } from "../../hooks/helpers/useRefInSync";
-import { useRoute } from "../../hooks/helpers/useRoute";
+import { useRefInSync } from "hooks/helpers/useRefInSync";
+import { useRoute } from "hooks/helpers/useRoute";
 import {
   totalAmountCount,
   totalCartCount,
   useGetCart,
   useSetCart,
-} from "../../hooks/useCart";
-import { useCreateOrder } from "../../hooks/useOrder";
+} from "hooks/useCart";
+import { useCreateOrder } from "hooks/useOrder";
+import React, { useCallback, useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -21,11 +21,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlaceOrder: React.FC = () => {
+interface Props {
+  isLoading: boolean;
+}
+
+const PlaceOrder: React.FC<Props> = ({ isLoading }) => {
   const classes = useStyles();
   const { cart, cartProducts } = useGetCart();
-  const { clearCart } = useSetCart();
   const cartRef = useRefInSync(cart);
+  const { clearCart } = useSetCart();
   const [result, createOrder] = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
     createOrder(cartRef.current);
@@ -40,7 +44,7 @@ const PlaceOrder: React.FC = () => {
       }
     }
   }, [loading, data, clearCart, pushHistory]);
-  return cartProducts.length > 0 ? (
+  return Object.keys(cart).length > 0 ? (
     <Grid container className={classes.grid}>
       <div>
         <Typography>
@@ -48,7 +52,12 @@ const PlaceOrder: React.FC = () => {
         </Typography>
         <Typography>Total items: {totalCartCount(cart)}</Typography>
       </div>
-      <Button variant="contained" color="primary" onClick={placeOrderHandler}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={placeOrderHandler}
+        disabled={isLoading}
+      >
         Place Order
       </Button>
     </Grid>

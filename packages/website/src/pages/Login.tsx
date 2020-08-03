@@ -9,11 +9,11 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Copyright from "components/common/Copyright";
 import React, { ChangeEvent, MouseEvent, useCallback } from "react";
-import Copyright from "../components/common/Copyright";
-import useStateWithRef from "../hooks/helpers/useStateWithRef";
-import { useAuth } from "../hooks/useAuth";
-import { useLogin } from "../hooks/useLogin";
+import useStateWithRef from "hooks/helpers/useStateWithRef";
+import { useAuth } from "hooks/useAuth";
+import { useLogin } from "hooks/useLogin";
 
 const useStyles = makeStyles((theme) => ({
   root: {

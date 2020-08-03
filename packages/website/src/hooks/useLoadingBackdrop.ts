@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
 interface LoadingState {
-  [key: string]: number;
+  [key: string]: number | undefined;
 }
 
 const LOADING_KEY = "loading";
@@ -12,10 +12,11 @@ const loadingState = atom<LoadingState>({
 });
 
 const addLoadingKey = (loading: LoadingState, key: string) => {
-  if (loading[key]) {
+  const val = loading[key];
+  if (val) {
     return {
       ...loading,
-      [key]: loading[key] + 1,
+      [key]: val + 1,
     };
   } else {
     return {
@@ -27,10 +28,11 @@ const addLoadingKey = (loading: LoadingState, key: string) => {
 
 const subtractLoadingKey = (loading: LoadingState, key: string) => {
   let returnObj = { ...loading };
-  if (loading[key]) {
+  const val = loading[key];
+  if (val) {
     returnObj = {
       ...loading,
-      [key]: loading[key] - 1,
+      [key]: val - 1,
     };
   }
   if (returnObj[key] === 0) {

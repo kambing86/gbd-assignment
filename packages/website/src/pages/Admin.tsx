@@ -2,10 +2,10 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+import ProductList from "components/admin/ProductList";
+import MainLayout from "components/common/MainLayout";
+import { ADMIN, useAuth } from "hooks/useAuth";
 import React from "react";
-import ProductList from "../components/admin/ProductList";
-import MainLayout from "../components/common/MainLayout";
-import { ADMIN, useAuth } from "../hooks/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   root: {

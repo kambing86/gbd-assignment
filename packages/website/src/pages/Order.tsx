@@ -6,16 +6,16 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import MainLayout from "components/common/MainLayout";
+import OrderDetailDialog from "components/customer/OrderDetailDialog";
 import React, { useCallback, useState } from "react";
-import MainLayout from "../components/common/MainLayout";
-import OrderDetailDialog from "../components/customer/OrderDetailDialog";
-import { CUSTOMER, useAuth } from "../hooks/useAuth";
+import { CUSTOMER, useAuth } from "hooks/useAuth";
 import {
   Order as OrderStructure,
   getLocalDate,
   getTotalAmount,
-} from "../hooks/useOrder";
-import { usePaginatedOrders } from "../hooks/usePaginatedOrders";
+} from "hooks/useOrder";
+import { usePaginatedOrders } from "hooks/usePaginatedOrders";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {

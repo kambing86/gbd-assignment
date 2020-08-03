@@ -11,13 +11,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
 import {
   Order,
   getLocalDate,
   getTotalAmount,
   useGetOrderDetails,
-} from "../../hooks/useOrder";
+} from "hooks/useOrder";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   loading: {

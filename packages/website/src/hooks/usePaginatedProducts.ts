@@ -1,5 +1,6 @@
-import { useCallback } from "react";
-import { GraphQLGetProductsQuery } from "../graphql/types-and-hooks";
+import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
+import { useCallback, useEffect, useMemo } from "react";
+import { atomFamily, useRecoilCallback } from "recoil";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
 
@@ -9,9 +10,10 @@ interface options {
   onShelfOnly?: boolean;
 }
 
-interface Dataset {
-  [key: string]: string;
-}
+const paginatedProductFamily = atomFamily<Product | undefined, number>({
+  key: "paginatedProductFamily",
+  default: undefined,
+});
 
 // onShelfOnly is for initialize only
 export const usePaginatedProducts = ({
@@ -24,10 +26,33 @@ export const usePaginatedProducts = ({
   > => {
     return queryData.products;
   }, []);
-  return usePaginatedQuery({
+  const result = usePaginatedQuery({
     itemsPerPage,
     paginatedQuery: useGetProducts(onShelfOnly),
     mapData,
     dataClicked: productClicked,
   });
+  const { rowsData } = result;
+  const setProduct = useRecoilCallback(
+    ({ snapshot, set }) => async (product: Product) => {
+      const { id } = product;
+      const recoilState = paginatedProductFamily(id);
+      const prev = await snapshot.getPromise(recoilState);
+      if (prev !== product) {
+        set(recoilState, product);
+      }
+    },
+    [],
+  );
+  useEffect(() => {
+    if (rowsData === undefined) return;
+    for (const product of rowsData.rows) {
+      setProduct(product);
+    }
+  }, [rowsData, setProduct]);
+  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const productIds = useMemo(() => {
+    return rowsData?.rows.map((r) => r.id) || [];
+  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
+  return { ...result, productIds, paginatedProductFamily };
 };
