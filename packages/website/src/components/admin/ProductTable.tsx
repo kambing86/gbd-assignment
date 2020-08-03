@@ -3,9 +3,9 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
 import { RecoilState } from "recoil";
-import { Product as ProductData } from "../../hooks/useProducts";
 import ProductRow from "./ProductRow";
 
 interface Props {

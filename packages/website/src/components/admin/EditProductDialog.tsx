@@ -6,6 +6,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import TextField from "@material-ui/core/TextField";
+import { useRefInSync } from "hooks/helpers/useRefInSync";
+import { Product, useUpdateProduct } from "hooks/useProducts";
 import React, {
   ChangeEvent,
   FormEvent,
@@ -13,8 +15,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useRefInSync } from "../../hooks/helpers/useRefInSync";
-import { Product, useUpdateProduct } from "../../hooks/useProducts";
 
 interface Field {
   name: string;

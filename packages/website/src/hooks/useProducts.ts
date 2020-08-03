@@ -1,6 +1,5 @@
 import { LazyQueryResult, MutationResult } from "@apollo/client";
-import { useCallback, useEffect } from "react";
-import { PRODUCTS_SUBSCRIPTION } from "../graphql/documents/product";
+import { PRODUCTS_SUBSCRIPTION } from "graphql/documents/product";
 import {
   Exact,
   GraphQLGetProductsQuery,
@@ -10,7 +9,8 @@ import {
   useGetProductsLazyQuery,
   useProductsByIdsLazyQuery,
   useUpdateProductMutation,
-} from "../graphql/types-and-hooks";
+} from "graphql/types-and-hooks";
+import { useCallback, useEffect } from "react";
 
 export type Product = GraphQLProduct;
 

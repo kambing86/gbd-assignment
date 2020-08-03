@@ -2,13 +2,13 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
+import MainLayout from "components/common/MainLayout";
+import ProductGrid from "components/customer/ProductGrid";
+import { CUSTOMER, useAuth } from "hooks/useAuth";
+import { useSetCart } from "hooks/useCart";
+import { usePaginatedProducts } from "hooks/usePaginatedProducts";
+import { Product } from "hooks/useProducts";
 import React, { useCallback } from "react";
-import MainLayout from "../components/common/MainLayout";
-import ProductGrid from "../components/customer/ProductGrid";
-import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useSetCart } from "../hooks/useCart";
-import { usePaginatedProducts } from "../hooks/usePaginatedProducts";
-import { Product } from "../hooks/useProducts";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {

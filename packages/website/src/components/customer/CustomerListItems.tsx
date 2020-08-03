@@ -1,8 +1,8 @@
 import OrderIcon from "@material-ui/icons/ListAlt";
 import ExploreIcon from "@material-ui/icons/ShoppingBasket";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import SideBarLink from "components/common/SideBarLink";
 import React from "react";
-import SideBarLink from "../common/SideBarLink";
 
 const CustomerListItems: React.FC = () => (
   <>

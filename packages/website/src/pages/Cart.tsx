@@ -3,11 +3,11 @@ import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { MouseEvent, useCallback, useMemo } from "react";
-import MainLayout from "../components/common/MainLayout";
-import PlaceOrder from "../components/customer/PlaceOrder";
-import ProductGrid from "../components/customer/ProductGrid";
-import { CUSTOMER, useAuth } from "../hooks/useAuth";
-import { useCartProductsState, useGetCart, useSetCart } from "../hooks/useCart";
+import MainLayout from "components/common/MainLayout";
+import PlaceOrder from "components/customer/PlaceOrder";
+import ProductGrid from "components/customer/ProductGrid";
+import { CUSTOMER, useAuth } from "hooks/useAuth";
+import { useCartProductsState, useGetCart, useSetCart } from "hooks/useCart";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {

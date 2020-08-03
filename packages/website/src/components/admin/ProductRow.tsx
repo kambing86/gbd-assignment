@@ -1,9 +1,9 @@
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
+import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
 import { RecoilState, useRecoilValue } from "recoil";
-import { Product as ProductData } from "../../hooks/useProducts";
 
 const useStyles = makeStyles((theme) => ({
   tableRow: {

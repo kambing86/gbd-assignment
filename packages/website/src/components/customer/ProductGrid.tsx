@@ -1,7 +1,7 @@
 import Grid from "@material-ui/core/Grid";
+import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
 import { RecoilState } from "recoil";
-import { Product as ProductData } from "../../hooks/useProducts";
 import ProductItem from "./ProductItem";
 
 interface Props {

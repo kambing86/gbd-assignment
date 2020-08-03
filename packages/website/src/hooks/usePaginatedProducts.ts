@@ -1,6 +1,6 @@
+import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { atomFamily, useRecoilCallback } from "recoil";
-import { GraphQLGetProductsQuery } from "../graphql/types-and-hooks";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
 
