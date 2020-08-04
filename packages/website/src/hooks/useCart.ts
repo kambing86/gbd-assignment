@@ -160,7 +160,11 @@ function cartProductDiff(newProduct: Product, currProduct?: Product) {
   if (currProduct === undefined) {
     return newProduct;
   }
+  if (newProduct.id !== currProduct.id) {
+    return currProduct;
+  }
   if (
+    newProduct.name !== currProduct.name ||
     newProduct.isUp !== currProduct.isUp ||
     newProduct.quantity !== currProduct.quantity ||
     newProduct.price !== currProduct.price
