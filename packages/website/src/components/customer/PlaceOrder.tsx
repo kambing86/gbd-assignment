@@ -25,7 +25,7 @@ interface Props {
   isLoading: boolean;
 }
 
-const PlaceOrder: React.FC<Props> = ({ isLoading }) => {
+const PlaceOrder = ({ isLoading }: Props): JSX.Element | null => {
   const classes = useStyles();
   const { cart, cartProducts } = useGetCart();
   const cartRef = useRefInSync(cart);

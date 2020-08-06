@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ITEMS_PER_PAGE = 8;
 
-const Customer: React.FC = () => {
+const Customer = (): JSX.Element => {
   useAuth(CUSTOMER);
   const classes = useStyles();
   const { addToCart } = useSetCart();

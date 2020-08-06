@@ -93,7 +93,7 @@ interface Props {
   product: Product;
 }
 
-const EditProductDialog: React.FC<Props> = ({ handleClose, product }) => {
+const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
   const { productState, allInputs } = useProductInput(product);
   const productRef = useRefInSync(productState);
   const [result, updateProduct] = useUpdateProduct();

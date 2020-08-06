@@ -58,7 +58,7 @@ interface Props {
   order: Order;
 }
 
-const OrderDetailDialog: React.FC<Props> = ({ handleClose, order }) => {
+const OrderDetailDialog = ({ handleClose, order }: Props): JSX.Element => {
   const classes = useStyles();
   const { productDetails, loading } = useGetOrderDetails(order);
   return (

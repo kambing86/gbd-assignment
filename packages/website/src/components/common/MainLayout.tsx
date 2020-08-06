@@ -33,7 +33,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLayout: React.FC = ({ children }) => {
+interface Props {
+  children?: React.ReactNode;
+}
+
+const MainLayout = ({ children }: Props): JSX.Element => {
   const classes = useStyles();
   return (
     <div className={classes.root}>

@@ -48,13 +48,13 @@ interface Props {
   buttonText: string;
 }
 
-const ProductItem: React.FC<Props> = ({
+const ProductItem = ({
   id,
   getProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
-}) => {
+}: Props): JSX.Element | null => {
   const classes = useStyles();
   const product = useRecoilValue(getProduct(id));
   if (product === undefined) return null;

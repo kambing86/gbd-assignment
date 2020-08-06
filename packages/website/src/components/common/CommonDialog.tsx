@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CommonDialog: React.FC = () => {
+const CommonDialog = (): JSX.Element => {
   const classes = useStyles();
   const state = useGetDialog();
   const { close } = useSetDialog();

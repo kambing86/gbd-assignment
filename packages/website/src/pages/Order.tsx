@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ITEMS_PER_PAGE = 10;
 
-const Order: React.FC = () => {
+const Order = (): JSX.Element => {
   useAuth(CUSTOMER);
   const [viewOrder, setViewOrder] = useState<OrderStructure>();
   const {

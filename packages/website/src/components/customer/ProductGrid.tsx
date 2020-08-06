@@ -12,13 +12,13 @@ interface Props {
   buttonText: string;
 }
 
-const ProductGrid: React.FC<Props> = ({
+const ProductGrid = ({
   productIds,
   getProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
-}) => {
+}: Props): JSX.Element => {
   return (
     <Grid container spacing={2}>
       {productIds.map((id) => (

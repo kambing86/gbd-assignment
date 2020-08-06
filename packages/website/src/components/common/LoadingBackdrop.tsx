@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingBackdrop: React.FC = () => {
+const LoadingBackdrop = (): JSX.Element => {
   const classes = useStyles();
   const loading = useGetLoading();
   return (

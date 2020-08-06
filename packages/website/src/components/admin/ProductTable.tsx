@@ -14,11 +14,11 @@ interface Props {
   itemClickHandler: (event: MouseEvent) => void;
 }
 
-const ProductTable: React.FC<Props> = ({
+const ProductTable = ({
   productIds,
   getProduct,
   itemClickHandler,
-}) => {
+}: Props): JSX.Element => {
   return (
     <Table size="small">
       <TableHead>

@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopSideBar: React.FC = () => {
+const TopSideBar = (): JSX.Element => {
   const classes = useStyles();
   const [open, setOpen] = useDrawer();
   const handleDrawerOpen = useCallback(() => {

@@ -17,7 +17,11 @@ interface Props {
   itemClickHandler: (event: MouseEvent) => void;
 }
 
-const ProductRow: React.FC<Props> = ({ id, getProduct, itemClickHandler }) => {
+const ProductRow = ({
+  id,
+  getProduct,
+  itemClickHandler,
+}: Props): JSX.Element | null => {
   const classes = useStyles();
   const product = useRecoilValue(getProduct(id));
   if (product === undefined) return null;

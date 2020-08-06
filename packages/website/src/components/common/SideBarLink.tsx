@@ -4,11 +4,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { useRoute } from "hooks/helpers/useRoute";
 import React, { useCallback } from "react";
 
-const SideBarLink: React.FC<{
+interface Props {
   path: string;
   text: string;
   icon: JSX.Element;
-}> = ({ path, text, icon }) => {
+}
+
+const SideBarLink = ({ path, text, icon }: Props): JSX.Element => {
   const { pushHistory, location } = useRoute();
   const clickHandler = useCallback(() => {
     pushHistory(path);

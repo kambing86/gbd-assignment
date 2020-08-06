@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 
-const Loading: React.FC = () => {
+const Loading = (): JSX.Element => {
   return (
     <Grid
       container

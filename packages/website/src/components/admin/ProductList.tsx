@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ITEMS_PER_PAGE = 10;
 
-const ProductList: React.FC = () => {
+const ProductList = (): JSX.Element => {
   const classes = useStyles();
   const [editProduct, setEditProduct] = useState<Product>();
   const {
