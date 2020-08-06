@@ -22,7 +22,7 @@ import { useAppTheme } from "hooks/useAppTheme";
 import { useDrawer } from "hooks/useDrawer";
 import { useLogout } from "hooks/useLogout";
 import { useGetUser } from "hooks/useUser";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 
 const drawerWidth = 180;
 
@@ -95,8 +95,8 @@ const TopSideBar = (): JSX.Element => {
   const { theme, toggleDarkMode } = useAppTheme();
   const { logout } = useLogout();
   const user = useGetUser();
-  const isAdmin = useMemo(() => Boolean(user?.isAdmin), [user]);
-  const isCustomer = useMemo(() => Boolean(user && !user.isAdmin), [user]);
+  const isAdmin = Boolean(user?.isAdmin);
+  const isCustomer = Boolean(user && !user.isAdmin);
   return (
     <>
       <AppBar

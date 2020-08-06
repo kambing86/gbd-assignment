@@ -1,5 +1,5 @@
 import { LazyQueryResult } from "@apollo/client";
-import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { useRefInSync } from "./useRefInSync";
 
 type PaginatedQuery<T, V> = [
@@ -38,10 +38,9 @@ export const usePaginatedQuery = <D extends Data, T, V>(
   const { loading, data } = result;
   const rowsData = data ? mapData(data) : undefined;
   const enablePrevPage = page !== 1;
-  const enableNextPage = useMemo(() => {
-    if (!rowsData) return false;
-    return Boolean(rowsData.total > page * rowsData.limit);
-  }, [rowsData, page]);
+  const enableNextPage = Boolean(
+    rowsData && rowsData.total > page * rowsData.limit,
+  );
   const rowsDataRef = useRefInSync(rowsData?.rows);
   const itemClickHandler = useCallback(
     (event: MouseEvent) => {

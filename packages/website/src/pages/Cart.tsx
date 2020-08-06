@@ -50,10 +50,7 @@ export default function Cart() {
     }
     return true;
   }, [cartProducts, productIds]);
-  const isLoading = useMemo(() => {
-    if (!isReady) return true;
-    return loading;
-  }, [isReady, loading]);
+  const isLoading = !isReady || loading;
 
   return (
     <MainLayout>

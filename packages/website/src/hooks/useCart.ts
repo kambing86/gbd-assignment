@@ -63,9 +63,9 @@ function saveCartToLocalStorage(setCart: SetterOrUpdater<Cart>) {
 export const useSetCart = () => {
   const { open } = useSetDialog();
   const setCart = useSetRecoilState(cartState);
-  const saveAndSetCart = useMemo(() => {
-    return saveCartToLocalStorage(setCart);
-  }, [setCart]);
+  const saveAndSetCart = useMemo(() => saveCartToLocalStorage(setCart), [
+    setCart,
+  ]);
   const addToCart = useCallback(
     (product: Product) => {
       const id = String(product.id);
