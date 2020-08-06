@@ -1,9 +1,8 @@
 /* eslint-disable */
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/client';
-import * as ApolloReactHooks from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+const gql = Apollo.gql;
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -275,7 +274,7 @@ export const CreateOrderDocument = gql`
   createOrder(data: $data)
 }
     `;
-export type GraphQLCreateOrderMutationFn = ApolloReactCommon.MutationFunction<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>;
+export type GraphQLCreateOrderMutationFn = Apollo.MutationFunction<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>;
 
 /**
  * __useCreateOrderMutation__
@@ -294,12 +293,12 @@ export type GraphQLCreateOrderMutationFn = ApolloReactCommon.MutationFunction<Gr
  *   },
  * });
  */
-export function useCreateOrderMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>) {
-        return ApolloReactHooks.useMutation<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>(CreateOrderDocument, baseOptions);
+export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>) {
+        return Apollo.useMutation<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>(CreateOrderDocument, baseOptions);
       }
 export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
-export type CreateOrderMutationResult = ApolloReactCommon.MutationResult<GraphQLCreateOrderMutation>;
-export type CreateOrderMutationOptions = ApolloReactCommon.BaseMutationOptions<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>;
+export type CreateOrderMutationResult = Apollo.MutationResult<GraphQLCreateOrderMutation>;
+export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<GraphQLCreateOrderMutation, GraphQLCreateOrderMutationVariables>;
 export const GetOrdersDocument = gql`
     query GetOrders($skip: Int!, $limit: Int!) {
   orders(skip: $skip, limit: $limit) {
@@ -338,15 +337,15 @@ export const GetOrdersDocument = gql`
  *   },
  * });
  */
-export function useGetOrdersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
-        return ApolloReactHooks.useQuery<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>(GetOrdersDocument, baseOptions);
+export function useGetOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
+        return Apollo.useQuery<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>(GetOrdersDocument, baseOptions);
       }
-export function useGetOrdersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>(GetOrdersDocument, baseOptions);
+export function useGetOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
+          return Apollo.useLazyQuery<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>(GetOrdersDocument, baseOptions);
         }
 export type GetOrdersQueryHookResult = ReturnType<typeof useGetOrdersQuery>;
 export type GetOrdersLazyQueryHookResult = ReturnType<typeof useGetOrdersLazyQuery>;
-export type GetOrdersQueryResult = ApolloReactCommon.QueryResult<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>;
+export type GetOrdersQueryResult = Apollo.QueryResult<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>;
 export function refetchGetOrdersQuery(variables?: GraphQLGetOrdersQueryVariables) {
       return { query: GetOrdersDocument, variables: variables }
     }
@@ -386,15 +385,15 @@ export const GetProductsDocument = gql`
  *   },
  * });
  */
-export function useGetProductsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>(GetProductsDocument, baseOptions);
+export function useGetProductsQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
+        return Apollo.useQuery<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>(GetProductsDocument, baseOptions);
       }
-export function useGetProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>(GetProductsDocument, baseOptions);
+export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
+          return Apollo.useLazyQuery<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>(GetProductsDocument, baseOptions);
         }
 export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
 export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
-export type GetProductsQueryResult = ApolloReactCommon.QueryResult<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>;
+export type GetProductsQueryResult = Apollo.QueryResult<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>;
 export function refetchGetProductsQuery(variables?: GraphQLGetProductsQueryVariables) {
       return { query: GetProductsDocument, variables: variables }
     }
@@ -427,15 +426,15 @@ export const ProductsByIdsDocument = gql`
  *   },
  * });
  */
-export function useProductsByIdsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
-        return ApolloReactHooks.useQuery<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>(ProductsByIdsDocument, baseOptions);
+export function useProductsByIdsQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
+        return Apollo.useQuery<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>(ProductsByIdsDocument, baseOptions);
       }
-export function useProductsByIdsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>(ProductsByIdsDocument, baseOptions);
+export function useProductsByIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
+          return Apollo.useLazyQuery<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>(ProductsByIdsDocument, baseOptions);
         }
 export type ProductsByIdsQueryHookResult = ReturnType<typeof useProductsByIdsQuery>;
 export type ProductsByIdsLazyQueryHookResult = ReturnType<typeof useProductsByIdsLazyQuery>;
-export type ProductsByIdsQueryResult = ApolloReactCommon.QueryResult<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>;
+export type ProductsByIdsQueryResult = Apollo.QueryResult<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>;
 export function refetchProductsByIdsQuery(variables?: GraphQLProductsByIdsQueryVariables) {
       return { query: ProductsByIdsDocument, variables: variables }
     }
@@ -444,7 +443,7 @@ export const UpdateProductDocument = gql`
   updateProduct(id: $id, data: $data)
 }
     `;
-export type GraphQLUpdateProductMutationFn = ApolloReactCommon.MutationFunction<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>;
+export type GraphQLUpdateProductMutationFn = Apollo.MutationFunction<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>;
 
 /**
  * __useUpdateProductMutation__
@@ -464,12 +463,12 @@ export type GraphQLUpdateProductMutationFn = ApolloReactCommon.MutationFunction<
  *   },
  * });
  */
-export function useUpdateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>) {
-        return ApolloReactHooks.useMutation<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>(UpdateProductDocument, baseOptions);
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>) {
+        return Apollo.useMutation<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>(UpdateProductDocument, baseOptions);
       }
 export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
-export type UpdateProductMutationResult = ApolloReactCommon.MutationResult<GraphQLUpdateProductMutation>;
-export type UpdateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>;
+export type UpdateProductMutationResult = Apollo.MutationResult<GraphQLUpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>;
 export const ProductsDocument = gql`
     subscription products {
   products {
@@ -498,11 +497,11 @@ export const ProductsDocument = gql`
  *   },
  * });
  */
-export function useProductsSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GraphQLProductsSubscription, GraphQLProductsSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<GraphQLProductsSubscription, GraphQLProductsSubscriptionVariables>(ProductsDocument, baseOptions);
+export function useProductsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GraphQLProductsSubscription, GraphQLProductsSubscriptionVariables>) {
+        return Apollo.useSubscription<GraphQLProductsSubscription, GraphQLProductsSubscriptionVariables>(ProductsDocument, baseOptions);
       }
 export type ProductsSubscriptionHookResult = ReturnType<typeof useProductsSubscription>;
-export type ProductsSubscriptionResult = ApolloReactCommon.SubscriptionResult<GraphQLProductsSubscription>;
+export type ProductsSubscriptionResult = Apollo.SubscriptionResult<GraphQLProductsSubscription>;
 export const GetUserDocument = gql`
     query getUser {
   user {
@@ -527,15 +526,15 @@ export const GetUserDocument = gql`
  *   },
  * });
  */
-export function useGetUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>) {
-        return ApolloReactHooks.useQuery<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>(GetUserDocument, baseOptions);
+export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>) {
+        return Apollo.useQuery<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>(GetUserDocument, baseOptions);
       }
-export function useGetUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>(GetUserDocument, baseOptions);
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>) {
+          return Apollo.useLazyQuery<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>(GetUserDocument, baseOptions);
         }
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
-export type GetUserQueryResult = ApolloReactCommon.QueryResult<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>;
+export type GetUserQueryResult = Apollo.QueryResult<GraphQLGetUserQuery, GraphQLGetUserQueryVariables>;
 export function refetchGetUserQuery(variables?: GraphQLGetUserQueryVariables) {
       return { query: GetUserDocument, variables: variables }
     }
@@ -547,7 +546,7 @@ export const LoginDocument = gql`
   }
 }
     `;
-export type GraphQLLoginMutationFn = ApolloReactCommon.MutationFunction<GraphQLLoginMutation, GraphQLLoginMutationVariables>;
+export type GraphQLLoginMutationFn = Apollo.MutationFunction<GraphQLLoginMutation, GraphQLLoginMutationVariables>;
 
 /**
  * __useLoginMutation__
@@ -567,18 +566,18 @@ export type GraphQLLoginMutationFn = ApolloReactCommon.MutationFunction<GraphQLL
  *   },
  * });
  */
-export function useLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GraphQLLoginMutation, GraphQLLoginMutationVariables>) {
-        return ApolloReactHooks.useMutation<GraphQLLoginMutation, GraphQLLoginMutationVariables>(LoginDocument, baseOptions);
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<GraphQLLoginMutation, GraphQLLoginMutationVariables>) {
+        return Apollo.useMutation<GraphQLLoginMutation, GraphQLLoginMutationVariables>(LoginDocument, baseOptions);
       }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = ApolloReactCommon.MutationResult<GraphQLLoginMutation>;
-export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<GraphQLLoginMutation, GraphQLLoginMutationVariables>;
+export type LoginMutationResult = Apollo.MutationResult<GraphQLLoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<GraphQLLoginMutation, GraphQLLoginMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout
 }
     `;
-export type GraphQLLogoutMutationFn = ApolloReactCommon.MutationFunction<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>;
+export type GraphQLLogoutMutationFn = Apollo.MutationFunction<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>;
 
 /**
  * __useLogoutMutation__
@@ -596,9 +595,9 @@ export type GraphQLLogoutMutationFn = ApolloReactCommon.MutationFunction<GraphQL
  *   },
  * });
  */
-export function useLogoutMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>) {
-        return ApolloReactHooks.useMutation<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>(LogoutDocument, baseOptions);
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>) {
+        return Apollo.useMutation<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>(LogoutDocument, baseOptions);
       }
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
-export type LogoutMutationResult = ApolloReactCommon.MutationResult<GraphQLLogoutMutation>;
-export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>;
+export type LogoutMutationResult = Apollo.MutationResult<GraphQLLogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<GraphQLLogoutMutation, GraphQLLogoutMutationVariables>;

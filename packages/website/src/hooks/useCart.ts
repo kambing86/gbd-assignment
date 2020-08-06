@@ -183,7 +183,8 @@ export const useCartProductsState = () => {
     [],
   );
   const setCartProduct = useRecoilCallback(
-    ({ snapshot, set }) => async (id: number, newProduct: Product) => {
+    ({ snapshot, set }) => async (newProduct: Product) => {
+      const { id } = newProduct;
       const recoilState = cartProductsFamily(id);
       const curProduct = await snapshot.getPromise(recoilState);
       const product = cartProductDiff(newProduct, curProduct);
@@ -249,7 +250,7 @@ export const useGetCart = () => {
       }) as Product[];
       if (valid) {
         for (const product of newCartProducts) {
-          setCartProduct(product.id, product);
+          setCartProduct(product);
         }
       } else {
         fixCart(newCartProducts);
