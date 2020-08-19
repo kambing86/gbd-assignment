@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const Login = (): JSX.Element => {
   useAuth();
   const classes = useStyles();
   const {
@@ -157,4 +157,6 @@ export default function Login() {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default React.memo(Login);

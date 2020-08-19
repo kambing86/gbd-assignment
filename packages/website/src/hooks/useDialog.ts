@@ -1,41 +1,31 @@
-import { useCallback } from "react";
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import create from "zustand";
+import shallow from "zustand/shallow";
 
-interface DialogState {
-  open: boolean;
+interface Store {
+  isOpen: boolean;
   title: string;
   description: string;
+  open: (title: string, description: string) => void;
+  close: () => void;
 }
 
-const DIALOG_KEY = "dialog";
-const dialogState = atom<DialogState>({
-  key: DIALOG_KEY,
-  default: {
-    open: false,
-    title: "",
-    description: "",
-  },
+const useStore = create<Store>((set) => ({
+  isOpen: false,
+  title: "",
+  description: "",
+  open: (title, description) => set({ isOpen: true, title, description }),
+  close: () => set({ isOpen: false }),
+}));
+
+const dispatchSelector = (store: Store) => ({
+  open: store.open,
+  close: store.close,
 });
 
 export const useSetDialog = () => {
-  const setState = useSetRecoilState(dialogState);
-  const open = useCallback(
-    (title: string, description: string) => {
-      setState({
-        open: true,
-        title,
-        description,
-      });
-    },
-    [setState],
-  );
-  const close = useCallback(() => {
-    setState((prev) => ({ ...prev, open: false }));
-  }, [setState]);
-  return { open, close };
+  return useStore(dispatchSelector, shallow);
 };
 
 export const useGetDialog = () => {
-  const state = useRecoilValue(dialogState);
-  return state;
+  return useStore();
 };

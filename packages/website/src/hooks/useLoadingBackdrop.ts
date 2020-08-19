@@ -1,15 +1,21 @@
 import { useCallback } from "react";
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import create, { SetState } from "zustand";
 
 interface LoadingState {
   [key: string]: number | undefined;
 }
 
-const LOADING_KEY = "loading";
-const loadingState = atom<LoadingState>({
-  key: LOADING_KEY,
-  default: {},
-});
+interface Store {
+  loadingState: LoadingState;
+  set: SetState<Store>;
+}
+
+const useStore = create<Store>((set) => ({
+  loadingState: {},
+  set,
+}));
+
+const dispatchSelector = (store: Store) => store.set;
 
 const addLoadingKey = (loading: LoadingState, key: string) => {
   const val = loading[key];
@@ -41,9 +47,9 @@ const subtractLoadingKey = (loading: LoadingState, key: string) => {
   return returnObj;
 };
 
-const shouldShowLoading = (loading: LoadingState) => {
-  for (const key in loading) {
-    if (loading[key]) {
+const shouldShowLoading = (loadingState: LoadingState) => {
+  for (const key in loadingState) {
+    if (loadingState[key]) {
       return true;
     }
   }
@@ -51,14 +57,18 @@ const shouldShowLoading = (loading: LoadingState) => {
 };
 
 export const useSetLoadingBackdrop = (loadingKey: string) => {
-  const setLoading = useSetRecoilState(loadingState);
+  const setLoading = useStore(dispatchSelector);
   const setLoadingCallback = useCallback(
     (isLoading: boolean) => {
       if (loadingKey === undefined) return;
       if (isLoading) {
-        setLoading((prev) => addLoadingKey(prev, loadingKey));
+        setLoading((prev) => ({
+          loadingState: addLoadingKey(prev.loadingState, loadingKey),
+        }));
       } else {
-        setLoading((prev) => subtractLoadingKey(prev, loadingKey));
+        setLoading((prev) => ({
+          loadingState: subtractLoadingKey(prev.loadingState, loadingKey),
+        }));
       }
     },
     [loadingKey, setLoading],
@@ -67,6 +77,8 @@ export const useSetLoadingBackdrop = (loadingKey: string) => {
 };
 
 export const useGetLoading = () => {
-  const loading = useRecoilValue(loadingState);
-  return shouldShowLoading(loading);
+  const loadingState = useStore(
+    useCallback((store: Store) => store.loadingState, []),
+  );
+  return shouldShowLoading(loadingState);
 };

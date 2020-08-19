@@ -14,4 +14,4 @@ const Loading = (): JSX.Element => {
   );
 };
 
-export default Loading;
+export default React.memo(Loading);

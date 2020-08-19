@@ -9,9 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
-import { RecoilState, useRecoilValue } from "recoil";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   itemGrid: {
     width: "100%",
   },
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   id: number;
-  getProduct: (param: number) => RecoilState<ProductData | undefined>;
+  useGetProduct: (param: number) => ProductData | undefined;
   itemClickHandler: (event: MouseEvent) => void;
   buttonAction: string;
   buttonText: string;
@@ -50,13 +49,13 @@ interface Props {
 
 const ProductItem = ({
   id,
-  getProduct,
+  useGetProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
 }: Props): JSX.Element | null => {
   const classes = useStyles();
-  const product = useRecoilValue(getProduct(id));
+  const product = useGetProduct(id);
   if (product === undefined) return null;
   return (
     <Grid item className={classes.itemGrid} sm={6} md={4} lg={3}>

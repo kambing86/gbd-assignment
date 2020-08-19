@@ -1,19 +1,43 @@
 import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
+import produce from "immer";
 import { useCallback, useEffect, useMemo } from "react";
-import { atomFamily, useRecoilCallback } from "recoil";
+import create from "zustand";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
+
+interface ProductState {
+  [key: number]: Product | undefined;
+}
+
+interface Store {
+  productState: ProductState;
+}
+
+const useStore = create<Store>(() => ({
+  productState: {},
+}));
+
+const setProduct = (product: Product) => {
+  const { id } = product;
+  const prev = useStore.getState().productState[id];
+  if (prev !== product) {
+    useStore.setState(
+      produce((state) => {
+        state.productState[id] = product;
+      }),
+    );
+  }
+};
+
+const useGetProduct = (id: number) => {
+  return useStore(useCallback((store: Store) => store.productState[id], [id]));
+};
 
 interface options {
   itemsPerPage: number;
   productClicked?: (product?: Product, action?: string) => void;
   onShelfOnly?: boolean;
 }
-
-const paginatedProductFamily = atomFamily<Product | undefined, number>({
-  key: "paginatedProductFamily",
-  default: undefined,
-});
 
 // onShelfOnly is for initialize only
 export const usePaginatedProducts = ({
@@ -33,26 +57,15 @@ export const usePaginatedProducts = ({
     dataClicked: productClicked,
   });
   const { rowsData } = result;
-  const setProduct = useRecoilCallback(
-    ({ snapshot, set }) => async (product: Product) => {
-      const { id } = product;
-      const recoilState = paginatedProductFamily(id);
-      const prev = await snapshot.getPromise(recoilState);
-      if (prev !== product) {
-        set(recoilState, product);
-      }
-    },
-    [],
-  );
   useEffect(() => {
     if (rowsData === undefined) return;
     for (const product of rowsData.rows) {
       setProduct(product);
     }
-  }, [rowsData, setProduct]);
+  }, [rowsData]);
   const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
   const productIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];
   }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
-  return { ...result, productIds, paginatedProductFamily };
+  return { ...result, productIds, useGetProduct };
 };

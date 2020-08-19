@@ -6,7 +6,7 @@ import MainLayout from "components/common/MainLayout";
 import PlaceOrder from "components/customer/PlaceOrder";
 import ProductGrid from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
-import { useCartProductsState, useGetCart, useSetCart } from "hooks/useCart";
+import { useGetCart, useSetCart } from "hooks/useCart";
 import React, { MouseEvent, useCallback, useMemo } from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,22 +22,20 @@ const useStyles = makeStyles((theme) => ({
 export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { cart, cartProducts, loading, cartProductsFamily } = useGetCart();
+  const { cart, cartProducts, loading, useGetProduct } = useGetCart();
   const { removeFromCart } = useSetCart();
-  const { getCartProductAsync } = useCartProductsState();
   const itemClickHandler = useCallback(
-    async (event: MouseEvent) => {
+    (event: MouseEvent) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const dataset = event.currentTarget.dataset as Dataset;
       const id = Number(dataset.id);
       const action = dataset.action;
-      const product = await getCartProductAsync(id);
-      if (product && action === "removeFromCart") {
-        removeFromCart(product);
+      if (action === "removeFromCart") {
+        removeFromCart(id);
       }
     },
-    [getCartProductAsync, removeFromCart],
+    [removeFromCart],
   );
   const checkDuplicate = JSON.stringify(Object.keys(cart));
   const productIds = useMemo(() => {
@@ -73,7 +71,7 @@ export default function Cart() {
             <ProductGrid
               {...{
                 productIds,
-                getProduct: cartProductsFamily,
+                useGetProduct,
                 itemClickHandler,
                 buttonAction: "removeFromCart",
                 buttonText: "Remove from Cart",

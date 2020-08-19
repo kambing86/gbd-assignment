@@ -140,4 +140,4 @@ const OrderDetailDialog = ({ handleClose, order }: Props): JSX.Element => {
   );
 };
 
-export default OrderDetailDialog;
+export default React.memo(OrderDetailDialog);

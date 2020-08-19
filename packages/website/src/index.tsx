@@ -1,18 +1,15 @@
 import { ApolloProvider } from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom";
-import { RecoilRoot } from "recoil";
 import App from "./App";
 import { client } from "./graphql/apolloClient";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
-    <RecoilRoot>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
-    </RecoilRoot>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root"),
 );

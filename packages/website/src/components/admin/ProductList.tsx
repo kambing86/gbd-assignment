@@ -30,7 +30,7 @@ const ProductList = (): JSX.Element => {
     itemClickHandler,
     pageClickHandler,
     productIds,
-    paginatedProductFamily,
+    useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked: setEditProduct,
@@ -47,7 +47,7 @@ const ProductList = (): JSX.Element => {
       <ProductTable
         {...{
           productIds,
-          getProduct: paginatedProductFamily,
+          useGetProduct,
           itemClickHandler,
         }}
       />

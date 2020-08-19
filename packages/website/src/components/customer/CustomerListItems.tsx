@@ -16,4 +16,4 @@ const CustomerListItems = (): JSX.Element => (
   </>
 );
 
-export default CustomerListItems;
+export default React.memo(CustomerListItems);

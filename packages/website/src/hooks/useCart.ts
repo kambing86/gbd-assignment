@@ -1,23 +1,9 @@
-import { useCallback, useEffect, useMemo } from "react";
-import {
-  SetterOrUpdater,
-  atom,
-  atomFamily,
-  useRecoilCallback,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { produce } from "immer";
+import { useCallback, useEffect } from "react";
+import create from "zustand";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { useSetDialog } from "./useDialog";
 import { Product, useGetProductsByIds } from "./useProducts";
-
-export interface Cart {
-  [key: string]: number | undefined;
-}
-
-export interface CartProduct {
-  [key: number]: Product | undefined;
-}
 
 const CART_KEY = "cart";
 
@@ -25,10 +11,33 @@ function getCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "{}") as Cart;
 }
 
-const cartState = atom<Cart>({
-  key: CART_KEY,
-  default: getCart(),
-});
+export interface Cart {
+  [key: string]: number | undefined;
+}
+
+type CartProduct = Omit<Product, "quantity">;
+
+interface CartProducts {
+  [key: number]: CartProduct | undefined;
+}
+
+interface Store {
+  cart: Cart;
+  cartProducts: CartProducts;
+}
+
+const useStore = create<Store>(() => ({
+  cart: getCart(),
+  cartProducts: {},
+}));
+
+const saveAndSetCart = (updater: (prev: Cart) => Cart) => {
+  useStore.setState((prev) => {
+    const nextCart = updater(prev.cart);
+    localStorage.setItem(CART_KEY, JSON.stringify(nextCart));
+    return { cart: nextCart };
+  });
+};
 
 export const totalCartCount = (cart: Cart) => {
   let count = 0;
@@ -38,7 +47,7 @@ export const totalCartCount = (cart: Cart) => {
   return count;
 };
 
-export const totalAmountCount = (cart: Cart, cartProducts: CartProduct) => {
+export const totalAmountCount = (cart: Cart, cartProducts: CartProducts) => {
   let amount = 0;
   for (const id in cart) {
     const quantity = cart[id] as number;
@@ -49,23 +58,9 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProduct) => {
   return amount;
 };
 
-function saveCartToLocalStorage(setCart: SetterOrUpdater<Cart>) {
-  return (updater: (prev: Cart) => Cart) => {
-    setCart((prev) => {
-      const nextCart = updater(prev);
-      localStorage.setItem(CART_KEY, JSON.stringify(nextCart));
-      return nextCart;
-    });
-  };
-}
-
 // limit to 10 different types of product
 export const useSetCart = () => {
   const { open } = useSetDialog();
-  const setCart = useSetRecoilState(cartState);
-  const saveAndSetCart = useMemo(() => saveCartToLocalStorage(setCart), [
-    setCart,
-  ]);
   const addToCart = useCallback(
     (product: Product) => {
       const id = String(product.id);
@@ -92,71 +87,54 @@ export const useSetCart = () => {
         };
       });
     },
-    [saveAndSetCart, open],
+    [open],
   );
-  const removeFromCart = useCallback(
-    (product: Product) => {
-      const id = String(product.id);
-      saveAndSetCart((prev) => {
-        let returnObj = { ...prev };
-        const quantity = prev[id];
-        if (quantity) {
-          returnObj = {
-            ...prev,
-            [id]: quantity - 1,
-          };
-        }
-        if (returnObj[id] === 0) {
-          delete returnObj[id];
-        }
-        return returnObj;
-      });
-    },
-    [saveAndSetCart],
-  );
-  const fixCart = useCallback(
-    (cartProducts: Product[]) => {
-      saveAndSetCart((prev) => {
-        const cartObj = { ...prev };
-        for (const key in cartObj) {
-          const inCart = cartObj[key] as number;
-          const id = Number(key);
-          const product = cartProducts.find((p) => p.id === id);
-          if (product) {
-            if (inCart > product.quantity) {
-              cartObj[key] = product.quantity;
-            }
-            if (!product.isUp) {
-              delete cartObj[key];
-              continue;
-            }
+  const removeFromCart = useCallback((id: number) => {
+    saveAndSetCart((prev) => {
+      let returnObj = { ...prev };
+      const quantity = prev[id];
+      if (quantity) {
+        returnObj = {
+          ...prev,
+          [id]: quantity - 1,
+        };
+      }
+      if (returnObj[id] === 0) {
+        delete returnObj[id];
+      }
+      return returnObj;
+    });
+  }, []);
+  const fixCart = useCallback((cartProducts: Product[]) => {
+    saveAndSetCart((prev) => {
+      const cartObj = { ...prev };
+      for (const key in cartObj) {
+        const inCart = cartObj[key] as number;
+        const id = Number(key);
+        const product = cartProducts.find((p) => p.id === id);
+        if (product) {
+          if (inCart > product.quantity) {
+            cartObj[key] = product.quantity;
           }
-          if (cartObj[key] === 0) {
+          if (!product.isUp) {
             delete cartObj[key];
+            continue;
           }
         }
-        return cartObj;
-      });
-    },
-    [saveAndSetCart],
-  );
+        if (cartObj[key] === 0) {
+          delete cartObj[key];
+        }
+      }
+      return cartObj;
+    });
+  }, []);
   const clearCart = useCallback(() => {
     saveAndSetCart(() => ({}));
-  }, [saveAndSetCart]);
+  }, []);
   return { addToCart, removeFromCart, fixCart, clearCart };
 };
 
-const cartProductsState = atom<CartProduct>({
-  key: "cartProductsState",
-  default: {},
-});
-
-const cartProductsFamily = atomFamily<Product | undefined, number>({
-  key: "cartProductsFamily",
-  default: undefined,
-});
-
-function cartProductDiff(newProduct: Product, currProduct?: Product) {
+function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
   if (currProduct === undefined) {
     return newProduct;
   }
@@ -166,7 +144,6 @@ function cartProductDiff(newProduct: Product, currProduct?: Product) {
   if (
     newProduct.name !== currProduct.name ||
     newProduct.isUp !== currProduct.isUp ||
-    newProduct.quantity !== currProduct.quantity ||
     newProduct.price !== currProduct.price
   ) {
     return newProduct;
@@ -174,37 +151,43 @@ function cartProductDiff(newProduct: Product, currProduct?: Product) {
   return currProduct;
 }
 
-export const useCartProductsState = () => {
-  const getCartProductAsync = useRecoilCallback(
-    ({ snapshot }) => async (id: number) => {
-      const recoilState = cartProductsFamily(id);
-      return await snapshot.getPromise(recoilState);
-    },
-    [],
+const useGetCartProduct = (id: number) => {
+  const cartProduct = useStore(
+    useCallback((store: Store) => store.cartProducts[id], [id]),
   );
-  const setCartProduct = useRecoilCallback(
-    ({ snapshot, set }) => async (newProduct: Product) => {
-      const { id } = newProduct;
-      const recoilState = cartProductsFamily(id);
-      const curProduct = await snapshot.getPromise(recoilState);
-      const product = cartProductDiff(newProduct, curProduct);
-      if (curProduct !== product) {
-        set(recoilState, product);
-        set(cartProductsState, (prev) => ({ ...prev, [id]: product }));
+  const quantity =
+    useStore(useCallback((store: Store) => store.cart[id], [id])) || 0;
+  return cartProduct !== undefined
+    ? {
+        ...cartProduct,
+        quantity,
       }
-    },
-    [],
-  );
-  return { getCartProductAsync, setCartProduct };
+    : undefined;
 };
 
+const setCartProduct = (newProduct: CartProduct) => {
+  const { id } = newProduct;
+  const curProduct = useStore.getState().cartProducts[id];
+  const product = cartProductDiff(newProduct, curProduct);
+  if (curProduct !== product) {
+    useStore.setState(
+      produce((store: Store) => {
+        store.cartProducts[id] = product;
+      }),
+    );
+  }
+};
+
+const stateSelector = (store: Store) => ({
+  cart: store.cart,
+  cartProducts: store.cartProducts,
+});
+
 export const useGetCart = () => {
-  const cart = useRecoilValue(cartState);
+  const { cart, cartProducts } = useStore(stateSelector);
   const cartRef = useRefInSync(cart);
-  const cartProducts = useRecoilValue(cartProductsState);
   const cartProductsRef = useRefInSync(cartProducts);
   const { fixCart } = useSetCart();
-  const { setCartProduct } = useCartProductsState();
   const [result, getProductsByIds] = useGetProductsByIds();
   const { called, loading, data } = result;
   const calledRef = useRefInSync(called);
@@ -241,13 +224,9 @@ export const useGetCart = () => {
         }
         if (p.quantity < inCart) {
           valid = false;
-          return p;
         }
-        return {
-          ...p,
-          quantity: inCart,
-        };
-      }) as Product[];
+        return p;
+      });
       if (valid) {
         for (const product of newCartProducts) {
           setCartProduct(product);
@@ -256,11 +235,11 @@ export const useGetCart = () => {
         fixCart(newCartProducts);
       }
     }
-  }, [loading, data, setCartProduct, cartRef, fixCart]);
+  }, [loading, data, cartRef, fixCart]);
   return {
     cart,
     cartProducts,
     loading,
-    cartProductsFamily,
+    useGetProduct: useGetCartProduct,
   };
 };

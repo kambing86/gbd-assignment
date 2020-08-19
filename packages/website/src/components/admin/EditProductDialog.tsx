@@ -140,4 +140,4 @@ const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
   );
 };
 
-export default EditProductDialog;
+export default React.memo(EditProductDialog);

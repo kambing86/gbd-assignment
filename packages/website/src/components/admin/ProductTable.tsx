@@ -5,18 +5,17 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
-import { RecoilState } from "recoil";
 import ProductRow from "./ProductRow";
 
 interface Props {
   productIds: number[];
-  getProduct: (param: number) => RecoilState<ProductData | undefined>;
+  useGetProduct: (param: number) => ProductData | undefined;
   itemClickHandler: (event: MouseEvent) => void;
 }
 
 const ProductTable = ({
   productIds,
-  getProduct,
+  useGetProduct,
   itemClickHandler,
 }: Props): JSX.Element => {
   return (
@@ -35,7 +34,7 @@ const ProductTable = ({
             key={id}
             {...{
               id,
-              getProduct,
+              useGetProduct,
               itemClickHandler,
             }}
           />

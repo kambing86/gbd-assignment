@@ -1,12 +1,20 @@
-import { atom, useRecoilState } from "recoil";
+import create from "zustand";
 
-const DRAWER_OPEN_KEY = "drawerOpen";
+interface Store {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
-const drawerOpenState = atom<boolean>({
-  key: DRAWER_OPEN_KEY,
-  default: true,
-});
+const useStore = create<Store>((set) => ({
+  isOpen: true,
+  setIsOpen: (isOpen) => set({ isOpen }),
+}));
+
+const selector = (store: Store): [Store["isOpen"], Store["setIsOpen"]] => [
+  store.isOpen,
+  store.setIsOpen,
+];
 
 export const useDrawer = () => {
-  return useRecoilState(drawerOpenState);
+  return useStore(selector);
 };

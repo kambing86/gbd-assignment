@@ -8,4 +8,4 @@ const AdminListItems = (): JSX.Element => (
   </>
 );
 
-export default AdminListItems;
+export default React.memo(AdminListItems);

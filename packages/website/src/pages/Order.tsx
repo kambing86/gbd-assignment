@@ -143,4 +143,4 @@ const Order = (): JSX.Element => {
   );
 };
 
-export default Order;
+export default React.memo(Order);

@@ -1,21 +1,27 @@
-import { atom, useRecoilValue, useSetRecoilState } from "recoil";
+import { useCallback } from "react";
+import create from "zustand";
 
 interface User {
   username: string;
   isAdmin: boolean;
 }
 
-const USER_KEY = "user";
+interface Store {
+  user: User | undefined;
+  setUser: (user: User | undefined) => void;
+}
 
-const userState = atom<User | undefined>({
-  key: USER_KEY,
-  default: undefined,
-});
+const useStore = create<Store>((set) => ({
+  user: undefined,
+  setUser: (user) => set({ user }),
+}));
+
+const dispatchSelector = (store: Store) => store.setUser;
 
 export const useGetUser = () => {
-  return useRecoilValue(userState);
+  return useStore(useCallback((store: Store) => store.user, []));
 };
 
 export const useSetUser = () => {
-  return useSetRecoilState(userState);
+  return useStore(dispatchSelector);
 };

@@ -5,7 +5,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { useCallback, useEffect } from "react";
-import { atom, useRecoilState } from "recoil";
+import create from "zustand";
 import useStateWithRef from "./helpers/useStateWithRef";
 
 // set it here https://material-ui.com/customization/default-theme/
@@ -52,17 +52,23 @@ function getSavedType() {
   return localStorage.getItem(THEME_TYPE_KEY) as PaletteType | null;
 }
 
-const themeTypeState = atom<PaletteType>({
-  key: THEME_TYPE_KEY,
-  default: getSavedType() ?? "light",
-});
+interface Store {
+  themeType: PaletteType;
+  setThemeType: (theme: PaletteType) => void;
+}
+
+const useStore = create<Store>((set) => ({
+  themeType: getSavedType() ?? "light",
+  setThemeType: (theme) => set({ themeType: theme }),
+}));
 
 // if user change the theme, it should save to localStorage and use it
 // else will change the theme based on the machine dark mode
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [themeType, setThemeType] = useRecoilState(themeTypeState);
+  const { themeType, setThemeType } = useStore();
   const [themeRef, setTheme] = useStateWithRef(getTheme(themeType));
+  // if localStorage has no saved theme type, then set using media query
   useEffect(() => {
     if (getSavedType() !== null) return;
     if (prefersDarkMode) {
@@ -79,19 +85,13 @@ export const useAppTheme = () => {
     }
   }, [themeType, setTheme]);
   const toggleDarkMode = useCallback(() => {
-    if (themeRef.current.palette.type === "light") {
+    if (themeType === "light") {
       localStorage.setItem(THEME_TYPE_KEY, "dark");
       setThemeType("dark");
     } else {
       localStorage.setItem(THEME_TYPE_KEY, "light");
       setThemeType("light");
     }
-  }, [themeRef, setThemeType]);
-  // for debugging
-  // useEffect(() => {
-  //   // @ts-ignore
-  //   window.theme = theme.current;
-  // }, [theme, theme.current]);
-  // useDebugValue(theme);
+  }, [themeType, setThemeType]);
   return { theme: themeRef.current, toggleDarkMode };
 };

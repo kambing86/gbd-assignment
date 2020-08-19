@@ -1,12 +1,11 @@
 import Grid from "@material-ui/core/Grid";
 import { Product as ProductData } from "hooks/useProducts";
 import React, { MouseEvent } from "react";
-import { RecoilState } from "recoil";
 import ProductItem from "./ProductItem";
 
 interface Props {
   productIds: number[];
-  getProduct: (param: number) => RecoilState<ProductData | undefined>;
+  useGetProduct: (param: number) => ProductData | undefined;
   itemClickHandler: (event: MouseEvent) => void;
   buttonAction: string;
   buttonText: string;
@@ -14,7 +13,7 @@ interface Props {
 
 const ProductGrid = ({
   productIds,
-  getProduct,
+  useGetProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
@@ -26,7 +25,7 @@ const ProductGrid = ({
           key={id}
           {...{
             id,
-            getProduct,
+            useGetProduct,
             itemClickHandler,
             buttonAction,
             buttonText,

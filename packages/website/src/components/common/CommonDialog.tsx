@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useGetDialog, useSetDialog } from "hooks/useDialog";
 import React from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   notSelected: {
     userSelect: "none",
   },
@@ -20,7 +20,7 @@ const CommonDialog = (): JSX.Element => {
   const { close } = useSetDialog();
   return (
     <Dialog
-      open={state.open}
+      open={state.isOpen}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       disableBackdropClick={true}

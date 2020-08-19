@@ -41,7 +41,7 @@ const Customer = (): JSX.Element => {
     itemClickHandler,
     pageClickHandler,
     productIds,
-    paginatedProductFamily,
+    useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     productClicked,
@@ -59,7 +59,7 @@ const Customer = (): JSX.Element => {
           <ProductGrid
             {...{
               productIds,
-              getProduct: paginatedProductFamily,
+              useGetProduct,
               itemClickHandler,
               buttonAction: "addToCart",
               buttonText: "Add to Cart",
