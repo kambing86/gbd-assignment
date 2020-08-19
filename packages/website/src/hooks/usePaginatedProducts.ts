@@ -63,9 +63,9 @@ export const usePaginatedProducts = ({
       setProduct(product);
     }
   }, [rowsData]);
-  const checkDuplicate = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const idsChange = JSON.stringify(rowsData?.rows.map((r) => r.id));
   const productIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];
-  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
   return { ...result, productIds, useGetProduct };
 };

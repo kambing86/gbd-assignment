@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import create from "zustand";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { useSetDialog } from "./useDialog";
@@ -236,10 +236,24 @@ export const useGetCart = () => {
       }
     }
   }, [loading, data, cartRef, fixCart]);
+  const idsChange = JSON.stringify(Object.keys(cart));
+  const productIds = useMemo(() => {
+    return Object.keys(cart).map((id) => Number(id));
+  }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
+  const isReady = useMemo(() => {
+    const readyIds = Object.keys(cartProducts).map((id) => Number(id));
+    for (const id of productIds) {
+      if (!readyIds.includes(id)) return false;
+    }
+    return true;
+  }, [cartProducts, productIds]);
+  const isLoading = !isReady || loading;
   return {
     cart,
     cartProducts,
-    loading,
+    productIds,
+    isReady,
+    isLoading,
     useGetProduct: useGetCartProduct,
   };
 };

@@ -21,13 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
-  isLoading: boolean;
-}
-
-const PlaceOrder = ({ isLoading }: Props): JSX.Element | null => {
+const PlaceOrder = (): JSX.Element | null => {
   const classes = useStyles();
-  const { cart, cartProducts } = useGetCart();
+  const { cart, cartProducts, isLoading } = useGetCart();
   const cartRef = useRefInSync(cart);
   const { clearCart } = useSetCart();
   const [result, createOrder] = useCreateOrder();

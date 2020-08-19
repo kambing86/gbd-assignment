@@ -7,7 +7,7 @@ import PlaceOrder from "components/customer/PlaceOrder";
 import ProductGrid from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useGetCart, useSetCart } from "hooks/useCart";
-import React, { MouseEvent, useCallback, useMemo } from "react";
+import React, { MouseEvent, useCallback } from "react";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { cart, cartProducts, loading, useGetProduct } = useGetCart();
+  const { productIds, isReady, useGetProduct } = useGetCart();
   const { removeFromCart } = useSetCart();
   const itemClickHandler = useCallback(
     (event: MouseEvent) => {
@@ -37,18 +37,6 @@ export default function Cart() {
     },
     [removeFromCart],
   );
-  const checkDuplicate = JSON.stringify(Object.keys(cart));
-  const productIds = useMemo(() => {
-    return Object.keys(cart).map((id) => Number(id));
-  }, [checkDuplicate]); // eslint-disable-line react-hooks/exhaustive-deps
-  const isReady = useMemo(() => {
-    const readyIds = Object.keys(cartProducts).map((id) => Number(id));
-    for (const id of productIds) {
-      if (!readyIds.includes(id)) return false;
-    }
-    return true;
-  }, [cartProducts, productIds]);
-  const isLoading = !isReady || loading;
 
   return (
     <MainLayout>
@@ -64,9 +52,7 @@ export default function Cart() {
               Your cart is empty
             </Typography>
           )}
-          {isReady && productIds.length !== 0 && (
-            <PlaceOrder isLoading={isLoading} />
-          )}
+          {isReady && productIds.length !== 0 && <PlaceOrder />}
           {isReady && (
             <ProductGrid
               {...{
@@ -78,9 +64,7 @@ export default function Cart() {
               }}
             />
           )}
-          {isReady && productIds.length > 4 && (
-            <PlaceOrder isLoading={isLoading} />
-          )}
+          {isReady && productIds.length > 4 && <PlaceOrder />}
         </>
       </Container>
     </MainLayout>
