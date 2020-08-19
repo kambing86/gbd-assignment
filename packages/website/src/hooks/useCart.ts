@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import produce from "immer";
 import { useCallback, useEffect, useMemo } from "react";
 import create from "zustand";
 import { useRefInSync } from "./helpers/useRefInSync";

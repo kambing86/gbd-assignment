@@ -10,6 +10,7 @@ import {
   useProductsByIdsLazyQuery,
   useUpdateProductMutation,
 } from "graphql/types-and-hooks";
+import produce from "immer";
 import { useCallback, useEffect } from "react";
 
 export type Product = GraphQLProduct;
@@ -63,13 +64,9 @@ export const useGetProducts = (
           if (onShelf) {
             rows = rows.filter((r) => r.isUp);
           }
-          return {
-            ...prev,
-            products: {
-              ...prev.products,
-              rows,
-            },
-          };
+          return produce(prev, (state) => {
+            state.products.rows = rows;
+          });
         },
       });
     }
@@ -120,11 +117,11 @@ export const useGetProductsByIds = (): [
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const newProduct = subscriptionData.data.products as Product;
-          return {
-            products: prev.products.map((old) =>
+          return produce(prev, (state) => {
+            state.products = state.products.map((old) =>
               mapOldToNewProduct(old, newProduct),
-            ),
-          };
+            );
+          });
         },
       });
     }
