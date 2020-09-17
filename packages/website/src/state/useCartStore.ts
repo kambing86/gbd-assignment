@@ -2,7 +2,7 @@ import { Product } from "hooks/useProducts";
 import produce from "immer";
 import { isEqual } from "lodash";
 import { useCallback } from "react";
-import { create } from "state";
+import { CustomSetState, create } from "state";
 import shallow from "zustand/shallow";
 
 const CART_KEY = "cart";
@@ -45,17 +45,20 @@ type Store = {
   setCartProduct: (product: CartProduct) => void;
 };
 
-function setAndSaveCart(immerUpdate: (state: Store) => void) {
-  const updater = produce(immerUpdate);
-  return (currentState: Store) => {
-    const nextState = updater(currentState);
-    localStorage.setItem(CART_KEY, JSON.stringify(nextState.cart));
-    return nextState;
+function setAndSaveCart(set: CustomSetState<Store>) {
+  return (immerUpdate: (cart: Cart) => Cart | void, actionName: string) => {
+    const updater = produce(immerUpdate);
+    set((state: Store) => {
+      const nextCart = updater(state.cart);
+      localStorage.setItem(CART_KEY, JSON.stringify(nextCart));
+      return { ...state, cart: nextCart };
+    }, actionName);
   };
 }
 
-const useStore = create<Store>(
-  (set, get) => ({
+const useStore = create<Store>((set, get) => {
+  const saveCart = setAndSaveCart(set);
+  return {
     cart: getInitialCart(),
     cartProducts: {},
     getCart: () => get().cart,
@@ -63,60 +66,48 @@ const useStore = create<Store>(
       const id = String(product.id);
       const existing = get().cart[id] || 0;
       if (existing < product.quantity) {
-        set(
-          setAndSaveCart((state) => {
-            state.cart[id] = existing + 1;
-          }),
-          "addToCart",
-        );
+        saveCart((cart) => {
+          cart[id] = existing + 1;
+        }, "addToCart");
       }
     },
     removeFromCart: (productId) => {
       const id = String(productId);
       const existing = get().cart[id] || 0;
       const result = existing - 1;
-      set(
-        setAndSaveCart((state) => {
-          if (result <= 0) {
-            delete state.cart[id];
-          } else {
-            state.cart[id] = result;
-          }
-        }),
-        "removeFromCart",
-      );
+      saveCart((cart) => {
+        if (result <= 0) {
+          delete cart[id];
+        } else {
+          cart[id] = result;
+        }
+      }, "removeFromCart");
     },
     clearCart: () => {
-      set(
-        setAndSaveCart((state) => {
-          state.cart = {};
-        }),
-        "clearCart",
-      );
+      saveCart(() => {
+        return {};
+      }, "clearCart");
     },
     fixCart: (cartProducts) => {
-      set(
-        setAndSaveCart((state) => {
-          for (const key in state.cart) {
-            const id = Number(key);
-            const product = cartProducts.find((p) => p.id === id);
-            if (product) {
-              const inCart = state.cart[key] as number;
-              if (inCart > product.quantity) {
-                state.cart[key] = product.quantity;
-              }
-              if (!product.isUp) {
-                delete state.cart[key];
-                continue;
-              }
+      saveCart((cart) => {
+        for (const key in cart) {
+          const id = Number(key);
+          const product = cartProducts.find((p) => p.id === id);
+          if (product) {
+            const inCart = cart[key] as number;
+            if (inCart > product.quantity) {
+              cart[key] = product.quantity;
             }
-            if (state.cart[key] === 0) {
-              delete state.cart[key];
+            if (!product.isUp) {
+              delete cart[key];
+              continue;
             }
           }
-        }),
-        "fixCart",
-      );
+          if (cart[key] === 0) {
+            delete cart[key];
+          }
+        }
+      }, "fixCart");
     },
     setCartProduct: (newProduct) => {
       const { id } = newProduct;
@@ -128,9 +119,8 @@ const useStore = create<Store>(
         }, "setCartProduct");
       }
     },
-  }),
-  CART_KEY,
-);
+  };
+}, CART_KEY);
 
 const stateSelector = ({ cart, cartProducts }: Store) => ({
   cart,
