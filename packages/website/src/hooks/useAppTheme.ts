@@ -4,14 +4,14 @@ import {
   createMuiTheme,
   useMediaQuery,
 } from "@material-ui/core";
-import { useCallback, useEffect } from "react";
-import create from "zustand";
-import useStateWithRef from "./helpers/useStateWithRef";
+import { useEffect, useState } from "react";
+import useThemeStore, { DARK, LIGHT, toggleTheme } from "state/useThemeStore";
 
 // set it here https://material-ui.com/customization/default-theme/
-const getTheme = (type: PaletteType) => {
+const getTheme = (themeType: PaletteType | null) => {
+  const type = themeType === DARK ? DARK : LIGHT;
   const options: ThemeOptions =
-    type === "dark"
+    type === DARK
       ? {
           palette: {
             type,
@@ -46,52 +46,23 @@ const getTheme = (type: PaletteType) => {
   return createMuiTheme(options);
 };
 
-const THEME_TYPE_KEY = "themeType";
-
-function getSavedType() {
-  return localStorage.getItem(THEME_TYPE_KEY) as PaletteType | null;
-}
-
-interface Store {
-  themeType: PaletteType;
-  setThemeType: (theme: PaletteType) => void;
-}
-
-const useStore = create<Store>((set) => ({
-  themeType: getSavedType() ?? "light",
-  setThemeType: (theme) => set({ themeType: theme }),
-}));
-
 // if user change the theme, it should save to localStorage and use it
 // else will change the theme based on the machine dark mode
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const { themeType, setThemeType } = useStore();
-  const [themeRef, setTheme] = useStateWithRef(getTheme(themeType));
+  const themeType = useThemeStore();
+  const [theme, setTheme] = useState(getTheme(themeType));
   // if localStorage has no saved theme type, then set using media query
   useEffect(() => {
-    if (getSavedType() !== null) return;
-    if (prefersDarkMode) {
-      setThemeType("dark");
-    } else {
-      setThemeType("light");
-    }
-  }, [prefersDarkMode, setThemeType]);
+    if (!prefersDarkMode || themeType !== null) return;
+    toggleTheme();
+  }, [prefersDarkMode, themeType]);
   useEffect(() => {
-    if (themeType === "dark") {
-      setTheme(getTheme("dark"));
+    if (themeType === DARK) {
+      setTheme(getTheme(DARK));
     } else {
-      setTheme(getTheme("light"));
+      setTheme(getTheme(LIGHT));
     }
-  }, [themeType, setTheme]);
-  const toggleDarkMode = useCallback(() => {
-    if (themeType === "light") {
-      localStorage.setItem(THEME_TYPE_KEY, "dark");
-      setThemeType("dark");
-    } else {
-      localStorage.setItem(THEME_TYPE_KEY, "light");
-      setThemeType("light");
-    }
-  }, [themeType, setThemeType]);
-  return { theme: themeRef.current, toggleDarkMode };
+  }, [themeType]);
+  return { theme, toggleDarkMode: toggleTheme };
 };

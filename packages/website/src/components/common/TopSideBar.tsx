@@ -19,10 +19,9 @@ import AdminListItems from "components/admin/AdminListItems";
 import CartIcon from "components/customer/CartIcon";
 import CustomerListItems from "components/customer/CustomerListItems";
 import { useAppTheme } from "hooks/useAppTheme";
-import { useDrawer } from "hooks/useDrawer";
 import { useLogout } from "hooks/useLogout";
-import { useGetUser } from "hooks/useUser";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
+import { useGetUser } from "state/useUserStore";
 
 const drawerWidth = 180;
 
@@ -85,13 +84,13 @@ const useStyles = makeStyles((theme) => ({
 
 const TopSideBar = (): JSX.Element => {
   const classes = useStyles();
-  const [open, setOpen] = useDrawer();
+  const [isOpen, setIsOpen] = useState(true);
   const handleDrawerOpen = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
+    setIsOpen(true);
+  }, []);
   const handleDrawerClose = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+    setIsOpen(false);
+  }, []);
   const { theme, toggleDarkMode } = useAppTheme();
   const { logout } = useLogout();
   const user = useGetUser();
@@ -101,7 +100,7 @@ const TopSideBar = (): JSX.Element => {
     <>
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        className={clsx(classes.appBar, isOpen && classes.appBarShift)}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -111,7 +110,7 @@ const TopSideBar = (): JSX.Element => {
             onClick={handleDrawerOpen}
             className={clsx(
               classes.menuButton,
-              open && classes.menuButtonHidden,
+              isOpen && classes.menuButtonHidden,
             )}
           >
             <MenuIcon />
@@ -138,9 +137,9 @@ const TopSideBar = (): JSX.Element => {
       <Drawer
         variant="permanent"
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !isOpen && classes.drawerPaperClose),
         }}
-        open={open}
+        open={isOpen}
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>

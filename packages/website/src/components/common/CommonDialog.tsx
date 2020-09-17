@@ -5,8 +5,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
-import { useGetDialog, useSetDialog } from "hooks/useDialog";
 import React from "react";
+import { close as closeDialog, useGetDialog } from "state/useDialogStore";
 
 const useStyles = makeStyles(() => ({
   notSelected: {
@@ -16,28 +16,32 @@ const useStyles = makeStyles(() => ({
 
 const CommonDialog = (): JSX.Element => {
   const classes = useStyles();
-  const state = useGetDialog();
-  const { close } = useSetDialog();
+  const { isOpen, title, description } = useGetDialog();
   return (
     <Dialog
-      open={state.isOpen}
+      open={isOpen}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       disableBackdropClick={true}
     >
       <DialogTitle className={classes.notSelected} id="alert-dialog-title">
-        {state.title}
+        {title}
       </DialogTitle>
       <DialogContent>
         <DialogContentText
           className={classes.notSelected}
           id="alert-dialog-description"
         >
-          {state.description}
+          {description}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={close} color="primary" autoFocus>
+        <Button
+          variant="contained"
+          onClick={closeDialog}
+          color="primary"
+          autoFocus
+        >
           OK
         </Button>
       </DialogActions>

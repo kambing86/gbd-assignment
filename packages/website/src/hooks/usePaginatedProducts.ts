@@ -1,37 +1,8 @@
 import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
-import produce from "immer";
 import { useCallback, useEffect, useMemo } from "react";
-import create from "zustand";
+import { setProduct, useGetProduct } from "state/useProductStore";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
-
-interface ProductState {
-  [key: number]: Product | undefined;
-}
-
-interface Store {
-  productState: ProductState;
-}
-
-const useStore = create<Store>(() => ({
-  productState: {},
-}));
-
-const setProduct = (product: Product) => {
-  const { id } = product;
-  const prev = useStore.getState().productState[id];
-  if (prev !== product) {
-    useStore.setState(
-      produce((state) => {
-        state.productState[id] = product;
-      }),
-    );
-  }
-};
-
-const useGetProduct = (id: number) => {
-  return useStore(useCallback((store: Store) => store.productState[id], [id]));
-};
 
 interface options {
   itemsPerPage: number;

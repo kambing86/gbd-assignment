@@ -1,8 +1,8 @@
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
-import { useGetLoading } from "hooks/useLoadingBackdrop";
 import React from "react";
+import { useShouldShowLoading } from "state/useLoadingStore";
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme) => ({
 
 const LoadingBackdrop = (): JSX.Element => {
   const classes = useStyles();
-  const loading = useGetLoading();
+  const isLoading = useShouldShowLoading();
   return (
-    <Backdrop className={classes.backdrop} open={loading}>
+    <Backdrop className={classes.backdrop} open={isLoading}>
       <CircularProgress color="inherit" />
     </Backdrop>
   );

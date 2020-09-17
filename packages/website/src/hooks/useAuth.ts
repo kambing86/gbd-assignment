@@ -1,8 +1,8 @@
 import { useGetUserLazyQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
+import { useSetLoading } from "state/useLoadingStore";
+import { setUser, useGetUser } from "state/useUserStore";
 import { useRoute } from "./helpers/useRoute";
-import { useSetLoadingBackdrop } from "./useLoadingBackdrop";
-import { useGetUser, useSetUser } from "./useUser";
 
 export const CUSTOMER = "CUSTOMER";
 export const ADMIN = "ADMIN";
@@ -12,10 +12,9 @@ const AUTH_LOADING_KEY = "authLoading";
 
 // if userType if undefined, it's used by login page to redirect user
 export function useAuth(userType?: USER_TYPE) {
-  const setLoading = useSetLoadingBackdrop(AUTH_LOADING_KEY);
+  const setLoading = useSetLoading(AUTH_LOADING_KEY);
   const userState = useGetUser();
   const userRef = useRef(userState);
-  const setUserState = useSetUser();
   const { pushHistory } = useRoute();
   const [userQuery, userResult] = useGetUserLazyQuery({
     fetchPolicy: "no-cache",
@@ -32,7 +31,7 @@ export function useAuth(userType?: USER_TYPE) {
     if (!loading && (error || data)) {
       const user = data?.user;
       if (user) {
-        setUserState(user);
+        setUser(user);
         // for login page
         if (userType === undefined) {
           if (user.isAdmin) {
@@ -46,10 +45,10 @@ export function useAuth(userType?: USER_TYPE) {
           pushHistory("/customer");
         }
       } else {
-        setUserState(undefined);
+        setUser(undefined);
         pushHistory("/");
       }
       setLoading(false);
     }
-  }, [pushHistory, data, error, loading, userType, setUserState, setLoading]);
+  }, [pushHistory, data, error, loading, userType, setLoading]);
 }
