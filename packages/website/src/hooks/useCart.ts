@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import useCartStore, {
   CartProducts,
   Cart as CartType,
-  setCart,
+  addToCart as addProduct,
+  fixCart,
+  getCart,
   setCartProduct,
   useGetCartProduct,
 } from "state/useCartStore";
@@ -31,83 +33,25 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProducts) => {
   return amount;
 };
 
-// limit to 10 different types of product
-export const useSetCart = () => {
-  const addToCart = useCallback((product: Product) => {
-    const id = String(product.id);
-    setCart((prev) => {
-      const existing = prev[id] ?? 0;
-      if (product.quantity <= existing) {
-        openDialog("Sorry", "No more stock");
-        return prev;
-      }
-      if (existing) {
-        return {
-          ...prev,
-          [id]: existing + 1,
-        };
-      }
-      // limit to 10 different types of product
-      if (Object.keys(prev).length === 10) {
-        openDialog("Sorry", "We only allow add 10 types of items at once");
-        return prev;
-      }
-      return {
-        ...prev,
-        [id]: 1,
-      };
-    });
-  }, []);
-  const removeFromCart = useCallback((id: number) => {
-    setCart((prev) => {
-      let returnObj = { ...prev };
-      const quantity = prev[id];
-      if (quantity) {
-        returnObj = {
-          ...prev,
-          [id]: quantity - 1,
-        };
-      }
-      if (returnObj[id] === 0) {
-        delete returnObj[id];
-      }
-      return returnObj;
-    });
-  }, []);
-  const fixCart = useCallback((cartProducts: Product[]) => {
-    setCart((prev) => {
-      const cartObj = { ...prev };
-      for (const key in cartObj) {
-        const inCart = cartObj[key] as number;
-        const id = Number(key);
-        const product = cartProducts.find((p) => p.id === id);
-        if (product) {
-          if (inCart > product.quantity) {
-            cartObj[key] = product.quantity;
-          }
-          if (!product.isUp) {
-            delete cartObj[key];
-            continue;
-          }
-        }
-        if (cartObj[key] === 0) {
-          delete cartObj[key];
-        }
-      }
-      return cartObj;
-    });
-  }, []);
-  const clearCart = useCallback(() => {
-    setCart(() => ({}));
-  }, []);
-  return { addToCart, removeFromCart, fixCart, clearCart };
+export const addToCart = (product: Product) => {
+  const cart = getCart();
+  const existing = cart[String(product.id)] || 0;
+  if (existing >= product.quantity) {
+    openDialog("Sorry", "No more stock");
+    return;
+  }
+  // limit to 10 different types of product
+  if (existing === 0 && Object.keys(cart).length === 10) {
+    openDialog("Sorry", "We only allow add 10 types of items at once");
+    return;
+  }
+  addProduct(product);
 };
 
 export const useGetCart = () => {
   const { cart, cartProducts } = useCartStore();
   const cartRef = useRefInSync(cart);
   const cartProductsRef = useRefInSync(cartProducts);
-  const { fixCart } = useSetCart();
   const [result, getProductsByIds] = useGetProductsByIds();
   const { called, loading, data } = result;
   const calledRef = useRefInSync(called);
@@ -155,7 +99,7 @@ export const useGetCart = () => {
         fixCart(newCartProducts);
       }
     }
-  }, [loading, data, cartRef, fixCart]);
+  }, [loading, data, cartRef]);
   const idsChange = JSON.stringify(Object.keys(cart));
   const productIds = useMemo(() => {
     return Object.keys(cart).map((id) => Number(id));

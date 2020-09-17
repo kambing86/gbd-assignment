@@ -10,8 +10,8 @@ import { devtools } from "zustand/middleware";
 
 type ImmerSetState<T extends State> = (state: T) => T | void;
 type CustomSetState<T extends State> = (
-  set: Partial<T> | ImmerSetState<T>,
-  name?: string,
+  partial: Partial<T> | ImmerSetState<T>,
+  actionName: string,
 ) => void;
 type NamedSet<S extends State> = (
   partial: PartialState<S>,
@@ -25,12 +25,12 @@ const immer = <T extends State>(config: StateCreator<T, CustomSetState<T>>) => (
   api: StoreApi<T>,
 ) =>
   config(
-    (partial, name) => {
+    (partial, actionName) => {
       if (typeof partial === "object") {
-        set(partial, false, name);
+        set(partial, false, actionName);
       } else {
         const nextState = produce(partial) as (state: T) => T;
-        set(nextState, false, name);
+        set(nextState, false, actionName);
       }
     },
     get,

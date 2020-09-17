@@ -6,8 +6,9 @@ import MainLayout from "components/common/MainLayout";
 import PlaceOrder from "components/customer/PlaceOrder";
 import ProductGrid from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
-import { useGetCart, useSetCart } from "hooks/useCart";
+import { useGetCart } from "hooks/useCart";
 import React, { MouseEvent, useCallback } from "react";
+import { removeFromCart } from "state/useCartStore";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -23,20 +24,16 @@ export default function Cart() {
   useAuth(CUSTOMER);
   const classes = useStyles();
   const { productIds, isReady, useGetProduct } = useGetCart();
-  const { removeFromCart } = useSetCart();
-  const itemClickHandler = useCallback(
-    (event: MouseEvent) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const dataset = event.currentTarget.dataset as Dataset;
-      const id = Number(dataset.id);
-      const action = dataset.action;
-      if (action === "removeFromCart") {
-        removeFromCart(id);
-      }
-    },
-    [removeFromCart],
-  );
+  const itemClickHandler = useCallback((event: MouseEvent) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const dataset = event.currentTarget.dataset as Dataset;
+    const id = Number(dataset.id);
+    const action = dataset.action;
+    if (action === "removeFromCart") {
+      removeFromCart(id);
+    }
+  }, []);
 
   return (
     <MainLayout>

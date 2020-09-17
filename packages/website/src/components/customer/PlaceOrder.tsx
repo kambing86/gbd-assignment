@@ -4,14 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRefInSync } from "hooks/helpers/useRefInSync";
 import { useRoute } from "hooks/helpers/useRoute";
-import {
-  totalAmountCount,
-  totalCartCount,
-  useGetCart,
-  useSetCart,
-} from "hooks/useCart";
+import { totalAmountCount, totalCartCount, useGetCart } from "hooks/useCart";
 import { useCreateOrder } from "hooks/useOrder";
 import React, { useCallback, useEffect } from "react";
+import { clearCart } from "state/useCartStore";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -25,7 +21,6 @@ const PlaceOrder = (): JSX.Element | null => {
   const classes = useStyles();
   const { cart, cartProducts, isLoading } = useGetCart();
   const cartRef = useRefInSync(cart);
-  const { clearCart } = useSetCart();
   const [result, createOrder] = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
     createOrder(cartRef.current);
@@ -39,7 +34,7 @@ const PlaceOrder = (): JSX.Element | null => {
         pushHistory("/customer/order");
       }
     }
-  }, [loading, data, clearCart, pushHistory]);
+  }, [loading, data, pushHistory]);
   return Object.keys(cart).length > 0 ? (
     <Grid container className={classes.grid}>
       <div>
