@@ -25,7 +25,7 @@ const ITEMS_PER_PAGE = 8;
 const Customer = (): JSX.Element => {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const productClicked = useCallback((product?: Product, action?: string) => {
+  const dataClicked = useCallback((product?: Product, action?: string) => {
     if (action === "addToCart" && product) {
       addToCart(product);
     }
@@ -35,12 +35,13 @@ const Customer = (): JSX.Element => {
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
-    pageClickHandler,
+    prevPageHandler,
+    nextPageHandler,
     productIds,
     useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
-    productClicked,
+    dataClicked,
     onShelfOnly: true,
   });
   return (
@@ -64,18 +65,16 @@ const Customer = (): JSX.Element => {
           <Button
             color="primary"
             href="#"
-            onClick={pageClickHandler}
+            onClick={prevPageHandler}
             disabled={!enablePrevPage}
-            data-action="prev"
           >
             Prev
           </Button>
           <Button
             color="primary"
             href="#"
-            onClick={pageClickHandler}
+            onClick={nextPageHandler}
             disabled={!enableNextPage}
-            data-action="next"
           >
             Next
           </Button>

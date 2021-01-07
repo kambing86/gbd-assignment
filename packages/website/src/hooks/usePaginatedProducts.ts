@@ -6,26 +6,27 @@ import { Product, useGetProducts } from "./useProducts";
 
 interface options {
   itemsPerPage: number;
-  productClicked?: (product?: Product, action?: string) => void;
+  dataClicked?: (data?: Product, action?: string) => void;
   onShelfOnly?: boolean;
 }
 
 // onShelfOnly is for initialize only
 export const usePaginatedProducts = ({
   itemsPerPage,
-  productClicked,
+  dataClicked,
   onShelfOnly,
 }: options) => {
-  const mapData = useCallback((queryData: GraphQLGetProductsQuery): RowsData<
-    Product
-  > => {
-    return queryData.products;
-  }, []);
+  const mapData = useCallback(
+    (queryData: GraphQLGetProductsQuery): RowsData<Product> => {
+      return queryData.products;
+    },
+    [],
+  );
   const result = usePaginatedQuery({
     itemsPerPage,
     paginatedQuery: useGetProducts(onShelfOnly),
     mapData,
-    dataClicked: productClicked,
+    dataClicked,
   });
   const { rowsData } = result;
   useEffect(() => {

@@ -31,8 +31,7 @@ const useStore = create<Store>(
 
 const stateSelector = (state: Store) => state.themeType;
 
-export default () => {
-  return useStore(stateSelector);
-};
+const useThemeStore = () => useStore(stateSelector);
 
+export default useThemeStore;
 export const { toggleTheme } = useStore.getState();

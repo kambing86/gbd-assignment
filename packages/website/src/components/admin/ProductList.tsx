@@ -28,12 +28,13 @@ const ProductList = (): JSX.Element => {
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
-    pageClickHandler,
+    prevPageHandler,
+    nextPageHandler,
     productIds,
     useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
-    productClicked: setEditProduct,
+    dataClicked: setEditProduct,
   });
   const closeDialogHandler = useCallback(() => {
     setEditProduct(undefined);
@@ -55,18 +56,16 @@ const ProductList = (): JSX.Element => {
         <Button
           color="primary"
           href="#"
-          onClick={pageClickHandler}
+          onClick={prevPageHandler}
           disabled={!enablePrevPage}
-          data-action="prev"
         >
           Prev
         </Button>
         <Button
           color="primary"
           href="#"
-          onClick={pageClickHandler}
+          onClick={nextPageHandler}
           disabled={!enableNextPage}
-          data-action="next"
         >
           Next
         </Button>

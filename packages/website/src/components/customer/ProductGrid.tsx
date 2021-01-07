@@ -1,12 +1,12 @@
 import Grid from "@material-ui/core/Grid";
 import { Product as ProductData } from "hooks/useProducts";
-import React, { MouseEvent } from "react";
+import React from "react";
 import ProductItem from "./ProductItem";
 
 interface Props {
   productIds: number[];
   useGetProduct: (param: number) => ProductData | undefined;
-  itemClickHandler: (event: MouseEvent) => void;
+  itemClickHandler: (id: number, action: string) => void;
   buttonAction: string;
   buttonText: string;
 }

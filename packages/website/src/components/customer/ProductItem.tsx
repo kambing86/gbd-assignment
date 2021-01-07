@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { Product as ProductData } from "hooks/useProducts";
-import React, { MouseEvent } from "react";
+import React, { useCallback } from "react";
 
 const useStyles = makeStyles(() => ({
   itemGrid: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles(() => ({
 interface Props {
   id: number;
   useGetProduct: (param: number) => ProductData | undefined;
-  itemClickHandler: (event: MouseEvent) => void;
+  itemClickHandler: (id: number, action: string) => void;
   buttonAction: string;
   buttonText: string;
 }
@@ -56,15 +56,14 @@ const ProductItem = ({
 }: Props): JSX.Element | null => {
   const classes = useStyles();
   const product = useGetProduct(id);
+  const cardClickHandler = useCallback(() => {
+    itemClickHandler(id, buttonAction);
+  }, [itemClickHandler, id, buttonAction]);
   if (product === undefined) return null;
   return (
     <Grid item className={classes.itemGrid} sm={6} md={4} lg={3}>
       <Card className={classes.card}>
-        <CardActionArea
-          className={classes.cardAction}
-          data-id={product.id}
-          onClick={itemClickHandler}
-        >
+        <CardActionArea className={classes.cardAction}>
           <CardMedia
             className={classes.cardMedia}
             image={product.image ?? "https://source.unsplash.com/random"}
@@ -86,13 +85,7 @@ const ProductItem = ({
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button
-            size="small"
-            color="primary"
-            data-id={product.id}
-            data-action={buttonAction}
-            onClick={itemClickHandler}
-          >
+          <Button size="small" color="primary" onClick={cardClickHandler}>
             {buttonText}
           </Button>
         </CardActions>

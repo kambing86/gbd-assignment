@@ -94,10 +94,7 @@ const OrderDetailDialog = ({ handleClose, order }: Props): JSX.Element => {
                 sm={3}
               >
                 <Card className={classes.card}>
-                  <CardActionArea
-                    className={classes.cardAction}
-                    data-id={product.id}
-                  >
+                  <CardActionArea className={classes.cardAction}>
                     <CardMedia
                       className={classes.cardMedia}
                       image={

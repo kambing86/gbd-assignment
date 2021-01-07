@@ -127,10 +127,9 @@ const stateSelector = ({ cart, cartProducts }: Store) => ({
   cartProducts,
 });
 
-export default () => {
-  return useStore(stateSelector, shallow);
-};
+const useCartStore = () => useStore(stateSelector, shallow);
 
+export default useCartStore;
 export const useGetCartProduct = (id: number) => {
   const cartProduct = useStore(
     useCallback((state: Store) => state.cartProducts[id], [id]),
@@ -144,7 +143,6 @@ export const useGetCartProduct = (id: number) => {
       }
     : undefined;
 };
-
 export const {
   getCart,
   addToCart,

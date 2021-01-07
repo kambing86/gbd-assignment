@@ -4,13 +4,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { Product as ProductData } from "hooks/useProducts";
-import React, { MouseEvent } from "react";
+import React from "react";
 import ProductRow from "./ProductRow";
 
 interface Props {
   productIds: number[];
   useGetProduct: (param: number) => ProductData | undefined;
-  itemClickHandler: (event: MouseEvent) => void;
+  itemClickHandler: (id: number) => void;
 }
 
 const ProductTable = ({

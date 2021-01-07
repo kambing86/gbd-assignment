@@ -24,8 +24,6 @@ type Options<D extends Data, T, V> = {
   dataClicked?: (data?: D, action?: string) => void;
 };
 
-// itemClickHandler is binded to item with data-id={id}
-// pageClickHandler is binded to button with data-action="prev"|"next"
 export const usePaginatedQuery = <D extends Data, T, V>(
   options: Options<D, T, V>,
 ) => {
@@ -43,30 +41,20 @@ export const usePaginatedQuery = <D extends Data, T, V>(
   );
   const rowsDataRef = useRefInSync(rowsData?.rows);
   const itemClickHandler = useCallback(
-    (event: MouseEvent) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const dataset = event.currentTarget.dataset as Dataset;
-      const id = Number(dataset.id);
-      const action = dataset.action;
+    (id: number, action?: string) => {
       const rowData = rowsDataRef.current?.find((r) => r.id === id);
       dataClicked?.(rowData, action);
     },
     [rowsDataRef, dataClicked],
   );
-  const pageClickHandler = useCallback(
-    (event: MouseEvent) => {
-      event.preventDefault();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (event.currentTarget.dataset.action === "next") {
-        setPage((p) => p + 1);
-      } else {
-        setPage((p) => p - 1);
-      }
-    },
-    [setPage],
-  );
+  const prevPageHandler = useCallback((e: MouseEvent) => {
+    e.preventDefault();
+    setPage((p) => p - 1);
+  }, []);
+  const nextPageHandler = useCallback((e: MouseEvent) => {
+    e.preventDefault();
+    setPage((p) => p + 1);
+  }, []);
   return {
     rowsData,
     loading,
@@ -74,6 +62,7 @@ export const usePaginatedQuery = <D extends Data, T, V>(
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
-    pageClickHandler,
+    prevPageHandler,
+    nextPageHandler,
   };
 };

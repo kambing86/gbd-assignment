@@ -5,6 +5,7 @@ import {
   GraphQLGetProductsQuery,
   GraphQLProduct,
   GraphQLProductsByIdsQuery,
+  GraphQLProductsSubscription,
   GraphQLUpdateProductMutation,
   useGetProductsLazyQuery,
   useProductsByIdsLazyQuery,
@@ -52,12 +53,10 @@ export const useGetProducts = (
   const { subscribeToMore, loading, called } = productsResult;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
-      subscribeToMore({
+      subscribeToMore<GraphQLProductsSubscription>({
         document: PRODUCTS_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newProduct = subscriptionData.data.products as Product;
+          const newProduct = subscriptionData.data.products;
           let rows = prev.products.rows.map((old) =>
             mapOldToNewProduct(old, newProduct),
           );
@@ -111,12 +110,10 @@ export const useGetProductsByIds = (): [
   const { called, loading, subscribeToMore } = result;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
-      subscribeToMore({
+      subscribeToMore<GraphQLProductsSubscription>({
         document: PRODUCTS_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          const newProduct = subscriptionData.data.products as Product;
+          const newProduct = subscriptionData.data.products;
           return produce(prev, (state) => {
             state.products = state.products.map((old) =>
               mapOldToNewProduct(old, newProduct),

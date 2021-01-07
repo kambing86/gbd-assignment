@@ -2,18 +2,13 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import MainLayout from "components/common/MainLayout";
 import OrderDetailDialog from "components/customer/OrderDetailDialog";
+import OrderItem from "components/customer/OrderItem";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
-import {
-  Order as OrderStructure,
-  getLocalDate,
-  getTotalAmount,
-} from "hooks/useOrder";
+import { Order as OrderStructure } from "hooks/useOrder";
 import { usePaginatedOrders } from "hooks/usePaginatedOrders";
 import React, { useCallback, useState } from "react";
 
@@ -50,8 +45,13 @@ const Order = (): JSX.Element => {
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
-    pageClickHandler,
-  } = usePaginatedOrders(ITEMS_PER_PAGE, setViewOrder);
+    prevPageHandler,
+    nextPageHandler,
+    useGetOrder,
+  } = usePaginatedOrders({
+    itemsPerPage: ITEMS_PER_PAGE,
+    dataClicked: setViewOrder,
+  });
 
   const classes = useStyles();
   const closeDialogHandler = useCallback(() => {
@@ -74,41 +74,15 @@ const Order = (): JSX.Element => {
         )}
         {!loading && rowsData && hasData && (
           <List className={classes.root}>
-            {rowsData.rows.map((order) => (
-              <ListItem
-                key={order.id}
-                button
-                alignItems="flex-start"
-                data-id={order.id}
-                onClick={itemClickHandler}
-              >
-                <ListItemText
-                  primary={
-                    <>
-                      <Typography
-                        component="span"
-                        variant="h6"
-                        color="textPrimary"
-                      >
-                        Order created:
-                      </Typography>
-                      {` ${getLocalDate(order.createdDate)}`}
-                    </>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        Total amount:
-                      </Typography>
-                      {` $ ${getTotalAmount(order).toFixed(2)}`}
-                    </>
-                  }
-                />
-              </ListItem>
+            {rowsData.rows.map(({ id }) => (
+              <OrderItem
+                key={id}
+                {...{
+                  id,
+                  useGetOrder,
+                  itemClickHandler,
+                }}
+              />
             ))}
           </List>
         )}
@@ -116,18 +90,16 @@ const Order = (): JSX.Element => {
           <Button
             color="primary"
             href="#"
-            onClick={pageClickHandler}
+            onClick={prevPageHandler}
             disabled={!enablePrevPage}
-            data-action="prev"
           >
             Prev
           </Button>
           <Button
             color="primary"
             href="#"
-            onClick={pageClickHandler}
+            onClick={nextPageHandler}
             disabled={!enableNextPage}
-            data-action="next"
           >
             Next
           </Button>

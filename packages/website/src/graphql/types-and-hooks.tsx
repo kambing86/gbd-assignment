@@ -3,6 +3,8 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -336,7 +338,7 @@ export const GetOrdersDocument = gql`
  *   },
  * });
  */
-export function useGetOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
+export function useGetOrdersQuery(baseOptions: Apollo.QueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
         return Apollo.useQuery<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>(GetOrdersDocument, baseOptions);
       }
 export function useGetOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>) {
@@ -384,7 +386,7 @@ export const GetProductsDocument = gql`
  *   },
  * });
  */
-export function useGetProductsQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
+export function useGetProductsQuery(baseOptions: Apollo.QueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
         return Apollo.useQuery<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>(GetProductsDocument, baseOptions);
       }
 export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>) {
@@ -425,7 +427,7 @@ export const ProductsByIdsDocument = gql`
  *   },
  * });
  */
-export function useProductsByIdsQuery(baseOptions?: Apollo.QueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
+export function useProductsByIdsQuery(baseOptions: Apollo.QueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {
         return Apollo.useQuery<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>(ProductsByIdsDocument, baseOptions);
       }
 export function useProductsByIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>) {

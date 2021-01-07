@@ -30,9 +30,7 @@ const fieldsToEdit: Field[] = [
 // TODO: replace with react form library
 function useProductInput(product: Product) {
   const [productState, setProductState] = useState(product);
-  const changeHandler = useCallback((event: ChangeEvent) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+  const changeHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { name, type, value, checked } = event.currentTarget;
     if (type === "checkbox") {
       setProductState((p) => ({
@@ -50,7 +48,7 @@ function useProductInput(product: Product) {
     const { name, label } = field;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const value = productState[field.name];
+    const value = productState[name];
     const valueType = typeof value;
     if (valueType === "boolean") {
       return (
