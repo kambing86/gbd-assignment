@@ -202,7 +202,7 @@ export type GraphQLGetProductsQuery = (
 );
 
 export type GraphQLProductsByIdsQueryVariables = Exact<{
-  ids: Array<Scalars['Int']>;
+  ids: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 

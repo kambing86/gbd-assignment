@@ -22,13 +22,15 @@ export const usePaginatedProducts = ({
     },
     [],
   );
-  const result = usePaginatedQuery({
+  const { result, getProducts } = useGetProducts(onShelfOnly);
+  const paginatedResult = usePaginatedQuery({
     itemsPerPage,
-    paginatedQuery: useGetProducts(onShelfOnly),
+    paginatedResult: result,
+    paginatedQuery: getProducts,
     mapData,
     dataClicked,
   });
-  const { rowsData } = result;
+  const { rowsData } = paginatedResult;
   useEffect(() => {
     if (rowsData === undefined) return;
     for (const product of rowsData.rows) {
@@ -39,5 +41,5 @@ export const usePaginatedProducts = ({
   const productIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];
   }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
-  return { ...result, productIds, useGetProduct };
+  return { ...paginatedResult, productIds, useGetProduct };
 };

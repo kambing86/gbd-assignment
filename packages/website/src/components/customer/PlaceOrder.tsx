@@ -21,7 +21,7 @@ const PlaceOrder = (): JSX.Element | null => {
   const classes = useStyles();
   const { cart, cartProducts, isLoading } = useGetCart();
   const cartRef = useRefInSync(cart);
-  const [result, createOrder] = useCreateOrder();
+  const { result, createOrder } = useCreateOrder();
   const placeOrderHandler = useCallback(() => {
     createOrder(cartRef.current);
   }, [createOrder, cartRef]);

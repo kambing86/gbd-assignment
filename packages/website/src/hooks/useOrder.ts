@@ -1,7 +1,4 @@
-import { LazyQueryResult, MutationResult } from "@apollo/client";
 import {
-  Exact,
-  GraphQLCreateOrderMutation,
   GraphQLGetOrdersQuery,
   useCreateOrderMutation,
   useGetOrdersLazyQuery,
@@ -14,10 +11,7 @@ import { Product, useGetProductsByIds } from "./useProducts";
 
 export type Order = ValuesType<GraphQLGetOrdersQuery["orders"]["rows"]>;
 
-export const useCreateOrder = (): [
-  MutationResult<GraphQLCreateOrderMutation>,
-  (cart: Cart) => void,
-] => {
+export const useCreateOrder = () => {
   const [mutation, result] = useCreateOrderMutation({
     fetchPolicy: "no-cache",
   });
@@ -38,7 +32,7 @@ export const useCreateOrder = (): [
     },
     [mutation],
   );
-  return [result, createOrder];
+  return { result, createOrder };
 };
 
 export const getLocalDate = (date: string) => {
@@ -54,16 +48,7 @@ export const getTotalAmount = (order: Order) => {
   return amount;
 };
 
-export const useGetOrders = (): [
-  LazyQueryResult<
-    GraphQLGetOrdersQuery,
-    Exact<{
-      skip: number;
-      limit: number;
-    }>
-  >,
-  (skip: number, limit: number) => void,
-] => {
+export const useGetOrders = () => {
   const [query, result] = useGetOrdersLazyQuery();
   const getOrders = useCallback(
     (skip: number, limit: number) => {
@@ -76,11 +61,11 @@ export const useGetOrders = (): [
     },
     [query],
   );
-  return [result, getOrders];
+  return { result, getOrders };
 };
 
 export const useGetOrderDetails = (order: Order) => {
-  const [result, getProductsByIds] = useGetProductsByIds();
+  const { result, getProductsByIds } = useGetProductsByIds();
   const [productDetails, setProductDetails] = useState<Product[]>();
   useEffect(() => {
     const ids = order.details.map((d) => d.product.id);

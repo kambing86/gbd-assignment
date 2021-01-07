@@ -2,11 +2,6 @@ import { LazyQueryResult } from "@apollo/client";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { useRefInSync } from "./useRefInSync";
 
-type PaginatedQuery<T, V> = [
-  LazyQueryResult<T, V>,
-  (skip: number, limit: number) => void,
-];
-
 interface Data {
   id: number;
 }
@@ -19,7 +14,8 @@ export interface RowsData<D extends Data> {
 
 type Options<D extends Data, T, V> = {
   itemsPerPage: number;
-  paginatedQuery: PaginatedQuery<T, V>;
+  paginatedResult: LazyQueryResult<T, V>;
+  paginatedQuery: (skip: number, limit: number) => void;
   mapData: (queryData: T) => RowsData<D>;
   dataClicked?: (data?: D, action?: string) => void;
 };
@@ -27,13 +23,18 @@ type Options<D extends Data, T, V> = {
 export const usePaginatedQuery = <D extends Data, T, V>(
   options: Options<D, T, V>,
 ) => {
-  const { itemsPerPage, paginatedQuery, mapData, dataClicked } = options;
-  const [result, getQuery] = paginatedQuery;
+  const {
+    itemsPerPage,
+    paginatedResult,
+    paginatedQuery,
+    mapData,
+    dataClicked,
+  } = options;
   const [page, setPage] = useState(1);
   useEffect(() => {
-    getQuery(itemsPerPage * (page - 1), itemsPerPage);
-  }, [getQuery, page, itemsPerPage]);
-  const { loading, data } = result;
+    paginatedQuery(itemsPerPage * (page - 1), itemsPerPage);
+  }, [paginatedQuery, page, itemsPerPage]);
+  const { loading, data } = paginatedResult;
   const rowsData = data ? mapData(data) : undefined;
   const enablePrevPage = page !== 1;
   const enableNextPage = Boolean(

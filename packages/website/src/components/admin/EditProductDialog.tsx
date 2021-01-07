@@ -75,7 +75,6 @@ function useProductInput(product: Product) {
         fullWidth
         label={label}
         name={name}
-        autoFocus
         value={value}
         type={valueType === "number" ? "number" : "text"}
         inputProps={valueType === "number" ? { min: 0 } : {}}
@@ -94,7 +93,7 @@ interface Props {
 const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
   const { productState, allInputs } = useProductInput(product);
   const productRef = useRefInSync(productState);
-  const [result, updateProduct] = useUpdateProduct();
+  const { result, updateProduct } = useUpdateProduct();
   const submitHandler = useCallback(
     (event: FormEvent) => {
       event.preventDefault();
@@ -121,15 +120,10 @@ const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
       <form noValidate onSubmit={submitHandler}>
         <DialogContent>{allInputs}</DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            autoFocus
-            onClick={handleClose}
-            color="secondary"
-          >
+          <Button variant="contained" onClick={handleClose} color="secondary">
             Cancel
           </Button>
-          <Button variant="contained" autoFocus type="submit" color="primary">
+          <Button variant="contained" type="submit" color="primary" autoFocus>
             Update
           </Button>
         </DialogActions>

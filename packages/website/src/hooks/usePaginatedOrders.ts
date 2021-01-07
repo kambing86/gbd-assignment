@@ -16,16 +16,18 @@ export const usePaginatedOrders = ({ itemsPerPage, dataClicked }: options) => {
     },
     [],
   );
-  const result = usePaginatedQuery({
+  const { result, getOrders } = useGetOrders();
+  const paginatedResult = usePaginatedQuery({
     itemsPerPage,
-    paginatedQuery: useGetOrders(),
+    paginatedResult: result,
+    paginatedQuery: getOrders,
     mapData,
     dataClicked,
   });
-  const { rowsData } = result;
+  const { rowsData } = paginatedResult;
   useEffect(() => {
     if (!rowsData) return;
     setOrders(rowsData.rows);
   }, [rowsData]);
-  return { ...result, useGetOrder };
+  return { ...paginatedResult, useGetOrder };
 };

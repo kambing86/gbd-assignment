@@ -1,12 +1,7 @@
-import { LazyQueryResult, MutationResult } from "@apollo/client";
 import { PRODUCTS_SUBSCRIPTION } from "graphql/documents/product";
 import {
-  Exact,
-  GraphQLGetProductsQuery,
   GraphQLProduct,
-  GraphQLProductsByIdsQuery,
   GraphQLProductsSubscription,
-  GraphQLUpdateProductMutation,
   useGetProductsLazyQuery,
   useProductsByIdsLazyQuery,
   useUpdateProductMutation,
@@ -24,23 +19,11 @@ const mapOldToNewProduct = (oldProduct: Product, newProduct: Product) => {
 };
 
 // onShelf is for initialize only
-export const useGetProducts = (
-  onShelf?: boolean,
-): [
-  LazyQueryResult<
-    GraphQLGetProductsQuery,
-    Exact<{
-      skip: number;
-      limit: number;
-      onShelf?: boolean | null | undefined;
-    }>
-  >,
-  (skip: number, limit: number) => void,
-] => {
-  const [productsQuery, productsResult] = useGetProductsLazyQuery();
+export const useGetProducts = (onShelf?: boolean) => {
+  const [query, result] = useGetProductsLazyQuery();
   const getProducts = useCallback(
     (skip: number, limit: number) => {
-      productsQuery({
+      query({
         variables: {
           skip,
           limit,
@@ -48,9 +31,9 @@ export const useGetProducts = (
         },
       });
     },
-    [productsQuery, onShelf],
+    [query, onShelf],
   );
-  const { subscribeToMore, loading, called } = productsResult;
+  const { subscribeToMore, loading, called } = result;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
       subscribeToMore<GraphQLProductsSubscription>({
@@ -70,13 +53,10 @@ export const useGetProducts = (
       });
     }
   }, [subscribeToMore, loading, called, onShelf]);
-  return [productsResult, getProducts];
+  return { result, getProducts };
 };
 
-export const useUpdateProduct = (): [
-  MutationResult<GraphQLUpdateProductMutation>,
-  (product: Product) => void,
-] => {
+export const useUpdateProduct = () => {
   const [mutation, result] = useUpdateProductMutation();
   const updateProduct = useCallback(
     (product: Product) => {
@@ -94,18 +74,10 @@ export const useUpdateProduct = (): [
     },
     [mutation],
   );
-  return [result, updateProduct];
+  return { result, updateProduct };
 };
 
-export const useGetProductsByIds = (): [
-  LazyQueryResult<
-    GraphQLProductsByIdsQuery,
-    Exact<{
-      ids: number[];
-    }>
-  >,
-  (ids: number[]) => void,
-] => {
+export const useGetProductsByIds = () => {
   const [query, result] = useProductsByIdsLazyQuery();
   const { called, loading, subscribeToMore } = result;
   useEffect(() => {
@@ -129,5 +101,5 @@ export const useGetProductsByIds = (): [
     },
     [query],
   );
-  return [result, getProductsByIds];
+  return { result, getProductsByIds };
 };

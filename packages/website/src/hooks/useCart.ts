@@ -52,7 +52,7 @@ export const useGetCart = () => {
   const { cart, cartProducts } = useCartStore();
   const cartRef = useRefInSync(cart);
   const cartProductsRef = useRefInSync(cartProducts);
-  const [result, getProductsByIds] = useGetProductsByIds();
+  const { result, getProductsByIds } = useGetProductsByIds();
   const { called, loading, data } = result;
   const calledRef = useRefInSync(called);
 
