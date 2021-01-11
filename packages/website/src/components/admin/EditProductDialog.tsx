@@ -17,7 +17,7 @@ import React, {
 } from "react";
 
 interface Field {
-  name: string;
+  name: keyof Product;
   label: string;
 }
 const fieldsToEdit: Field[] = [
@@ -46,11 +46,8 @@ function useProductInput(product: Product) {
   }, []);
   const allInputs = fieldsToEdit.map((field) => {
     const { name, label } = field;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const value = productState[name];
-    const valueType = typeof value;
-    if (valueType === "boolean") {
+    if (typeof value === "boolean") {
       return (
         <FormControlLabel
           key={name}
@@ -76,8 +73,8 @@ function useProductInput(product: Product) {
         label={label}
         name={name}
         value={value}
-        type={valueType === "number" ? "number" : "text"}
-        inputProps={valueType === "number" ? { min: 0 } : {}}
+        type={typeof value === "number" ? "number" : "text"}
+        inputProps={typeof value === "number" ? { min: 0 } : {}}
         onChange={changeHandler}
       />
     );
@@ -95,9 +92,9 @@ const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
   const productRef = useRefInSync(productState);
   const { result, updateProduct } = useUpdateProduct();
   const submitHandler = useCallback(
-    (event: FormEvent) => {
+    async (event: FormEvent) => {
       event.preventDefault();
-      updateProduct(productRef.current);
+      await updateProduct(productRef.current);
     },
     [updateProduct, productRef],
   );

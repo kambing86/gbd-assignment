@@ -24,14 +24,14 @@ export function useLogin() {
     savedUsername !== "",
   );
   const loginHandler = useCallback(
-    (username: string, password: string) => {
+    async (username: string, password: string) => {
       setLoading(true);
       if (isSaveUsername.current) {
         localStorage.setItem(USERNAME_KEY, username);
       } else {
         localStorage.removeItem(USERNAME_KEY);
       }
-      loginMutation({
+      await loginMutation({
         variables: { username, password },
       });
     },

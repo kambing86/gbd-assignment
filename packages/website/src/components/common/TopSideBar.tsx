@@ -122,7 +122,7 @@ const TopSideBar = (): JSX.Element => {
             noWrap
             className={classes.title}
           >
-            {`Hello ${user?.username}`}
+            {`Hello ${user?.username ?? ""}`}
           </Typography>
           {isCustomer && <CartIcon />}
           <IconButton color="inherit" onClick={toggleDarkMode}>

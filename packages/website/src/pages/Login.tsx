@@ -76,9 +76,9 @@ const Login = (): JSX.Element => {
     [setIsSaveUsername],
   );
   const clickLoginHandler = useCallback(
-    (event: MouseEvent) => {
+    async (event: MouseEvent) => {
       event.preventDefault();
-      login(username.current, password.current);
+      await login(username.current, password.current);
     },
     [login, username, password],
   );

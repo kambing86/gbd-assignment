@@ -4,9 +4,14 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
     "prettier/@typescript-eslint",
   ],
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json"],
+  },
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "import"],
   rules: {
@@ -23,9 +28,12 @@ module.exports = {
     ],
     "comma-dangle": ["error", "always-multiline"],
     "no-shadow": ["warn"],
-    "sort-imports": ["error", {
-      ignoreDeclarationSort: true,
-    }],
+    "sort-imports": [
+      "error",
+      {
+        ignoreDeclarationSort: true,
+      },
+    ],
     "import/order": [
       "error",
       {
@@ -45,9 +53,14 @@ module.exports = {
       },
     ],
     "react-hooks/exhaustive-deps": [
-      "warn", {
-        "additionalHooks": "useRecoilCallback"
-      }
-    ]
+      "warn",
+      {
+        additionalHooks: "useRecoilCallback",
+      },
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { args: "all", argsIgnorePattern: "^_" },
+    ],
   },
 };

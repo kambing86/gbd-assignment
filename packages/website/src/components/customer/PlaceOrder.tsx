@@ -22,8 +22,8 @@ const PlaceOrder = (): JSX.Element | null => {
   const { cart, cartProducts, isLoading } = useGetCart();
   const cartRef = useRefInSync(cart);
   const { result, createOrder } = useCreateOrder();
-  const placeOrderHandler = useCallback(() => {
-    createOrder(cartRef.current);
+  const placeOrderHandler = useCallback(async () => {
+    await createOrder(cartRef.current);
   }, [createOrder, cartRef]);
   const { pushHistory } = useRoute();
   const { loading, data } = result;

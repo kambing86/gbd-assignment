@@ -48,7 +48,7 @@ type Store = {
 function setAndSaveCart(set: CustomSetState<Store>) {
   return (immerUpdate: (cart: Cart) => Cart | void, actionName: string) => {
     const updater = produce(immerUpdate);
-    set((state: Store) => {
+    set((state) => {
       const nextCart = updater(state.cart);
       localStorage.setItem(CART_KEY, JSON.stringify(nextCart));
       return { ...state, cart: nextCart };

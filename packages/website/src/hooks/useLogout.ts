@@ -12,9 +12,9 @@ export function useLogout() {
   const [logoutMutation, logoutResult] = useLogoutMutation({
     fetchPolicy: "no-cache",
   });
-  const logoutHandler = useCallback(() => {
+  const logoutHandler = useCallback(async () => {
     setLoading(true);
-    logoutMutation();
+    await logoutMutation();
   }, [logoutMutation, setLoading]);
   const { data, error, loading } = logoutResult;
   useEffect(() => {

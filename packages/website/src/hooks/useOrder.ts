@@ -16,13 +16,13 @@ export const useCreateOrder = () => {
     fetchPolicy: "no-cache",
   });
   const createOrder = useCallback(
-    (cart: Cart) => {
+    async (cart: Cart) => {
       const payload = Object.entries(cart).map(([id, quantity]) => ({
         productId: Number(id),
         quantity: quantity as number,
       }));
       if (payload.length === 0) return;
-      mutation({
+      await mutation({
         variables: {
           data: {
             details: payload,

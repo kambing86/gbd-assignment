@@ -22,7 +22,7 @@ function lazyWithPreload<T extends AnyReactComponent>(
 
 function preloadAll() {
   for (const preload of lazyPreload) {
-    preload();
+    void preload();
   }
 }
 

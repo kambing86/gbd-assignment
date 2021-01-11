@@ -59,8 +59,8 @@ export const useGetProducts = (onShelf?: boolean) => {
 export const useUpdateProduct = () => {
   const [mutation, result] = useUpdateProductMutation();
   const updateProduct = useCallback(
-    (product: Product) => {
-      mutation({
+    async (product: Product) => {
+      await mutation({
         variables: {
           id: product.id,
           data: {
