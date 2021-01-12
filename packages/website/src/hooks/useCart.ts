@@ -1,14 +1,14 @@
-import { useEffect, useMemo } from "react";
-import useCartStore, {
+import { useCallback, useEffect, useMemo } from "react";
+import { useGetCartProduct } from "state/selector/cart";
+import { useCartStore, useGetCartFromStore } from "state/selector/cart";
+import {
   CartProducts,
   Cart as CartType,
-  addToCart as addProduct,
-  fixCart,
-  getCart,
-  setCartProduct,
-  useGetCartProduct,
-} from "state/useCartStore";
-import { open as openDialog } from "state/useDialogStore";
+  useAddToCart as useAddProduct,
+  useFixCart,
+  useSetCartProduct,
+} from "state/slice/cart";
+import { useOpen } from "state/slice/dialog";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { Product, useGetProductsByIds } from "./useProducts";
 
@@ -33,19 +33,30 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProducts) => {
   return amount;
 };
 
-export const addToCart = (product: Product) => {
-  const cart = getCart();
-  const existing = cart[String(product.id)] || 0;
-  if (existing >= product.quantity) {
-    openDialog("Sorry", "No more stock");
-    return;
-  }
-  // limit to 10 different types of product
-  if (existing === 0 && Object.keys(cart).length === 10) {
-    openDialog("Sorry", "We only allow add 10 types of items at once");
-    return;
-  }
-  addProduct(product);
+export const useAddToCart = () => {
+  const open = useOpen();
+  const addProduct = useAddProduct();
+  const getCart = useGetCartFromStore();
+  return useCallback(
+    (product: Product) => {
+      const cart = getCart();
+      const existing = cart[String(product.id)] || 0;
+      if (existing >= product.quantity) {
+        open({ title: "Sorry", description: "No more stock" });
+        return;
+      }
+      // limit to 10 different types of product
+      if (existing === 0 && Object.keys(cart).length === 10) {
+        open({
+          title: "Sorry",
+          description: "We only allow add 10 types of items at once",
+        });
+        return;
+      }
+      addProduct(product);
+    },
+    [getCart, open, addProduct],
+  );
 };
 
 export const useGetCart = () => {
@@ -75,6 +86,8 @@ export const useGetCart = () => {
     }
     getProductsByIds(ids);
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
+  const setCartProduct = useSetCartProduct();
+  const fixCart = useFixCart();
   useEffect(() => {
     if (!loading && data) {
       const { products } = data;
@@ -99,7 +112,7 @@ export const useGetCart = () => {
         fixCart(newCartProducts);
       }
     }
-  }, [loading, data, cartRef]);
+  }, [loading, data, cartRef, setCartProduct, fixCart]);
   const idsChange = JSON.stringify(Object.keys(cart));
   const productIds = useMemo(() => {
     return Object.keys(cart).map((id) => Number(id));

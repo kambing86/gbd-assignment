@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MainLayout from "components/common/MainLayout";
 import ProductGrid from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
-import { addToCart } from "hooks/useCart";
+import { useAddToCart } from "hooks/useCart";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
 import React, { useCallback } from "react";
@@ -25,11 +25,15 @@ const ITEMS_PER_PAGE = 8;
 const Customer = (): JSX.Element => {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const dataClicked = useCallback((product?: Product, action?: string) => {
-    if (action === "addToCart" && product) {
-      addToCart(product);
-    }
-  }, []);
+  const addToCart = useAddToCart();
+  const dataClicked = useCallback(
+    (product?: Product, action?: string) => {
+      if (action === "addToCart" && product) {
+        addToCart(product);
+      }
+    },
+    [addToCart],
+  );
   const {
     loading,
     enablePrevPage,

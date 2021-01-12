@@ -5,8 +5,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
-import { close as closeDialog, useGetDialog } from "state/useDialogStore";
+import React, { useCallback } from "react";
+import { useGetDialog } from "state/selector/dialog";
+import { useClose } from "state/slice/dialog";
 
 const useStyles = makeStyles(() => ({
   notSelected: {
@@ -16,6 +17,10 @@ const useStyles = makeStyles(() => ({
 
 const CommonDialog = (): JSX.Element => {
   const classes = useStyles();
+  const close = useClose();
+  const closeHandler = useCallback(() => {
+    close();
+  }, [close]);
   const { isOpen, title, description } = useGetDialog();
   return (
     <Dialog
@@ -38,7 +43,7 @@ const CommonDialog = (): JSX.Element => {
       <DialogActions>
         <Button
           variant="contained"
-          onClick={closeDialog}
+          onClick={closeHandler}
           color="primary"
           autoFocus
         >

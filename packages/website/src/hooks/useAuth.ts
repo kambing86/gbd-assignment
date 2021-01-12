@@ -1,7 +1,8 @@
 import { useGetUserLazyQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
-import { useSetLoading } from "state/useLoadingStore";
-import { setUser, useGetUser } from "state/useUserStore";
+import { useGetUser } from "state/selector/user";
+import { useSetLoading } from "state/slice/loading";
+import { useSetUser } from "state/slice/user";
 import { useRoute } from "./helpers/useRoute";
 
 export const CUSTOMER = "CUSTOMER";
@@ -27,6 +28,7 @@ export function useAuth(userType?: USER_TYPE) {
     userQuery();
   }, [userQuery, setLoading]);
   const { data, error, loading } = userResult;
+  const setUser = useSetUser();
   useEffect(() => {
     if (!loading && (error || data)) {
       const user = data?.user;
@@ -50,5 +52,5 @@ export function useAuth(userType?: USER_TYPE) {
       }
       setLoading(false);
     }
-  }, [pushHistory, data, error, loading, userType, setLoading]);
+  }, [pushHistory, data, error, loading, setUser, userType, setLoading]);
 }

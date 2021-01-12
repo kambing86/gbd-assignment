@@ -1,8 +1,8 @@
 import { useLoginMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { useSetLoading } from "state/useLoadingStore";
-import { setUser } from "state/useUserStore";
+import { useSetLoading } from "state/slice/loading";
+import { useSetUser } from "state/slice/user";
 import useStateWithRef from "./helpers/useStateWithRef";
 
 const USERNAME_KEY = "username";
@@ -38,6 +38,7 @@ export function useLogin() {
     [loginMutation, isSaveUsername, setLoading],
   );
   const { data, error, loading } = loginResult;
+  const setUser = useSetUser();
   useEffect(() => {
     if (!loading && !error && data) {
       const { login } = data;
@@ -51,7 +52,7 @@ export function useLogin() {
       }
       setLoading(false);
     }
-  }, [history, data, error, loading, setLoading]);
+  }, [history, data, error, loading, setUser, setLoading]);
   return {
     login: loginHandler,
     savedUsername,

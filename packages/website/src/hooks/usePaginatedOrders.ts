@@ -1,6 +1,7 @@
 import { GraphQLGetOrdersQuery } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
-import { setOrders, useGetOrder } from "state/useOrderStore";
+import { useGetOrder } from "state/selector/order";
+import { useSetOrders } from "state/slice/order";
 import { usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Order, useGetOrders } from "./useOrder";
 
@@ -25,9 +26,10 @@ export const usePaginatedOrders = ({ itemsPerPage, dataClicked }: options) => {
     dataClicked,
   });
   const { rowsData } = paginatedResult;
+  const setOrders = useSetOrders();
   useEffect(() => {
     if (!rowsData) return;
     setOrders(rowsData.rows);
-  }, [rowsData]);
+  }, [rowsData, setOrders]);
   return { ...paginatedResult, useGetOrder };
 };
