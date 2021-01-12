@@ -8,7 +8,7 @@ import createStore, {
 } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type ImmerSetState<T extends State> = (state: T) => T | void;
+export type ImmerSetState<T extends State> = (state: T) => T | void;
 export type CustomSetState<T extends State> = (
   partial: Partial<T> | ImmerSetState<T>,
   actionName: string,

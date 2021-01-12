@@ -2,7 +2,7 @@ import { Product } from "hooks/useProducts";
 import produce from "immer";
 import { isEqual } from "lodash";
 import { useCallback } from "react";
-import { Config, CustomSetState, createStore } from "state";
+import { Config, CustomSetState, ImmerSetState, createStore } from "state";
 import shallow from "zustand/shallow";
 
 const CART_KEY = "cart";
@@ -46,7 +46,7 @@ type CartStore = {
 };
 
 function setAndSaveCart(set: CustomSetState<CartStore>) {
-  return (immerUpdate: (cart: Cart) => Cart | void, actionName: string) => {
+  return (immerUpdate: ImmerSetState<Cart>, actionName: string) => {
     const updater = produce(immerUpdate);
     set((state) => {
       const nextCart = updater(state.cart);
