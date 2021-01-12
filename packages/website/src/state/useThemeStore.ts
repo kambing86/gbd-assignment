@@ -1,7 +1,7 @@
 import { PaletteType } from "@material-ui/core";
-import { create } from "state";
+import { Config, createStore } from "state";
 
-type Store = {
+type ThemeStore = {
   themeType: PaletteType | null;
   toggleTheme: () => void;
 };
@@ -14,22 +14,21 @@ function getSavedType() {
   return localStorage.getItem(THEME_KEY) as PaletteType | null;
 }
 
-const useStore = create<Store>(
-  (set, get) => ({
-    themeType: getSavedType(),
-    toggleTheme: () => {
-      const cur = get().themeType;
-      const newVal = cur === DARK ? LIGHT : DARK;
-      localStorage.setItem(THEME_KEY, newVal);
-      set((state) => {
-        state.themeType = newVal;
-      }, "toggleTheme");
-    },
-  }),
-  THEME_KEY,
-);
+const themeConfig: Config<ThemeStore> = (set, get) => ({
+  themeType: getSavedType(),
+  toggleTheme: () => {
+    const cur = get().themeType;
+    const newVal = cur === DARK ? LIGHT : DARK;
+    localStorage.setItem(THEME_KEY, newVal);
+    set((state) => {
+      state.themeType = newVal;
+    }, "toggleTheme");
+  },
+});
 
-const stateSelector = (state: Store) => state.themeType;
+const useStore = createStore(themeConfig, THEME_KEY);
+
+const stateSelector = (state: ThemeStore) => state.themeType;
 
 const useThemeStore = () => useStore(stateSelector);
 

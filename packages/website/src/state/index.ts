@@ -29,17 +29,18 @@ const immer = <T extends State>(config: StateCreator<T, CustomSetState<T>>) => (
       if (typeof partial === "object") {
         set(partial, false, actionName);
       } else {
-        const nextState = produce(partial) as (state: T) => T;
-        set(nextState, false, actionName);
+        const updater = produce(partial) as (state: T) => T;
+        set(updater, false, actionName);
       }
     },
     get,
     api,
   );
 
-export const create = <T extends State>(
-  config: StateCreator<T, CustomSetState<T>>,
-  name: string,
-) => {
+export type Config<T extends State> = StateCreator<T, CustomSetState<T>>;
+
+const create = <T extends State>(config: Config<T>, name: string) => {
   return createStore(devtools(immer(config), name));
 };
+
+export { create as createStore };

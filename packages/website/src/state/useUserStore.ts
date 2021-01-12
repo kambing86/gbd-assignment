@@ -1,26 +1,25 @@
-import { create } from "state";
+import { Config, createStore } from "state";
 
 type User = {
   username: string;
   isAdmin: boolean;
 };
 
-type Store = {
+type UserStore = {
   user: User | undefined;
   setUser: (user: User | undefined) => void;
 };
 
-const useStore = create<Store>(
-  (set) => ({
-    user: undefined,
-    setUser: (user) => {
-      set({ user }, "setUser");
-    },
-  }),
-  "user",
-);
+const userConfig: Config<UserStore> = (set) => ({
+  user: undefined,
+  setUser: (user) => {
+    set({ user }, "setUser");
+  },
+});
 
-const stateSelector = (state: Store) => state.user;
+const useStore = createStore(userConfig, "user");
+
+const stateSelector = (state: UserStore) => state.user;
 
 export const useGetUser = () => {
   return useStore(stateSelector);

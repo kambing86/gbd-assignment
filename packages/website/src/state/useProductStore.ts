@@ -1,34 +1,33 @@
 import { Product } from "hooks/useProducts";
 import { useCallback } from "react";
-import { create } from "state";
+import { Config, createStore } from "state";
 
 type ProductState = {
   [key: number]: Product | undefined;
 };
 
-type Store = {
+type ProductStore = {
   productState: ProductState;
   setProduct: (product: Product) => void;
 };
 
-const useStore = create<Store>(
-  (set, get) => ({
-    productState: {},
-    setProduct: (product) => {
-      const { id } = product;
-      const prev = get().productState[id];
-      if (prev !== product) {
-        set((state) => {
-          state.productState[id] = product;
-        }, "setProduct");
-      }
-    },
-  }),
-  "product",
-);
+const productConfig: Config<ProductStore> = (set, get) => ({
+  productState: {},
+  setProduct: (product) => {
+    const { id } = product;
+    const prev = get().productState[id];
+    if (prev !== product) {
+      set((state) => {
+        state.productState[id] = product;
+      }, "setProduct");
+    }
+  },
+});
+
+const useStore = createStore(productConfig, "product");
 
 export const useGetProduct = (id: number) => {
-  return useStore(useCallback((state: Store) => state.productState[id], [id]));
+  return useStore(useCallback((state) => state.productState[id], [id]));
 };
 
 export const { setProduct } = useStore.getState();

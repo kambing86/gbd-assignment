@@ -1,7 +1,7 @@
-import { create } from "state";
+import { Config, createStore } from "state";
 import shallow from "zustand/shallow";
 
-type Store = {
+type DialogStore = {
   isOpen: boolean;
   title: string;
   description: string;
@@ -9,26 +9,25 @@ type Store = {
   close: () => void;
 };
 
-const useStore = create<Store>(
-  (set) => ({
-    isOpen: false,
-    title: "",
-    description: "",
-    open: (title, description) =>
-      set(
-        {
-          isOpen: true,
-          title: title,
-          description: description,
-        },
-        "open",
-      ),
-    close: () => set({ isOpen: false }, "close"),
-  }),
-  "dialog",
-);
+const dialogConfig: Config<DialogStore> = (set) => ({
+  isOpen: false,
+  title: "",
+  description: "",
+  open: (title, description) =>
+    set(
+      {
+        isOpen: true,
+        title: title,
+        description: description,
+      },
+      "open",
+    ),
+  close: () => set({ isOpen: false }, "close"),
+});
 
-const stateSelector = ({ isOpen, title, description }: Store) => ({
+const useStore = createStore(dialogConfig, "dialog");
+
+const stateSelector = ({ isOpen, title, description }: DialogStore) => ({
   isOpen,
   title,
   description,

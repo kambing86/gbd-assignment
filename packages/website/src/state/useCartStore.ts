@@ -2,7 +2,7 @@ import { Product } from "hooks/useProducts";
 import produce from "immer";
 import { isEqual } from "lodash";
 import { useCallback } from "react";
-import { CustomSetState, create } from "state";
+import { Config, CustomSetState, createStore } from "state";
 import shallow from "zustand/shallow";
 
 const CART_KEY = "cart";
@@ -34,7 +34,7 @@ function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
   return currProduct;
 }
 
-type Store = {
+type CartStore = {
   cart: Cart;
   cartProducts: CartProducts;
   getCart: () => Cart;
@@ -45,7 +45,7 @@ type Store = {
   setCartProduct: (product: CartProduct) => void;
 };
 
-function setAndSaveCart(set: CustomSetState<Store>) {
+function setAndSaveCart(set: CustomSetState<CartStore>) {
   return (immerUpdate: (cart: Cart) => Cart | void, actionName: string) => {
     const updater = produce(immerUpdate);
     set((state) => {
@@ -56,7 +56,7 @@ function setAndSaveCart(set: CustomSetState<Store>) {
   };
 }
 
-const useStore = create<Store>((set, get) => {
+const cartConfig: Config<CartStore> = (set, get) => {
   const saveCart = setAndSaveCart(set);
   return {
     cart: getInitialCart(),
@@ -120,9 +120,11 @@ const useStore = create<Store>((set, get) => {
       }
     },
   };
-}, CART_KEY);
+};
 
-const stateSelector = ({ cart, cartProducts }: Store) => ({
+const useStore = createStore(cartConfig, CART_KEY);
+
+const stateSelector = ({ cart, cartProducts }: CartStore) => ({
   cart,
   cartProducts,
 });
@@ -132,10 +134,9 @@ const useCartStore = () => useStore(stateSelector, shallow);
 export default useCartStore;
 export const useGetCartProduct = (id: number) => {
   const cartProduct = useStore(
-    useCallback((state: Store) => state.cartProducts[id], [id]),
+    useCallback((state) => state.cartProducts[id], [id]),
   );
-  const quantity =
-    useStore(useCallback((state: Store) => state.cart[id], [id])) || 0;
+  const quantity = useStore(useCallback((state) => state.cart[id], [id])) || 0;
   return cartProduct !== undefined
     ? {
         ...cartProduct,

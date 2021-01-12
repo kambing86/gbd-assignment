@@ -1,37 +1,36 @@
 import { useMemo } from "react";
-import { create } from "state";
+import { Config, createStore } from "state";
 
 type LoadingState = {
   [key: string]: number | undefined;
 };
 
-type Store = {
+type LoadingStore = {
   loadingState: LoadingState;
   setLoading: (loadingKey: string) => (isLoading: boolean) => void;
 };
 
-const useStore = create<Store>(
-  (set) => ({
-    loadingState: {},
-    setLoading: (loadingKey) => (isLoading) => {
-      if (loadingKey === undefined) return;
-      set((state) => {
-        const { [loadingKey]: curValue } = state.loadingState;
-        const result = (curValue ?? 0) + (isLoading ? 1 : -1);
-        if (result <= 0) {
-          delete state.loadingState[loadingKey];
-        } else {
-          state.loadingState[loadingKey] = result;
-        }
-      }, "setLoading");
-    },
-  }),
-  "loading",
-);
+const loadingConfig: Config<LoadingStore> = (set) => ({
+  loadingState: {},
+  setLoading: (loadingKey) => (isLoading) => {
+    if (loadingKey === undefined) return;
+    set((state) => {
+      const { [loadingKey]: curValue } = state.loadingState;
+      const result = (curValue ?? 0) + (isLoading ? 1 : -1);
+      if (result <= 0) {
+        delete state.loadingState[loadingKey];
+      } else {
+        state.loadingState[loadingKey] = result;
+      }
+    }, "setLoading");
+  },
+});
 
-const stateSelector = (state: Store) => state.loadingState;
+const useStore = createStore(loadingConfig, "loading");
 
-const dispatchSelector = (state: Store) => state.setLoading;
+const stateSelector = (state: LoadingStore) => state.loadingState;
+
+const dispatchSelector = (state: LoadingStore) => state.setLoading;
 
 const shouldShowLoading = (loadingState: LoadingState) => {
   for (const key in loadingState) {
