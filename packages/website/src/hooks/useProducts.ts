@@ -36,7 +36,7 @@ export const useGetProducts = (onShelf?: boolean) => {
   const { subscribeToMore, loading, called } = result;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
-      subscribeToMore<GraphQLProductsSubscription>({
+      return subscribeToMore<GraphQLProductsSubscription>({
         document: PRODUCTS_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
           const newProduct = subscriptionData.data.products;
@@ -82,7 +82,7 @@ export const useGetProductsByIds = () => {
   const { called, loading, subscribeToMore } = result;
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
-      subscribeToMore<GraphQLProductsSubscription>({
+      return subscribeToMore<GraphQLProductsSubscription>({
         document: PRODUCTS_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
           const newProduct = subscriptionData.data.products;

@@ -107,13 +107,15 @@ const cartSlice = createSlice({
       }
       saveCart(state);
     },
-    setCartProduct(state, action: PayloadAction<Product>) {
-      const newProduct = action.payload;
-      const { id } = newProduct;
-      const curProduct = state.cartProducts[id];
-      const product = cartProductDiff(newProduct, curProduct);
-      if (curProduct !== product) {
-        state.cartProducts[id] = product;
+    setCartProducts(state, action: PayloadAction<Product[]>) {
+      const products = action.payload;
+      for (const newProduct of products) {
+        const { id } = newProduct;
+        const curProduct = state.cartProducts[id];
+        const product = cartProductDiff(newProduct, curProduct);
+        if (curProduct !== product) {
+          state.cartProducts[id] = product;
+        }
       }
     },
   },
@@ -126,7 +128,7 @@ const {
   removeFromCart,
   clearCart,
   fixCart,
-  setCartProduct,
+  setCartProducts,
 } = cartSlice.actions;
 
 export const useAddToCart = () => {
@@ -145,6 +147,6 @@ export const useFixCart = () => {
   return useAutoDispatch(fixCart);
 };
 
-export const useSetCartProduct = () => {
-  return useAutoDispatch(setCartProduct);
+export const useSetCartProducts = () => {
+  return useAutoDispatch(setCartProducts);
 };

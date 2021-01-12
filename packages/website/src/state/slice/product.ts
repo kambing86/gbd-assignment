@@ -11,12 +11,14 @@ const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
-    setProduct(state, action: PayloadAction<Product>) {
-      const product = action.payload;
-      const { id } = product;
-      const prev = state[id];
-      if (prev !== product) {
-        state[id] = product;
+    setProducts(state, action: PayloadAction<Product[]>) {
+      const products = action.payload;
+      for (const product of products) {
+        const { id } = product;
+        const prev = state[id];
+        if (prev !== product) {
+          state[id] = product;
+        }
       }
     },
   },
@@ -24,8 +26,8 @@ const productSlice = createSlice({
 
 export default productSlice.reducer;
 
-const { setProduct } = productSlice.actions;
+const { setProducts } = productSlice.actions;
 
-export const useSetProduct = () => {
-  return useAutoDispatch(setProduct);
+export const useSetProducts = () => {
+  return useAutoDispatch(setProducts);
 };

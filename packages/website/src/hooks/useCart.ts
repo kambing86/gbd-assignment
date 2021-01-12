@@ -6,7 +6,7 @@ import {
   Cart as CartType,
   useAddToCart as useAddProduct,
   useFixCart,
-  useSetCartProduct,
+  useSetCartProducts,
 } from "state/slice/cart";
 import { useOpen } from "state/slice/dialog";
 import { useRefInSync } from "./helpers/useRefInSync";
@@ -86,7 +86,7 @@ export const useGetCart = () => {
     }
     getProductsByIds(ids);
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
-  const setCartProduct = useSetCartProduct();
+  const setCartProducts = useSetCartProducts();
   const fixCart = useFixCart();
   useEffect(() => {
     if (!loading && data) {
@@ -105,14 +105,12 @@ export const useGetCart = () => {
         return p;
       });
       if (valid) {
-        for (const product of newCartProducts) {
-          setCartProduct(product);
-        }
+        setCartProducts(newCartProducts);
       } else {
         fixCart(newCartProducts);
       }
     }
-  }, [loading, data, cartRef, setCartProduct, fixCart]);
+  }, [loading, data, cartRef, setCartProducts, fixCart]);
   const idsChange = JSON.stringify(Object.keys(cart));
   const productIds = useMemo(() => {
     return Object.keys(cart).map((id) => Number(id));

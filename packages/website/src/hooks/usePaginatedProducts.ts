@@ -1,7 +1,7 @@
 import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { useGetProduct } from "state/selector/product";
-import { useSetProduct } from "state/slice/product";
+import { useSetProducts } from "state/slice/product";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
 
@@ -32,13 +32,11 @@ export const usePaginatedProducts = ({
     dataClicked,
   });
   const { rowsData } = paginatedResult;
-  const setProduct = useSetProduct();
+  const setProducts = useSetProducts();
   useEffect(() => {
     if (rowsData === undefined) return;
-    for (const product of rowsData.rows) {
-      setProduct(product);
-    }
-  }, [rowsData, setProduct]);
+    setProducts(rowsData.rows);
+  }, [rowsData, setProducts]);
   const idsChange = JSON.stringify(rowsData?.rows.map((r) => r.id));
   const productIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];
