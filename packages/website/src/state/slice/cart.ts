@@ -85,12 +85,20 @@ const cartSlice = createSlice({
       state.cart = {};
       saveCart(state);
     },
-    fixCart(state, action: PayloadAction<Product[]>) {
-      const cartProducts = action.payload;
+    setCartProducts(state, action: PayloadAction<Product[]>) {
+      const products = action.payload;
+      for (const newProduct of products) {
+        const { id } = newProduct;
+        const curProduct = state.cartProducts[id];
+        const product = cartProductDiff(newProduct, curProduct);
+        if (curProduct !== product) {
+          state.cartProducts[id] = product;
+        }
+      }
       const { cart } = state;
       for (const key in cart) {
         const id = Number(key);
-        const product = cartProducts.find((p) => p.id === id);
+        const product = products.find((p) => p.id === id);
         if (product) {
           const inCart = cart[key] as number;
           if (inCart > product.quantity) {
@@ -107,17 +115,6 @@ const cartSlice = createSlice({
       }
       saveCart(state);
     },
-    setCartProducts(state, action: PayloadAction<Product[]>) {
-      const products = action.payload;
-      for (const newProduct of products) {
-        const { id } = newProduct;
-        const curProduct = state.cartProducts[id];
-        const product = cartProductDiff(newProduct, curProduct);
-        if (curProduct !== product) {
-          state.cartProducts[id] = product;
-        }
-      }
-    },
   },
 });
 
@@ -127,7 +124,6 @@ const {
   addToCart,
   removeFromCart,
   clearCart,
-  fixCart,
   setCartProducts,
 } = cartSlice.actions;
 
@@ -141,10 +137,6 @@ export const useRemoveFromCart = () => {
 
 export const useClearCart = () => {
   return useAutoDispatch(clearCart);
-};
-
-export const useFixCart = () => {
-  return useAutoDispatch(fixCart);
 };
 
 export const useSetCartProducts = () => {

@@ -5,7 +5,6 @@ import {
   CartProducts,
   Cart as CartType,
   useAddToCart as useAddProduct,
-  useFixCart,
   useSetCartProducts,
 } from "state/slice/cart";
 import { useOpen } from "state/slice/dialog";
@@ -80,7 +79,6 @@ export const useGetCart = () => {
 
 export const useCheckCart = () => {
   const { cart, cartProducts } = useGetCart();
-  const cartRef = useRefInSync(cart);
   const cartProductsRef = useRefInSync(cartProducts);
   const { result, getProductsByIds } = useGetProductsByIds();
   const { called, loading, data } = result;
@@ -93,12 +91,7 @@ export const useCheckCart = () => {
       const readyIds = Object.keys(cartProductsRef.current).map((id) =>
         Number(id),
       );
-      let allReady = true;
-      for (const id of ids) {
-        if (!readyIds.includes(id)) {
-          allReady = false;
-        }
-      }
+      const allReady = ids.every((id) => readyIds.includes(id));
       if (allReady) {
         return;
       }
@@ -106,26 +99,9 @@ export const useCheckCart = () => {
     getProductsByIds(ids);
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
   const setCartProducts = useSetCartProducts();
-  const fixCart = useFixCart();
   useEffect(() => {
     if (!loading && data) {
-      const { products } = data;
-      const currentCart = cartRef.current;
-      const valid = products.every((p) => {
-        const inCart = currentCart[String(p.id)];
-        // not in cart, skip checking
-        if (inCart === undefined) return true;
-        // in cart but not available
-        if (!p.isUp) return false;
-        // in cart but cart quantity is more than stock
-        if (p.quantity < inCart) return false;
-        return true;
-      });
-      if (valid) {
-        setCartProducts(products);
-      } else {
-        fixCart(products);
-      }
+      setCartProducts(data.products);
     }
-  }, [loading, data, cartRef, setCartProducts, fixCart]);
+  }, [loading, data, setCartProducts]);
 };
