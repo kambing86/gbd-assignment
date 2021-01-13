@@ -1,4 +1,5 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { useCheckCart } from "hooks/useCart";
 import React, { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Switch } from "react-router-dom";
@@ -35,6 +36,7 @@ const OrderPage = lazyWithPreload(() => import("./pages/Order"));
 const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
+  useCheckCart();
   const { theme } = useAppTheme();
   useEffect(() => {
     setTimeout(preloadAll, 2000);

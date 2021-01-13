@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PlaceOrder = (): JSX.Element | null => {
   const classes = useStyles();
-  const { cart, cartProducts, isLoading } = useGetCart();
+  const { cart, cartProducts, isReady } = useGetCart();
   const cartRef = useRefInSync(cart);
   const { result, createOrder } = useCreateOrder();
   const placeOrderHandler = useCallback(async () => {
@@ -48,7 +48,7 @@ const PlaceOrder = (): JSX.Element | null => {
         variant="contained"
         color="primary"
         onClick={placeOrderHandler}
-        disabled={isLoading}
+        disabled={!isReady}
       >
         Place Order
       </Button>

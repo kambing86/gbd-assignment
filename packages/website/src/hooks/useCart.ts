@@ -61,6 +61,25 @@ export const useAddToCart = () => {
 
 export const useGetCart = () => {
   const { cart, cartProducts } = useCartStore();
+  const idsChange = JSON.stringify(Object.keys(cart));
+  const productIds = useMemo(() => {
+    return Object.keys(cart).map((id) => Number(id));
+  }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
+  const isReady = useMemo(() => {
+    const readyIds = Object.keys(cartProducts).map((id) => Number(id));
+    return productIds.every((id) => readyIds.includes(id));
+  }, [cartProducts, productIds]);
+  return {
+    cart,
+    cartProducts,
+    productIds,
+    isReady,
+    useGetProduct: useGetCartProduct,
+  };
+};
+
+export const useCheckCart = () => {
+  const { cart, cartProducts } = useGetCart();
   const cartRef = useRefInSync(cart);
   const cartProductsRef = useRefInSync(cartProducts);
   const { result, getProductsByIds } = useGetProductsByIds();
@@ -91,44 +110,22 @@ export const useGetCart = () => {
   useEffect(() => {
     if (!loading && data) {
       const { products } = data;
-      let valid = true;
       const currentCart = cartRef.current;
-      const newCartProducts = products.map((p) => {
+      const valid = products.every((p) => {
         const inCart = currentCart[String(p.id)];
-        if (inCart === undefined) return p;
-        if (!p.isUp) {
-          valid = false;
-        }
-        if (p.quantity < inCart) {
-          valid = false;
-        }
-        return p;
+        // not in cart, skip checking
+        if (inCart === undefined) return true;
+        // in cart but not available
+        if (!p.isUp) return false;
+        // in cart but cart quantity is more than stock
+        if (p.quantity < inCart) return false;
+        return true;
       });
       if (valid) {
-        setCartProducts(newCartProducts);
+        setCartProducts(products);
       } else {
-        fixCart(newCartProducts);
+        fixCart(products);
       }
     }
   }, [loading, data, cartRef, setCartProducts, fixCart]);
-  const idsChange = JSON.stringify(Object.keys(cart));
-  const productIds = useMemo(() => {
-    return Object.keys(cart).map((id) => Number(id));
-  }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
-  const isReady = useMemo(() => {
-    const readyIds = Object.keys(cartProducts).map((id) => Number(id));
-    for (const id of productIds) {
-      if (!readyIds.includes(id)) return false;
-    }
-    return true;
-  }, [cartProducts, productIds]);
-  const isLoading = !isReady || loading;
-  return {
-    cart,
-    cartProducts,
-    productIds,
-    isReady,
-    isLoading,
-    useGetProduct: useGetCartProduct,
-  };
 };
