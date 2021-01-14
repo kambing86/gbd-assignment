@@ -1,6 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { useCallback } from "react";
-import { useDispatch } from "react-redux";
 
 export type LoadingState = {
   [key: string]: number | undefined;
@@ -12,7 +10,7 @@ type SetLoadingPayload = {
   isLoading: boolean;
 };
 
-const loadingSlice = createSlice({
+export const loadingSlice = createSlice({
   name: "loading",
   initialState,
   reducers: {
@@ -30,15 +28,3 @@ const loadingSlice = createSlice({
 });
 
 export default loadingSlice.reducer;
-
-const { setLoading } = loadingSlice.actions;
-
-export const useSetLoading = (loadingKey: string) => {
-  const dispatch = useDispatch();
-  return useCallback(
-    (isLoading: boolean) => {
-      dispatch(setLoading({ loadingKey, isLoading }));
-    },
-    [dispatch, loadingKey],
-  );
-};

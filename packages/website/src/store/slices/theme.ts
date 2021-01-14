@@ -1,6 +1,5 @@
 import { PaletteType } from "@material-ui/core";
 import { createSlice } from "@reduxjs/toolkit";
-import { useAutoDispatch } from "state/useAutoDispatch";
 
 const THEME_KEY = "theme";
 export const LIGHT = "light";
@@ -16,7 +15,7 @@ type ThemeState = {
 
 const initialState: ThemeState = { themeType: getSavedType() };
 
-const themeSlice = createSlice({
+export const themeSlice = createSlice({
   name: "theme",
   initialState,
   reducers: {
@@ -30,9 +29,3 @@ const themeSlice = createSlice({
 });
 
 export default themeSlice.reducer;
-
-const { toggleTheme } = themeSlice.actions;
-
-export const useToggleTheme = () => {
-  return useAutoDispatch(toggleTheme);
-};

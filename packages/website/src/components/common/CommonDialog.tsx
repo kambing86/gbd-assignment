@@ -6,8 +6,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback } from "react";
-import { useGetDialog } from "state/selector/dialog";
-import { useClose } from "state/slice/dialog";
+import { dialogActions } from "store/actions/dialog";
+import { useGetDialog } from "store/selectors/dialog";
 
 const useStyles = makeStyles(() => ({
   notSelected: {
@@ -17,10 +17,9 @@ const useStyles = makeStyles(() => ({
 
 const CommonDialog = (): JSX.Element => {
   const classes = useStyles();
-  const close = useClose();
   const closeHandler = useCallback(() => {
-    close();
-  }, [close]);
+    dialogActions.close();
+  }, []);
   const { isOpen, title, description } = useGetDialog();
   return (
     <Dialog

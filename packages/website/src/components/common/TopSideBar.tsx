@@ -21,7 +21,7 @@ import CustomerListItems from "components/customer/CustomerListItems";
 import { useAppTheme } from "hooks/useAppTheme";
 import { useLogout } from "hooks/useLogout";
 import React, { useCallback, useState } from "react";
-import { useGetUser } from "state/selector/user";
+import { useGetUser } from "store/selectors/user";
 
 const drawerWidth = 180;
 

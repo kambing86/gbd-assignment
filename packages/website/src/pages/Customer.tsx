@@ -8,7 +8,8 @@ import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useAddToCart } from "hooks/useCart";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+import { userThunkActions } from "store/actions/user";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
 const ITEMS_PER_PAGE = 8;
 
 const Customer = (): JSX.Element => {
+  useEffect(() => {
+    userThunkActions.getData(1);
+  }, []);
   useAuth(CUSTOMER);
   const classes = useStyles();
   const addToCart = useAddToCart();

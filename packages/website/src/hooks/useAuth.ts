@@ -1,8 +1,8 @@
 import { useGetUserLazyQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
-import { useGetUser } from "state/selector/user";
-import { useSetLoading } from "state/slice/loading";
-import { useSetUser } from "state/slice/user";
+import { loadingActions } from "store/actions/loading";
+import { userActions } from "store/actions/user";
+import { useGetUser } from "store/selectors/user";
 import { useRoute } from "./helpers/useRoute";
 
 export const CUSTOMER = "CUSTOMER";
@@ -13,7 +13,6 @@ const AUTH_LOADING_KEY = "authLoading";
 
 // if userType if undefined, it's used by login page to redirect user
 export function useAuth(userType?: USER_TYPE) {
-  const setLoading = useSetLoading(AUTH_LOADING_KEY);
   const userState = useGetUser();
   const userRef = useRef(userState);
   const { pushHistory } = useRoute();
@@ -23,17 +22,19 @@ export function useAuth(userType?: USER_TYPE) {
   useEffect(() => {
     // only show loading if user data is not ready
     if (userRef.current === undefined) {
-      setLoading(true);
+      loadingActions.setLoading({
+        loadingKey: AUTH_LOADING_KEY,
+        isLoading: true,
+      });
     }
     userQuery();
-  }, [userQuery, setLoading]);
+  }, [userQuery]);
   const { data, error, loading } = userResult;
-  const setUser = useSetUser();
   useEffect(() => {
     if (!loading && (error || data)) {
       const user = data?.user;
       if (user) {
-        setUser(user);
+        userActions.setUser(user);
         // for login page
         if (userType === undefined) {
           if (user.isAdmin) {
@@ -47,10 +48,13 @@ export function useAuth(userType?: USER_TYPE) {
           pushHistory("/customer");
         }
       } else {
-        setUser(undefined);
+        userActions.setUser(undefined);
         pushHistory("/");
       }
-      setLoading(false);
+      loadingActions.setLoading({
+        loadingKey: AUTH_LOADING_KEY,
+        isLoading: false,
+      });
     }
-  }, [pushHistory, data, error, loading, setUser, userType, setLoading]);
+  }, [pushHistory, data, error, loading, userType]);
 }

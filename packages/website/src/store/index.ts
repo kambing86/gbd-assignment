@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import cart from "./slice/cart";
-import dialog from "./slice/dialog";
-import loading from "./slice/loading";
-import order from "./slice/order";
-import product from "./slice/product";
-import theme from "./slice/theme";
-import user from "./slice/user";
+import cart from "./slices/cart";
+import dialog from "./slices/dialog";
+import loading from "./slices/loading";
+import order from "./slices/order";
+import product from "./slices/product";
+import theme from "./slices/theme";
+import user from "./slices/user";
 
 const store = configureStore({
   reducer: {

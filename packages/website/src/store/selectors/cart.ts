@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { useCallback, useMemo } from "react";
 import { useSelector, useStore } from "react-redux";
-import { State } from "state";
+import { State } from "store";
 
 export const useCartStore = () => {
   return useSelector((state: State) => state.cart);

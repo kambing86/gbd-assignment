@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { useAutoDispatch } from "state/useAutoDispatch";
 
 type DialogState = {
   isOpen: boolean;
@@ -14,7 +13,7 @@ const initialState: DialogState = {
 
 type OpenPayload = { title: string; description: string };
 
-const dialogSlice = createSlice({
+export const dialogSlice = createSlice({
   name: "dialog",
   initialState,
   reducers: {
@@ -31,13 +30,3 @@ const dialogSlice = createSlice({
 });
 
 export default dialogSlice.reducer;
-
-const { open, close } = dialogSlice.actions;
-
-export const useOpen = () => {
-  return useAutoDispatch(open);
-};
-
-export const useClose = () => {
-  return useAutoDispatch(close);
-};

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { useAutoDispatch } from "state/useAutoDispatch";
+import { getData } from "store/thunks/user";
 
 type User = {
   username: string;
@@ -8,13 +8,15 @@ type User = {
 
 type UserState = {
   user: User | undefined;
+  people: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 const initialState: UserState = {
   user: undefined,
+  people: null,
 };
 
-const userSlide = createSlice({
+export const userSlide = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -23,12 +25,11 @@ const userSlide = createSlice({
       state.user = user;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(getData.fulfilled, (state, action) => {
+      state.people = action.payload;
+    });
+  },
 });
 
 export default userSlide.reducer;
-
-const { setUser } = userSlide.actions;
-
-export const useSetUser = () => {
-  return useAutoDispatch(setUser);
-};

@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { useGetCartProduct } from "state/selector/cart";
-import { useCartStore, useGetCartFromStore } from "state/selector/cart";
-import {
-  CartProducts,
-  Cart as CartType,
-  useAddToCart as useAddProduct,
-  useSetCartProducts,
-} from "state/slice/cart";
-import { useOpen } from "state/slice/dialog";
+import { cartActions } from "store/actions/cart";
+import { dialogActions } from "store/actions/dialog";
+import { useGetCartProduct } from "store/selectors/cart";
+import { useCartStore, useGetCartFromStore } from "store/selectors/cart";
+import { CartProducts, Cart as CartType } from "store/slices/cart";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { Product, useGetProductsByIds } from "./useProducts";
 
@@ -33,28 +29,26 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProducts) => {
 };
 
 export const useAddToCart = () => {
-  const open = useOpen();
-  const addProduct = useAddProduct();
   const getCart = useGetCartFromStore();
   return useCallback(
     (product: Product) => {
       const cart = getCart();
       const existing = cart[String(product.id)] || 0;
       if (existing >= product.quantity) {
-        open({ title: "Sorry", description: "No more stock" });
+        dialogActions.open({ title: "Sorry", description: "No more stock" });
         return;
       }
       // limit to 10 different types of product
       if (existing === 0 && Object.keys(cart).length === 10) {
-        open({
+        dialogActions.open({
           title: "Sorry",
           description: "We only allow add 10 types of items at once",
         });
         return;
       }
-      addProduct(product);
+      cartActions.addToCart(product);
     },
-    [getCart, open, addProduct],
+    [getCart],
   );
 };
 
@@ -98,10 +92,9 @@ export const useCheckCart = () => {
     }
     getProductsByIds(ids);
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
-  const setCartProducts = useSetCartProducts();
   useEffect(() => {
     if (!loading && data) {
-      setCartProducts(data.products);
+      cartActions.setCartProducts(data.products);
     }
-  }, [loading, data, setCartProducts]);
+  }, [loading, data]);
 };

@@ -7,7 +7,7 @@ import { useRoute } from "hooks/helpers/useRoute";
 import { totalAmountCount, totalCartCount, useGetCart } from "hooks/useCart";
 import { useCreateOrder } from "hooks/useOrder";
 import React, { useCallback, useEffect } from "react";
-import { useClearCart } from "state/slice/cart";
+import { cartActions } from "store/actions/cart";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -27,15 +27,14 @@ const PlaceOrder = (): JSX.Element | null => {
   }, [createOrder, cartRef]);
   const { pushHistory } = useRoute();
   const { loading, data } = result;
-  const clearCart = useClearCart();
   useEffect(() => {
     if (!loading) {
       if (data) {
-        clearCart();
+        cartActions.clearCart();
         pushHistory("/customer/order");
       }
     }
-  }, [loading, data, clearCart, pushHistory]);
+  }, [loading, data, pushHistory]);
   return Object.keys(cart).length > 0 ? (
     <Grid container className={classes.grid}>
       <div>

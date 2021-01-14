@@ -1,13 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Product } from "hooks/useProducts";
-import { useAutoDispatch } from "state/useAutoDispatch";
 
 type ProductState = {
   [key: number]: Product | undefined;
 };
 const initialState: ProductState = {};
 
-const productSlice = createSlice({
+export const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
@@ -25,9 +24,3 @@ const productSlice = createSlice({
 });
 
 export default productSlice.reducer;
-
-const { setProducts } = productSlice.actions;
-
-export const useSetProducts = () => {
-  return useAutoDispatch(setProducts);
-};

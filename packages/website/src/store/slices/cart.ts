@@ -6,7 +6,6 @@ import {
 import { Product } from "hooks/useProducts";
 import { WritableDraft } from "immer/dist/internal";
 import { isEqual } from "lodash";
-import { useAutoDispatch } from "state/useAutoDispatch";
 
 const CART_KEY = "cart";
 
@@ -56,7 +55,7 @@ function saveCart(state: WritableDraft<CartState>) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-const cartSlice = createSlice({
+export const cartSlice = createSlice({
   name: CART_KEY,
   initialState,
   reducers: {
@@ -119,26 +118,3 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-
-const {
-  addToCart,
-  removeFromCart,
-  clearCart,
-  setCartProducts,
-} = cartSlice.actions;
-
-export const useAddToCart = () => {
-  return useAutoDispatch(addToCart);
-};
-
-export const useRemoveFromCart = () => {
-  return useAutoDispatch(removeFromCart);
-};
-
-export const useClearCart = () => {
-  return useAutoDispatch(clearCart);
-};
-
-export const useSetCartProducts = () => {
-  return useAutoDispatch(setCartProducts);
-};
