@@ -9,11 +9,13 @@ type User = {
 type UserState = {
   user: User | undefined;
   people: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+  peopleIsLoading: boolean;
 };
 
 const initialState: UserState = {
   user: undefined,
   people: null,
+  peopleIsLoading: false,
 };
 
 export const userSlide = createSlice({
@@ -26,9 +28,14 @@ export const userSlide = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getData.fulfilled, (state, action) => {
-      state.people = action.payload;
-    });
+    builder
+      .addCase(getData.pending, (state) => {
+        state.peopleIsLoading = true;
+      })
+      .addCase(getData.fulfilled, (state, action) => {
+        state.people = action.payload;
+        state.peopleIsLoading = false;
+      });
   },
 });
 
