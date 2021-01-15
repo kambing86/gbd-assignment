@@ -13,9 +13,6 @@ module.exports = {
     "prettier/@typescript-eslint",
   ],
   rules: {
-    "@typescript-eslint/ban-ts-comment": ["warn"],
-    "@typescript-eslint/explicit-function-return-type": ["off"],
-    "@typescript-eslint/explicit-module-boundary-types": ["off"],
     "no-console": ["warn"],
     "spaced-comment": [
       "error",
@@ -26,9 +23,12 @@ module.exports = {
     ],
     "comma-dangle": ["error", "always-multiline"],
     "no-shadow": ["warn"],
-    "sort-imports": ["error", {
-      ignoreDeclarationSort: true,
-    }],
+    "sort-imports": [
+      "error",
+      {
+        ignoreDeclarationSort: true,
+      },
+    ],
     "import/order": [
       "error",
       {
@@ -46,6 +46,11 @@ module.exports = {
           order: "asc",
         },
       },
+    ],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { args: "all", argsIgnorePattern: "^_" },
     ],
   },
 };

@@ -15,9 +15,6 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "import"],
   rules: {
-    "@typescript-eslint/ban-ts-comment": ["warn"],
-    "@typescript-eslint/explicit-function-return-type": ["off"],
-    "@typescript-eslint/explicit-module-boundary-types": ["off"],
     "no-console": ["warn"],
     "spaced-comment": [
       "error",
@@ -52,15 +49,16 @@ module.exports = {
         },
       },
     ],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { args: "all", argsIgnorePattern: "^_" },
+    ],
     "react-hooks/exhaustive-deps": [
       "warn",
       {
         additionalHooks: "useRecoilCallback",
       },
-    ],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      { args: "all", argsIgnorePattern: "^_" },
     ],
   },
 };
