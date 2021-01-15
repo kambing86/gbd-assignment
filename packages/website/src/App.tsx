@@ -1,6 +1,5 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
-import { useCheckCart } from "hooks/useCart";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useCallback, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Switch } from "react-router-dom";
 import CommonDialog from "./components/common/CommonDialog";
@@ -10,19 +9,20 @@ import Loading from "./pages/Loading";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyReactComponent = React.ComponentType<any>;
-const lazyPreload: (() => Promise<{ default: AnyReactComponent }>)[] = [];
+type ReactComponentLazyFactory = () => Promise<{ default: AnyReactComponent }>;
+const lazyPreloadQueue: ReactComponentLazyFactory[] = [];
 
 // check https://medium.com/hackernoon/lazy-loading-and-preloading-components-in-react-16-6-804de091c82d
-function lazyWithPreload<T extends AnyReactComponent>(
-  factory: () => Promise<{ default: T }>,
-): React.LazyExoticComponent<T> {
+function lazyWithPreload(
+  factory: ReactComponentLazyFactory,
+): React.LazyExoticComponent<AnyReactComponent> {
   const Component = React.lazy(factory);
-  lazyPreload.push(factory);
+  lazyPreloadQueue.push(factory);
   return Component;
 }
 
 function preloadAll() {
-  for (const preload of lazyPreload) {
+  for (const preload of lazyPreloadQueue) {
     void preload();
   }
 }
@@ -36,21 +36,18 @@ const OrderPage = lazyWithPreload(() => import("./pages/Order"));
 const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
-  useCheckCart();
   const { theme } = useAppTheme();
   useEffect(() => {
     setTimeout(preloadAll, 2000);
+  }, []);
+  const onResetHandler = useCallback(() => {
+    // reset the state of your app so the error doesn't happen again
   }, []);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Suspense fallback={<Loading />}>
-        <ErrorBoundary
-          FallbackComponent={ErrorPage}
-          onReset={() => {
-            // reset the state of your app so the error doesn't happen again
-          }}
-        >
+        <ErrorBoundary FallbackComponent={ErrorPage} onReset={onResetHandler}>
           <Router basename={process.env.PUBLIC_URL ?? ""}>
             <Switch>
               <Route exact path="/" component={LoginPage} />

@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import { useCheckCart } from "hooks/useCart";
 import React from "react";
 import Copyright from "./Copyright";
 import TopSideBar from "./TopSideBar";
@@ -38,6 +39,7 @@ interface Props {
 }
 
 const MainLayout = ({ children }: Props): JSX.Element => {
+  useCheckCart();
   const classes = useStyles();
   return (
     <div className={classes.root}>

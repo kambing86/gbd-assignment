@@ -25,7 +25,7 @@ const ITEMS_PER_PAGE = 8;
 
 const Customer = (): JSX.Element => {
   useEffect(() => {
-    userThunkActions.getData(1);
+    void userThunkActions.getData(1);
   }, []);
   useAuth(CUSTOMER);
   const classes = useStyles();
