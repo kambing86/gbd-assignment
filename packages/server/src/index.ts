@@ -12,7 +12,7 @@ import logger from "./logger";
 
 const port = 8010;
 
-(async () => {
+void (async () => {
   const app = express();
   app.use(cookieParser());
   app.use(

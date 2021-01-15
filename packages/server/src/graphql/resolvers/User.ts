@@ -1,5 +1,5 @@
 import SQL from "@nearform/sql";
-import argon2 from "@phc/argon2";
+import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { algorithm, secret } from "~/auth";
 import initDb from "~/db";

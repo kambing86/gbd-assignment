@@ -6,7 +6,7 @@ const pubsub = new PubSub();
 export const PUBSUB_PRODUCT = "PUBSUB_PRODUCT";
 
 export function publishProduct(product: Product) {
-  pubsub.publish(PUBSUB_PRODUCT, { products: product, product });
+  return pubsub.publish(PUBSUB_PRODUCT, { products: product, product });
 }
 
 export default pubsub;

@@ -91,7 +91,7 @@ export default {
             UPDATE Products
             SET quantity = ${product.quantity - (detail?.quantity ?? 0)}
             WHERE id = ${product.id}`);
-            publishProduct({
+            await publishProduct({
               ...product,
               quantity,
             });

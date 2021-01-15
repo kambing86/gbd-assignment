@@ -90,7 +90,7 @@ export default {
         if (success) {
           const product = await db.get<DbProduct>(SQL`
           SELECT * From Products WHERE id = ${id}`);
-          publishProduct(product);
+          await publishProduct(product);
         }
         return success;
       });

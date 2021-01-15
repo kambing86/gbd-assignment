@@ -1,5 +1,5 @@
 import SQL from "@nearform/sql";
-import argon2 from "@phc/argon2";
+import argon2 from "argon2";
 import { DB } from "./getDB";
 
 interface User {
