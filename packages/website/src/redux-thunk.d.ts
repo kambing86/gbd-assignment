@@ -1,4 +1,5 @@
 /* eslint-disable */
+// TODO: can be removed if redux-thunk has latest version published
 // from https://github.com/reduxjs/redux-thunk/blob/d28ab03fd1d2dd1de402928a9589857e97142e09/src/index.d.ts
 import {
   Action,
