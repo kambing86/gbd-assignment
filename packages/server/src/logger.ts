@@ -1,10 +1,17 @@
+import { TransformableInfo } from "logform";
 import winston from "winston";
 
 const { combine, colorize, timestamp, printf } = winston.format;
 
-const myFormat = printf(({ level, message, timestamp: ts }) => {
-  return `${ts} ${level}: ${message}`;
-});
+const myFormat = printf(
+  ({
+    level,
+    message,
+    timestamp: ts,
+  }: TransformableInfo & { timestamp: string }) => {
+    return `${ts} ${level}: ${message}`;
+  },
+);
 
 const logger = winston.createLogger({
   level: "info",
