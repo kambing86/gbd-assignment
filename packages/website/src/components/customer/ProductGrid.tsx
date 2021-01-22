@@ -17,7 +17,7 @@ const ProductGrid = ({
   itemClickHandler,
   buttonAction,
   buttonText,
-}: Props): JSX.Element => {
+}: Props) => {
   return (
     <Grid container spacing={2}>
       {productIds.map((id) => (

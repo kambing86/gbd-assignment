@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = (): JSX.Element => {
+const Login = () => {
   useAuth();
   const classes = useStyles();
   const {

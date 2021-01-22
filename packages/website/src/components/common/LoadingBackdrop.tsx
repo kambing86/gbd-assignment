@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingBackdrop = (): JSX.Element => {
+const LoadingBackdrop = () => {
   const classes = useStyles();
   const isLoading = useShouldShowLoading();
   return (

@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CommonDialog = (): JSX.Element => {
+const CommonDialog = () => {
   const classes = useStyles();
   const closeHandler = useCallback(() => {
     dialogActions.close();

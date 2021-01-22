@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 
-const Loading = (): JSX.Element => {
+const Loading = () => {
   return (
     <Grid
       container

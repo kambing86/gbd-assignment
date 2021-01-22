@@ -38,7 +38,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const MainLayout = ({ children }: Props): JSX.Element => {
+const MainLayout = ({ children }: Props) => {
   useCheckCart();
   const classes = useStyles();
   return (

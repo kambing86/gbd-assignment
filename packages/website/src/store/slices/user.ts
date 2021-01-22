@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { getData } from "store/thunks/user";
+import { StarWarsPeople } from "types/StarWarsPeople";
 
 type User = {
   username: string;
@@ -8,7 +9,7 @@ type User = {
 
 type UserState = {
   user: User | undefined;
-  people: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+  people: StarWarsPeople | null;
   peopleIsLoading: boolean;
 };
 
@@ -30,10 +31,11 @@ export const userSlide = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getData.pending, (state) => {
+        state.people = null;
         state.peopleIsLoading = true;
       })
       .addCase(getData.fulfilled, (state, action) => {
-        state.people = action.payload;
+        state.people = action.payload.data;
         state.peopleIsLoading = false;
       });
   },

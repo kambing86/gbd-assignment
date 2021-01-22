@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopSideBar = (): JSX.Element => {
+const TopSideBar = () => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(true);
   const handleDrawerOpen = useCallback(() => {

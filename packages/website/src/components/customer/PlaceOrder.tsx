@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlaceOrder = (): JSX.Element | null => {
+const PlaceOrder = () => {
   const classes = useStyles();
   const { cart, cartProducts, isReady } = useGetCart();
   const cartRef = useRefInSync(cart);

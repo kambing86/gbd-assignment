@@ -58,7 +58,7 @@ interface Props {
   order: Order;
 }
 
-const OrderDetailDialog = ({ handleClose, order }: Props): JSX.Element => {
+const OrderDetailDialog = ({ handleClose, order }: Props) => {
   const classes = useStyles();
   const { productDetails, loading } = useGetOrderDetails(order);
   return (

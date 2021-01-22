@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ITEMS_PER_PAGE = 10;
 
-const ProductList = (): JSX.Element => {
+const ProductList = () => {
   const classes = useStyles();
   const [editProduct, setEditProduct] = useState<Product>();
   const {

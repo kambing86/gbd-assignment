@@ -17,7 +17,7 @@ const ProductTable = ({
   productIds,
   useGetProduct,
   itemClickHandler,
-}: Props): JSX.Element => {
+}: Props) => {
   return (
     <Table size="small">
       <TableHead>

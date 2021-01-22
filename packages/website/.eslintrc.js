@@ -51,7 +51,7 @@ module.exports = {
     ],
     "@typescript-eslint/explicit-module-boundary-types": ["off"],
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       { args: "all", argsIgnorePattern: "^_" },
     ],
     "react-hooks/exhaustive-deps": [

@@ -87,7 +87,7 @@ interface Props {
   product: Product;
 }
 
-const EditProductDialog = ({ handleClose, product }: Props): JSX.Element => {
+const EditProductDialog = ({ handleClose, product }: Props) => {
   const { productState, allInputs } = useProductInput(product);
   const productRef = useRefInSync(productState);
   const { result, updateProduct } = useUpdateProduct();

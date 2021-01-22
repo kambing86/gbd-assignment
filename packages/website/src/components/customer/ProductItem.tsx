@@ -53,7 +53,7 @@ const ProductItem = ({
   itemClickHandler,
   buttonAction,
   buttonText,
-}: Props): JSX.Element | null => {
+}: Props) => {
   const classes = useStyles();
   const product = useGetProduct(id);
   const cardClickHandler = useCallback(() => {

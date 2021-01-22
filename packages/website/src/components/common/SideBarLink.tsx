@@ -10,7 +10,7 @@ interface Props {
   icon: JSX.Element;
 }
 
-const SideBarLink = ({ path, text, icon }: Props): JSX.Element => {
+const SideBarLink = ({ path, text, icon }: Props) => {
   const { pushHistory, location } = useRoute();
   const clickHandler = useCallback(() => {
     pushHistory(path);

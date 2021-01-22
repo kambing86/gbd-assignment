@@ -16,11 +16,7 @@ interface Props {
   itemClickHandler: (id: number) => void;
 }
 
-const ProductRow = ({
-  id,
-  useGetProduct,
-  itemClickHandler,
-}: Props): JSX.Element | null => {
+const ProductRow = ({ id, useGetProduct, itemClickHandler }: Props) => {
   const classes = useStyles();
   const product = useGetProduct(id);
   const rowClickHandler = useCallback(() => {

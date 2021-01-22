@@ -5,7 +5,7 @@ import { useRoute } from "hooks/helpers/useRoute";
 import { totalCartCount, useGetCart } from "hooks/useCart";
 import React, { useCallback } from "react";
 
-const CartIcon = (): JSX.Element => {
+const CartIcon = () => {
   const { pushHistory } = useRoute();
   const clickCartHandler = useCallback(() => {
     pushHistory("/customer/cart");

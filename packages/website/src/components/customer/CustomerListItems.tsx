@@ -4,7 +4,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import SideBarLink from "components/common/SideBarLink";
 import React from "react";
 
-const CustomerListItems = (): JSX.Element => (
+const CustomerListItems = () => (
   <>
     <SideBarLink path="/customer" text="Explore" icon={<ExploreIcon />} />
     <SideBarLink

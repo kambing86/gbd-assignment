@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ITEMS_PER_PAGE = 8;
 
-const Customer = (): JSX.Element => {
+const Customer = () => {
   useEffect(() => {
     void userThunkActions.getData(1);
   }, []);
