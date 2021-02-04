@@ -1,11 +1,7 @@
-import {
-  PayloadAction,
-  createDraftSafeSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createModel } from "@rematch/core";
 import { Product } from "hooks/useProducts";
-import { WritableDraft } from "immer/dist/internal";
 import { isEqual } from "lodash";
+import { RootModel } from ".";
 
 const CART_KEY = "cart";
 
@@ -19,9 +15,15 @@ export type CartProducts = {
   [key: number]: CartProduct | undefined;
 };
 
-function getInitialCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY) || "{}") as Cart;
-}
+type CartState = {
+  cart: Cart;
+  cartProducts: CartProducts;
+};
+
+const initialState: CartState = {
+  cart: getInitialCart(),
+  cartProducts: {},
+};
 
 function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
   if (currProduct === undefined) {
@@ -36,40 +38,29 @@ function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
   return currProduct;
 }
 
-type CartState = {
-  cart: Cart;
-  cartProducts: CartProducts;
-};
-
-const initialState: CartState = {
-  cart: getInitialCart(),
-  cartProducts: {},
-};
-
-const cartSelector = createDraftSafeSelector(
-  (state: CartState) => state.cart,
-  (cart) => cart,
-);
-function saveCart(state: WritableDraft<CartState>) {
-  const cart = cartSelector(state);
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+function getInitialCart() {
+  return JSON.parse(localStorage.getItem(CART_KEY) || "{}") as Cart;
 }
 
-export const cartSlice = createSlice({
-  name: CART_KEY,
-  initialState,
+function saveCart(state: CartState) {
+  localStorage.setItem(CART_KEY, JSON.stringify(state.cart));
+}
+
+export default createModel<RootModel>()({
+  state: initialState,
   reducers: {
-    addToCart(state, action: PayloadAction<Product>) {
-      const product = action.payload;
+    addToCart(state, payload: Product) {
+      const product = payload;
       const id = String(product.id);
       const existing = state.cart[id] || 0;
       if (existing < product.quantity) {
         state.cart[id] = existing + 1;
       }
       saveCart(state);
+      return state;
     },
-    removeFromCart(state, action: PayloadAction<number>) {
-      const productId = action.payload;
+    removeFromCart(state, payload: number) {
+      const productId = payload;
       const id = String(productId);
       const existing = state.cart[id] || 0;
       const result = existing - 1;
@@ -79,13 +70,15 @@ export const cartSlice = createSlice({
         state.cart[id] = result;
       }
       saveCart(state);
+      return state;
     },
     clearCart(state) {
       state.cart = {};
       saveCart(state);
+      return state;
     },
-    setCartProducts(state, action: PayloadAction<Product[]>) {
-      const products = action.payload;
+    setCartProducts(state, payload: Product[]) {
+      const products = payload;
       for (const newProduct of products) {
         const { id } = newProduct;
         const curProduct = state.cartProducts[id];
@@ -113,8 +106,7 @@ export const cartSlice = createSlice({
         }
       }
       saveCart(state);
+      return state;
     },
   },
 });
-
-export default cartSlice.reducer;
