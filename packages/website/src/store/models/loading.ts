@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createModel } from "@rematch/core";
+import { RootModel } from ".";
 
 export type LoadingState = {
   [key: string]: number | undefined;
@@ -10,12 +11,11 @@ type SetLoadingPayload = {
   isLoading: boolean;
 };
 
-export const loadingSlice = createSlice({
-  name: "loading",
-  initialState,
+export default createModel<RootModel>()({
+  state: initialState,
   reducers: {
-    setLoading(state, action: PayloadAction<SetLoadingPayload>) {
-      const { loadingKey, isLoading } = action.payload;
+    setLoading(state, payload: SetLoadingPayload) {
+      const { loadingKey, isLoading } = payload;
       const { [loadingKey]: curValue } = state;
       const result = (curValue ?? 0) + (isLoading ? 1 : -1);
       if (result <= 0) {
@@ -23,8 +23,7 @@ export const loadingSlice = createSlice({
       } else {
         state[loadingKey] = result;
       }
+      return state;
     },
   },
 });
-
-export default loadingSlice.reducer;

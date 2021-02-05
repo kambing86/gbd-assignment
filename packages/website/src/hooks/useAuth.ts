@@ -1,7 +1,6 @@
 import { useGetUserLazyQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
+import { dispatch } from "store";
 import { useGetUser } from "store/selectors/user";
 import { useRoute } from "./helpers/useRoute";
 
@@ -22,7 +21,7 @@ export function useAuth(userType?: USER_TYPE) {
   useEffect(() => {
     // only show loading if user data is not ready
     if (userRef.current === undefined) {
-      loadingActions.setLoading({
+      dispatch.loading.setLoading({
         loadingKey: AUTH_LOADING_KEY,
         isLoading: true,
       });
@@ -34,7 +33,7 @@ export function useAuth(userType?: USER_TYPE) {
     if (!loading && (error || data)) {
       const user = data?.user;
       if (user) {
-        userActions.setUser(user);
+        dispatch.user.setUser(user);
         // for login page
         if (userType === undefined) {
           if (user.isAdmin) {
@@ -48,10 +47,10 @@ export function useAuth(userType?: USER_TYPE) {
           pushHistory("/customer");
         }
       } else {
-        userActions.setUser(undefined);
+        dispatch.user.setUser(undefined);
         pushHistory("/");
       }
-      loadingActions.setLoading({
+      dispatch.loading.setLoading({
         loadingKey: AUTH_LOADING_KEY,
         isLoading: false,
       });

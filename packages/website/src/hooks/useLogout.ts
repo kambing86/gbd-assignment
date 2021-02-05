@@ -1,8 +1,7 @@
 import { useLogoutMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
+import { dispatch } from "store";
 
 const LOGOUT_LOADING_KEY = "logoutLoading";
 
@@ -12,7 +11,7 @@ export function useLogout() {
     fetchPolicy: "no-cache",
   });
   const logoutHandler = useCallback(async () => {
-    loadingActions.setLoading({
+    dispatch.loading.setLoading({
       loadingKey: LOGOUT_LOADING_KEY,
       isLoading: true,
     });
@@ -21,9 +20,9 @@ export function useLogout() {
   const { data, error, loading } = logoutResult;
   useEffect(() => {
     if (!loading && (error || data)) {
-      userActions.setUser(undefined);
+      dispatch.user.setUser(undefined);
       history.push("/");
-      loadingActions.setLoading({
+      dispatch.loading.setLoading({
         loadingKey: LOGOUT_LOADING_KEY,
         isLoading: false,
       });
