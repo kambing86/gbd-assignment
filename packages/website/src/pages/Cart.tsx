@@ -8,7 +8,7 @@ import ProductGrid from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useGetCart } from "hooks/useCart";
 import React, { useCallback } from "react";
-import { cartActions } from "store/actions/cart";
+import { dispatch } from "store";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -26,7 +26,7 @@ export default function Cart() {
   const { productIds, isReady, useGetProduct } = useGetCart();
   const itemClickHandler = useCallback((id: number, action: string) => {
     if (action === "removeFromCart") {
-      cartActions.removeFromCart(id);
+      dispatch.cart.removeFromCart(id);
     }
   }, []);
 

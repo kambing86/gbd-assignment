@@ -6,7 +6,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback } from "react";
-import { dialogActions } from "store/actions/dialog";
+import { dispatch } from "store";
 import { useGetDialog } from "store/selectors/dialog";
 
 const useStyles = makeStyles(() => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
 const CommonDialog = () => {
   const classes = useStyles();
   const closeHandler = useCallback(() => {
-    dialogActions.close();
+    dispatch.dialog.close();
   }, []);
   const { isOpen, title, description } = useGetDialog();
   return (

@@ -5,9 +5,9 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { themeActions } from "store/actions/theme";
+import { dispatch } from "store";
+import { DARK, LIGHT } from "store/models/theme";
 import { useThemeType } from "store/selectors/theme";
-import { DARK, LIGHT } from "store/slices/theme";
 
 // set it here https://material-ui.com/customization/default-theme/
 const getTheme = (themeType: PaletteType | null) => {
@@ -57,7 +57,7 @@ export const useAppTheme = () => {
   // if localStorage has no saved theme type, then set using media query
   useEffect(() => {
     if (!prefersDarkMode || themeType !== null) return;
-    themeActions.toggleTheme();
+    dispatch.theme.toggleTheme();
   }, [prefersDarkMode, themeType]);
   useEffect(() => {
     if (themeType === DARK) {
@@ -66,6 +66,6 @@ export const useAppTheme = () => {
       setTheme(getTheme(LIGHT));
     }
   }, [themeType]);
-  const toggleDarkMode = themeActions.toggleTheme;
+  const toggleDarkMode = dispatch.theme.toggleTheme;
   return { theme, toggleDarkMode };
 };

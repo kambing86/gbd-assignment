@@ -1,28 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
-import cart from "./slices/cart";
-import dialog from "./slices/dialog";
-import loading from "./slices/loading";
-import order from "./slices/order";
-import product from "./slices/product";
-import theme from "./slices/theme";
-import user from "./slices/user";
+import { RematchDispatch, RematchRootState, init } from "@rematch/core";
+import immerPlugin from "@rematch/immer";
+import { RootModel, models } from "./models";
 
-const store = configureStore({
-  reducer: {
-    cart,
-    dialog,
-    loading,
-    order,
-    product,
-    theme,
-    user,
-  },
-  devTools: {
-    name: "gbd-assignment",
-  },
+export const store = init<RootModel>({
+  name: "gbd-assignment",
+  models,
+  // add immerPlugin to your store
+  plugins: [immerPlugin()],
 });
 
-export type State = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type Store = typeof store;
+export type Dispatch = RematchDispatch<RootModel>;
+export type RootState = RematchRootState<RootModel>;
+
+export const dispatch = store.dispatch;
 
 export default store;

@@ -1,17 +1,17 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createModel } from "@rematch/core";
 import { Product } from "hooks/useProducts";
+import { RootModel } from ".";
 
 type ProductState = {
   [key: number]: Product | undefined;
 };
 const initialState: ProductState = {};
 
-export const productSlice = createSlice({
-  name: "product",
-  initialState,
+export default createModel<RootModel>()({
+  state: initialState,
   reducers: {
-    setProducts(state, action: PayloadAction<Product[]>) {
-      const products = action.payload;
+    setProducts(state, payload: Product[]) {
+      const products = payload;
       for (const product of products) {
         const { id } = product;
         const prev = state[id];
@@ -19,8 +19,7 @@ export const productSlice = createSlice({
           state[id] = product;
         }
       }
+      return state;
     },
   },
 });
-
-export default productSlice.reducer;

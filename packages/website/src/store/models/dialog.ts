@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createModel } from "@rematch/core";
+import { RootModel } from ".";
 
 type DialogState = {
   isOpen: boolean;
@@ -13,20 +14,19 @@ const initialState: DialogState = {
 
 type OpenPayload = { title: string; description: string };
 
-export const dialogSlice = createSlice({
-  name: "dialog",
-  initialState,
+export default createModel<RootModel>()({
+  state: initialState,
   reducers: {
-    open(state, action: PayloadAction<OpenPayload>) {
-      const { title, description } = action.payload;
+    open(state, payload: OpenPayload) {
+      const { title, description } = payload;
       state.isOpen = true;
       state.title = title;
       state.description = description;
+      return state;
     },
     close(state) {
       state.isOpen = false;
+      return state;
     },
   },
 });
-
-export default dialogSlice.reducer;

@@ -1,5 +1,6 @@
 import { PaletteType } from "@material-ui/core";
-import { createSlice } from "@reduxjs/toolkit";
+import { createModel } from "@rematch/core";
+import { RootModel } from ".";
 
 const THEME_KEY = "theme";
 export const LIGHT = "light";
@@ -15,17 +16,15 @@ type ThemeState = {
 
 const initialState: ThemeState = { themeType: getSavedType() };
 
-export const themeSlice = createSlice({
-  name: "theme",
-  initialState,
+export default createModel<RootModel>()({
+  state: initialState,
   reducers: {
     toggleTheme(state) {
       const cur = state.themeType;
       const newVal = cur === DARK ? LIGHT : DARK;
       localStorage.setItem(THEME_KEY, newVal);
       state.themeType = newVal;
+      return state;
     },
   },
 });
-
-export default themeSlice.reducer;

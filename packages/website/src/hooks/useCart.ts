@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { cartActions } from "store/actions/cart";
-import { dialogActions } from "store/actions/dialog";
+import { dispatch } from "store";
+import { CartProducts, Cart as CartType } from "store/models/cart";
 import { useGetCartProduct } from "store/selectors/cart";
 import { useCartStore, useGetCartFromStore } from "store/selectors/cart";
-import { CartProducts, Cart as CartType } from "store/slices/cart";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { Product, useGetProductsByIds } from "./useProducts";
 
@@ -35,18 +34,18 @@ export const useAddToCart = () => {
       const cart = getCart();
       const existing = cart[String(product.id)] || 0;
       if (existing >= product.quantity) {
-        dialogActions.open({ title: "Sorry", description: "No more stock" });
+        dispatch.dialog.open({ title: "Sorry", description: "No more stock" });
         return;
       }
       // limit to 10 different types of product
       if (existing === 0 && Object.keys(cart).length === 10) {
-        dialogActions.open({
+        dispatch.dialog.open({
           title: "Sorry",
           description: "We only allow add 10 types of items at once",
         });
         return;
       }
-      cartActions.addToCart(product);
+      dispatch.cart.addToCart(product);
     },
     [getCart],
   );
@@ -94,7 +93,7 @@ export const useCheckCart = () => {
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
   useEffect(() => {
     if (!loading && data) {
-      cartActions.setCartProducts(data.products);
+      dispatch.cart.setCartProducts(data.products);
     }
   }, [loading, data]);
 };

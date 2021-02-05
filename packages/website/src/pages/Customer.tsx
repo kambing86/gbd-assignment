@@ -9,7 +9,7 @@ import { useAddToCart } from "hooks/useCart";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
 import React, { useCallback, useEffect } from "react";
-import { userThunkActions } from "store/actions/user";
+import { dispatch } from "store";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -25,7 +25,7 @@ const ITEMS_PER_PAGE = 8;
 
 const Customer = () => {
   useEffect(() => {
-    void userThunkActions.getData(1);
+    void dispatch.user.getData(1);
   }, []);
   useAuth(CUSTOMER);
   const classes = useStyles();

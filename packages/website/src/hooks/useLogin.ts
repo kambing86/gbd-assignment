@@ -1,8 +1,7 @@
 import { useLoginMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
+import { dispatch } from "store";
 import useStateWithRef from "./helpers/useStateWithRef";
 
 const USERNAME_KEY = "username";
@@ -24,7 +23,7 @@ export function useLogin() {
   );
   const loginHandler = useCallback(
     async (username: string, password: string) => {
-      loadingActions.setLoading({
+      dispatch.loading.setLoading({
         loadingKey: LOGIN_LOADING_KEY,
         isLoading: true,
       });
@@ -44,14 +43,14 @@ export function useLogin() {
     if (!loading && !error && data) {
       const { login } = data;
       if (login) {
-        userActions.setUser(login);
+        dispatch.user.setUser(login);
         if (login.isAdmin) {
           history.push("/admin");
         } else {
           history.push("/customer");
         }
       }
-      loadingActions.setLoading({
+      dispatch.loading.setLoading({
         loadingKey: LOGIN_LOADING_KEY,
         isLoading: false,
       });
