@@ -1,3 +1,7 @@
+const fs = require("fs");
+
+const schemaString = fs.readFileSync(__dirname + "/schema.gql").toString();
+
 module.exports = {
   extends: [
     "react-app",
@@ -12,7 +16,7 @@ module.exports = {
     project: ["./tsconfig.json"],
   },
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint", "import", "graphql"],
   rules: {
     "no-console": ["warn"],
     "spaced-comment": [
@@ -57,6 +61,13 @@ module.exports = {
       "warn",
       {
         additionalHooks: "useRecoilCallback",
+      },
+    ],
+    "graphql/template-strings": [
+      "error",
+      {
+        env: "apollo",
+        schemaString,
       },
     ],
   },

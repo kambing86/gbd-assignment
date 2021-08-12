@@ -52,11 +52,10 @@
   "scripts": {
     "prestart": "yarn build",
     "start": "node ./dist/index.js",
-    "start:dev": "concurrently \"yarn dev:app\" \"yarn dev:graphql\"",
+    "start:dev": "concurrently \"yarn dev:app\" \"yarn graphql:generate --watch\"",
     "dev:app": "nodemon --exec 'babel-node --extensions \".ts\" ./src/index.ts'",
-    "dev:graphql": "yarn generate --watch",
     "prebuild": "rm -rf dist",
-    "build": "yarn generate && yarn build:types && yarn build:js",
+    "build": "yarn graphql:generate && yarn build:types && yarn build:js",
     "build:types": "tsc --emitDeclarationOnly -p tsconfig-build.json",
     "build:js": "babel src --out-dir dist --extensions \".ts,.tsx\" --source-maps true",
     "test": "nyc mocha tests",
@@ -64,6 +63,6 @@
     "prettier:write": "prettier --write '{src,tests}/**/*.*'",
     "lint": "eslint '{src,tests}/**/*.{j,t}s{,x}'",
     "lint:fix": "eslint --fix '{src,tests}/**/*.{j,t}s{,x}'",
-    "generate": "graphql-codegen"
+    "graphql:generate": "graphql-codegen"
   }
 }

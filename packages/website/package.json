@@ -28,9 +28,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:dev": "concurrently \"yarn start\" \"yarn dev:graphql\"",
-    "dev:graphql": "yarn generate --watch",
-    "prebuild": "yarn generate",
+    "prestart:dev": "yarn graphql:download",
+    "start:dev": "concurrently \"yarn start\" \"yarn graphql:generate --watch\"",
+    "prebuild": "yarn graphql:generate",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -38,7 +38,8 @@
     "prettier:write": "prettier --write 'src/**/*.*'",
     "lint": "eslint 'src/**/*.{j,t}s{,x}'",
     "lint:fix": "eslint --fix 'src/**/*.{j,t}s{,x}'",
-    "generate": "graphql-codegen"
+    "graphql:download": "rover graph introspect http://localhost:8010/graphql > schema.gql",
+    "graphql:generate": "graphql-codegen"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@apollo/rover": "^0.1.10",
     "@graphql-codegen/add": "^2.0.2",
     "@graphql-codegen/cli": "^1.20.1",
     "@graphql-codegen/typescript": "^1.21.0",
@@ -66,6 +68,7 @@
     "@types/react-router-dom": "^5.1.7",
     "concurrently": "^6.0.0",
     "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-graphql": "^4.0.0",
     "prettier": "^2.2.1",
     "utility-types": "^3.10.0"
   }
