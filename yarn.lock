@@ -42,7 +42,7 @@
 
 "@apollo/rover@^0.1.10":
   version "0.1.10"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/@apollo/rover/-/rover-0.1.10.tgz#b8989d421b5b8893492d660e2b04b1c60c6eabdb"
+  resolved "https://registry.yarnpkg.com/@apollo/rover/-/rover-0.1.10.tgz#b8989d421b5b8893492d660e2b04b1c60c6eabdb"
   integrity sha512-lNK9iuOwYo4+ImumSlLM1GGyexhYoQlGvP/tpEiMTrumzbILCsNuIwAajzAbhO0Xm5mumwFI4owcqkgbZfYZpw==
   dependencies:
     binary-install "^0.1.1"
@@ -1262,7 +1262,7 @@
 
 "@babel/runtime@^7.10.0":
   version "7.15.3"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/@babel/runtime/-/runtime-7.15.3.tgz#2e1c2880ca118e5b2f9988322bd8a7656a32502b"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.3.tgz#2e1c2880ca118e5b2f9988322bd8a7656a32502b"
   integrity sha512-OvwMLqNXkCXSz1kSm58sEsNuhqOx/fKpnUnKnFB5v8uDda5bLNEHNgKPvhDN6IU0LDcnHQ90LlJ0Q6jnyBSIBA==
   dependencies:
     regenerator-runtime "^0.13.4"
@@ -1729,7 +1729,7 @@
 
 "@graphql-tools/merge@6.0.0 - 6.2.14":
   version "6.2.14"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/@graphql-tools/merge/-/merge-6.2.14.tgz#694e2a2785ba47558e5665687feddd2935e9d94e"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/merge/-/merge-6.2.14.tgz#694e2a2785ba47558e5665687feddd2935e9d94e"
   integrity sha512-RWT4Td0ROJai2eR66NHejgf8UwnXJqZxXgDWDI+7hua5vNA2OW8Mf9K1Wav1ZkjWnuRp4ztNtkZGie5ISw55ow==
   dependencies:
     "@graphql-tools/schema" "^7.0.0"
@@ -1841,7 +1841,7 @@
 
 "@graphql-tools/utils@^7.7.0":
   version "7.10.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/@graphql-tools/utils/-/utils-7.10.0.tgz#07a4cb5d1bec1ff1dc1d47a935919ee6abd38699"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-7.10.0.tgz#07a4cb5d1bec1ff1dc1d47a935919ee6abd38699"
   integrity sha512-d334r6bo9mxdSqZW6zWboEnnOOFRrAPVQJ7LkU8/6grglrbcu6WhwCLzHb90E94JI3TD3ricC3YGbUqIi9Xg0w==
   dependencies:
     "@ardatan/aggregate-error" "0.0.6"
@@ -4871,7 +4871,7 @@ axe-core@^4.0.2:
 
 axios@^0.21.1:
   version "0.21.1"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
   integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
@@ -5190,7 +5190,7 @@ binary-extensions@^2.0.0:
 
 binary-install@^0.1.1:
   version "0.1.1"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/binary-install/-/binary-install-0.1.1.tgz#c1b22f174581764e5c52cd16664cf1d287e38bd4"
+  resolved "https://registry.yarnpkg.com/binary-install/-/binary-install-0.1.1.tgz#c1b22f174581764e5c52cd16664cf1d287e38bd4"
   integrity sha512-DqED0D/6LrS+BHDkKn34vhRqOGjy5gTMgvYZsGK2TpNbdPuz4h+MRlNgGv5QBRd7pWq/jylM4eKNCizgAq3kNQ==
   dependencies:
     axios "^0.21.1"
@@ -6192,7 +6192,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
 
 console.table@^0.10.0:
   version "0.10.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/console.table/-/console.table-0.10.0.tgz#0917025588875befd70cf2eff4bef2c6e2d75d04"
+  resolved "https://registry.yarnpkg.com/console.table/-/console.table-0.10.0.tgz#0917025588875befd70cf2eff4bef2c6e2d75d04"
   integrity sha1-CRcCVYiHW+/XDPLv9L7yxuLXXQQ=
   dependencies:
     easy-table "1.1.0"
@@ -7307,7 +7307,7 @@ duplexify@^3.4.2, duplexify@^3.6.0:
 
 easy-table@1.1.0:
   version "1.1.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/easy-table/-/easy-table-1.1.0.tgz#86f9ab4c102f0371b7297b92a651d5824bc8cb73"
+  resolved "https://registry.yarnpkg.com/easy-table/-/easy-table-1.1.0.tgz#86f9ab4c102f0371b7297b92a651d5824bc8cb73"
   integrity sha1-hvmrTBAvA3G3KXuSplHVgkvIy3M=
   optionalDependencies:
     wcwidth ">=1.0.1"
@@ -7645,7 +7645,7 @@ eslint-plugin-flowtype@^5.2.0:
 
 eslint-plugin-graphql@^4.0.0:
   version "4.0.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/eslint-plugin-graphql/-/eslint-plugin-graphql-4.0.0.tgz#d238ff2baee4d632cfcbe787a7a70a1f50428358"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-graphql/-/eslint-plugin-graphql-4.0.0.tgz#d238ff2baee4d632cfcbe787a7a70a1f50428358"
   integrity sha512-d5tQm24YkVvCEk29ZR5ScsgXqAGCjKlMS8lx3mS7FS/EKsWbkvXQImpvic03EpMIvNTBW5e+2xnHzXB/VHNZJw==
   dependencies:
     "@babel/runtime" "^7.10.0"
@@ -8360,9 +8360,9 @@ follow-redirects@^1.0.0:
   integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
 
 follow-redirects@^1.10.0:
-  version "1.14.1"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/follow-redirects/-/follow-redirects-1.14.1.tgz#d9114ded0a1cfdd334e164e6662ad02bfd91ff43"
-  integrity sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.2.tgz#cecb825047c00f5e66b142f90fed4f515dec789b"
+  integrity sha512-yLR6WaE2lbF0x4K2qE2p9PEXKLDjUjnR/xmjS3wHAYxtlsI9MLLBJUZirAHKzUZDGLxje7w/cXR49WOUo4rbsA==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -8848,7 +8848,7 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
 
 graphql-config@^3.0.2:
   version "3.4.1"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/graphql-config/-/graphql-config-3.4.1.tgz#59f937a1b4d3a3c2dcdb27ddf5b4d4d4b2c6e9e1"
+  resolved "https://registry.yarnpkg.com/graphql-config/-/graphql-config-3.4.1.tgz#59f937a1b4d3a3c2dcdb27ddf5b4d4d4b2c6e9e1"
   integrity sha512-g9WyK4JZl1Ko++FSyE5Ir2g66njfxGzrDDhBOwnkoWf/t3TnnZG6BBkWP+pkqVJ5pqMJGPKHNrbew8jRxStjhw==
   dependencies:
     "@endemolshinegroup/cosmiconfig-typescript-loader" "3.0.2"
@@ -8961,7 +8961,7 @@ graphql-ws@4.1.5:
 
 graphql@^15.5.0:
   version "15.5.1"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/graphql/-/graphql-15.5.1.tgz#f2f84415d8985e7b84731e7f3536f8bb9d383aad"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.1.tgz#f2f84415d8985e7b84731e7f3536f8bb9d383aad"
   integrity sha512-FeTRX67T3LoE3LWAxxOlW2K3Bz+rMYAC18rRguK4wgXaTZMiJwSUwDmPFo3UadAKbzirKIg5Qy+sNJXbpPRnQw==
 
 growl@1.10.5:
@@ -11263,7 +11263,7 @@ lodash.debounce@^4.0.8:
 
 lodash.flatten@^4.4.0:
   version "4.4.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
+  resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
   integrity sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=
 
 lodash.flattendeep@^4.4.0:
@@ -11353,7 +11353,7 @@ lodash.uniq@^4.5.0:
 
 lodash.without@^4.4.0:
   version "4.4.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/lodash.without/-/lodash.without-4.4.0.tgz#3cd4574a00b67bae373a94b748772640507b7aac"
+  resolved "https://registry.yarnpkg.com/lodash.without/-/lodash.without-4.4.0.tgz#3cd4574a00b67bae373a94b748772640507b7aac"
   integrity sha1-PNRXSgC2e643OpS3SHcmQFB7eqw=
 
 "lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5, lodash@^4.2.1, lodash@~4.17.20:
@@ -16229,9 +16229,9 @@ tar@^6.0.2:
     yallist "^4.0.0"
 
 tar@^6.1.0:
-  version "6.1.8"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/tar/-/tar-6.1.8.tgz#4fc50cfe56511c538ce15b71e05eebe66530cbd4"
-  integrity sha512-sb9b0cp855NbkMJcskdSYA7b11Q8JsX4qe4pyUAfHp+Y6jBjJeek2ZVlwEfWayshEIwlIzXx0Fain3QG9JPm2A==
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.10.tgz#8a320a74475fba54398fa136cd9883aa8ad11175"
+  integrity sha512-kvvfiVvjGMxeUNB6MyYv5z7vhfFRwbwCXJAeL0/lnbrttBVqcMOnpHUf0X42LrPMR8mMpgapkJMchFH4FSHzNA==
   dependencies:
     chownr "^2.0.0"
     fs-minipass "^2.0.0"
@@ -16627,7 +16627,7 @@ tslib@~2.0.1:
 
 tslib@~2.2.0:
   version "2.2.0"
-  resolved "https://nexus.in.spdigital.sg/repository/npm-all/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
 
 tsutils@^3.17.1:
