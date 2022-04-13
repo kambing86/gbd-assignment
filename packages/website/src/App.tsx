@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import React, { Suspense, useCallback, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Route, HashRouter as Router, Switch } from "react-router-dom";
+import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import CommonDialog from "./components/common/CommonDialog";
 import LoadingBackdrop from "./components/common/LoadingBackdrop";
 import { useAppTheme } from "./hooks/useAppTheme";
@@ -49,14 +49,14 @@ export default function App() {
       <Suspense fallback={<Loading />}>
         <ErrorBoundary FallbackComponent={ErrorPage} onReset={onResetHandler}>
           <Router basename={process.env.PUBLIC_URL ?? ""}>
-            <Switch>
-              <Route exact path="/" component={LoginPage} />
-              <Route exact path="/admin" component={AdminPage} />
-              <Route exact path="/customer" component={CustomerPage} />
-              <Route exact path="/customer/cart" component={CartPage} />
-              <Route exact path="/customer/order" component={OrderPage} />
-              <Route component={NotFoundPage} />
-            </Switch>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/customer" element={<CustomerPage />} />
+              <Route path="/customer/cart" element={<CartPage />} />
+              <Route path="/customer/order" element={<OrderPage />} />
+              <Route element={<NotFoundPage />} />
+            </Routes>
           </Router>
         </ErrorBoundary>
       </Suspense>

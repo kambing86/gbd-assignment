@@ -27,7 +27,7 @@ export function useAuth(userType?: USER_TYPE) {
         isLoading: true,
       });
     }
-    userQuery();
+    void userQuery();
   }, [userQuery]);
   const { data, error, loading } = userResult;
   useEffect(() => {

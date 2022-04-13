@@ -15,55 +15,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  orders: OrderResult;
-  products: ProductResult;
-  productsByIds: Array<Product>;
-  user?: Maybe<User>;
-};
-
-
-export type QueryOrdersArgs = {
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryProductsArgs = {
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
-  onShelf?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type QueryProductsByIdsArgs = {
-  ids: Array<Scalars['Int']>;
-};
-
-export type OrderResult = {
-  __typename?: 'OrderResult';
-  rows: Array<Order>;
-  skip: Scalars['Int'];
-  limit: Scalars['Int'];
-  total: Scalars['Int'];
-};
-
-export type Order = {
-  __typename?: 'Order';
-  id: Scalars['Int'];
-  userId: Scalars['Int'];
-  createdDate: Scalars['String'];
-  details: Array<OrderDetail>;
-};
-
-export type OrderDetail = {
-  __typename?: 'OrderDetail';
-  product: Product;
-  quantity: Scalars['Int'];
-  price: Scalars['Float'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   addProduct?: Maybe<Scalars['Boolean']>;
@@ -95,8 +46,19 @@ export type MutationUpdateProductArgs = {
   data: ProductInput;
 };
 
-export type OrderInput = {
-  details: Array<OrderDetailInput>;
+export type Order = {
+  __typename?: 'Order';
+  id: Scalars['Int'];
+  userId: Scalars['Int'];
+  createdDate: Scalars['String'];
+  details: Array<OrderDetail>;
+};
+
+export type OrderDetail = {
+  __typename?: 'OrderDetail';
+  product: Product;
+  quantity: Scalars['Int'];
+  price: Scalars['Float'];
 };
 
 export type OrderDetailInput = {
@@ -104,20 +66,13 @@ export type OrderDetailInput = {
   quantity: Scalars['Int'];
 };
 
-export type Subscription = {
-  __typename?: 'Subscription';
-  products: Product;
-  product: Product;
+export type OrderInput = {
+  details: Array<OrderDetailInput>;
 };
 
-
-export type SubscriptionProductArgs = {
-  id: Scalars['Int'];
-};
-
-export type ProductResult = {
-  __typename?: 'ProductResult';
-  rows: Array<Product>;
+export type OrderResult = {
+  __typename?: 'OrderResult';
+  rows: Array<Order>;
   skip: Scalars['Int'];
   limit: Scalars['Int'];
   total: Scalars['Int'];
@@ -141,6 +96,51 @@ export type ProductInput = {
   isUp?: Maybe<Scalars['Boolean']>;
 };
 
+export type ProductResult = {
+  __typename?: 'ProductResult';
+  rows: Array<Product>;
+  skip: Scalars['Int'];
+  limit: Scalars['Int'];
+  total: Scalars['Int'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  orders: OrderResult;
+  products: ProductResult;
+  productsByIds: Array<Product>;
+  user?: Maybe<User>;
+};
+
+
+export type QueryOrdersArgs = {
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryProductsArgs = {
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  onShelf?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type QueryProductsByIdsArgs = {
+  ids: Array<Scalars['Int']>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  products: Product;
+  product: Product;
+};
+
+
+export type SubscriptionProductArgs = {
+  id: Scalars['Int'];
+};
+
 export type User = {
   __typename?: 'User';
   username: Scalars['String'];
@@ -151,6 +151,10 @@ export type User = {
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
+
+export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
+  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -164,6 +168,7 @@ export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
+  | ResolverWithResolve<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
 
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
@@ -225,57 +230,50 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Query: ResolverTypeWrapper<{}>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  OrderResult: ResolverTypeWrapper<OrderResult>;
-  Order: ResolverTypeWrapper<Order>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Order: ResolverTypeWrapper<Order>;
   OrderDetail: ResolverTypeWrapper<OrderDetail>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
-  Mutation: ResolverTypeWrapper<{}>;
-  OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
-  Subscription: ResolverTypeWrapper<{}>;
-  ProductResult: ResolverTypeWrapper<ProductResult>;
+  OrderInput: OrderInput;
+  OrderResult: ResolverTypeWrapper<OrderResult>;
   Product: ResolverTypeWrapper<Product>;
   ProductInput: ProductInput;
+  ProductResult: ResolverTypeWrapper<ProductResult>;
+  Query: ResolverTypeWrapper<{}>;
+  Subscription: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Query: {};
-  Int: Scalars['Int'];
+  Mutation: {};
   Boolean: Scalars['Boolean'];
-  OrderResult: OrderResult;
-  Order: Order;
   String: Scalars['String'];
+  Int: Scalars['Int'];
+  Order: Order;
   OrderDetail: OrderDetail;
   Float: Scalars['Float'];
-  Mutation: {};
-  OrderInput: OrderInput;
   OrderDetailInput: OrderDetailInput;
-  Subscription: {};
-  ProductResult: ProductResult;
+  OrderInput: OrderInput;
+  OrderResult: OrderResult;
   Product: Product;
   ProductInput: ProductInput;
+  ProductResult: ProductResult;
+  Query: {};
+  Subscription: {};
   User: User;
 };
 
-export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  orders?: Resolver<ResolversTypes['OrderResult'], ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
-  products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
-  productsByIds?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsByIdsArgs, 'ids'>>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-};
-
-export type OrderResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['OrderResult'] = ResolversParentTypes['OrderResult']> = {
-  rows?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
-  skip?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddProductArgs, 'data'>>;
+  createOrder?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'data'>>;
+  login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updateProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'id' | 'data'>>;
 };
 
 export type OrderResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = {
@@ -293,21 +291,8 @@ export type OrderDetailResolvers<ContextType = GraphQLContext, ParentType extend
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationAddProductArgs, 'data'>>;
-  createOrder?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCreateOrderArgs, 'data'>>;
-  login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>;
-  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updateProduct?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'id' | 'data'>>;
-};
-
-export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
-  product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
-};
-
-export type ProductResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ProductResult'] = ResolversParentTypes['ProductResult']> = {
-  rows?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType>;
+export type OrderResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['OrderResult'] = ResolversParentTypes['OrderResult']> = {
+  rows?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
   skip?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -324,6 +309,26 @@ export type ProductResolvers<ContextType = GraphQLContext, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProductResultResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ProductResult'] = ResolversParentTypes['ProductResult']> = {
+  rows?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType>;
+  skip?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  limit?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  orders?: Resolver<ResolversTypes['OrderResult'], ParentType, ContextType, RequireFields<QueryOrdersArgs, 'skip' | 'limit'>>;
+  products?: Resolver<ResolversTypes['ProductResult'], ParentType, ContextType, RequireFields<QueryProductsArgs, 'skip' | 'limit'>>;
+  productsByIds?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<QueryProductsByIdsArgs, 'ids'>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
+export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
+  product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
+};
+
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -331,14 +336,14 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {
-  Query?: QueryResolvers<ContextType>;
-  OrderResult?: OrderResultResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
   OrderDetail?: OrderDetailResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  Subscription?: SubscriptionResolvers<ContextType>;
-  ProductResult?: ProductResultResolvers<ContextType>;
+  OrderResult?: OrderResultResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
+  ProductResult?: ProductResultResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

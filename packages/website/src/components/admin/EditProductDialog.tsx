@@ -92,9 +92,9 @@ const EditProductDialog = ({ handleClose, product }: Props) => {
   const productRef = useRefInSync(productState);
   const { result, updateProduct } = useUpdateProduct();
   const submitHandler = useCallback(
-    async (event: FormEvent) => {
+    (event: FormEvent) => {
       event.preventDefault();
-      await updateProduct(productRef.current);
+      void updateProduct(productRef.current);
     },
     [updateProduct, productRef],
   );

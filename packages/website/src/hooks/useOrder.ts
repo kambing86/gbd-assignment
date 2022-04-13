@@ -52,7 +52,7 @@ export const useGetOrders = () => {
   const [query, result] = useGetOrdersLazyQuery();
   const getOrders = useCallback(
     (skip: number, limit: number) => {
-      query({
+      void query({
         variables: {
           skip,
           limit,

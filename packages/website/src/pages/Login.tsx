@@ -51,12 +51,8 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   useAuth();
   const classes = useStyles();
-  const {
-    login,
-    savedUsername,
-    isSaveUsername,
-    setIsSaveUsername,
-  } = useLogin();
+  const { login, savedUsername, isSaveUsername, setIsSaveUsername } =
+    useLogin();
   const [username, setUsername] = useStateWithRef<string>(savedUsername);
   const [password, setPassword] = useStateWithRef<string>("");
   const changeUsernameHandler = useCallback(
@@ -72,13 +68,13 @@ const Login = () => {
     [setPassword],
   );
   const changeSaveUsernameHandler = useCallback(
-    (_event, val) => setIsSaveUsername(val),
+    (_event, val: boolean) => setIsSaveUsername(val),
     [setIsSaveUsername],
   );
   const clickLoginHandler = useCallback(
-    async (event: MouseEvent) => {
+    (event: MouseEvent) => {
       event.preventDefault();
-      await login(username.current, password.current);
+      void login(username.current, password.current);
     },
     [login, username, password],
   );

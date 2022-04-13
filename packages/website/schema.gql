@@ -3,9 +3,8 @@ schema {
   mutation: Mutation
   subscription: Subscription
 }
-directive @cacheControl on FIELD_DEFINITION | OBJECT | INTERFACE
-"""Exposes a URL that specifies the behaviour of this scalar."""
-directive @specifiedBy on SCALAR
+"The `Upload` scalar type represents a file upload."
+scalar Upload
 type Query {
   orders(skip: Int = 0, limit: Int = 10): OrderResult!
   products(skip: Int = 0, limit: Int = 10, onShelf: Boolean): ProductResult!
@@ -29,21 +28,12 @@ type OrderDetail {
   quantity: Int!
   price: Float!
 }
-"""The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point)."""
-scalar Float
 type Mutation {
   createOrder(data: OrderInput!): Boolean
   addProduct(data: ProductInput!): Boolean
   updateProduct(id: Int!, data: ProductInput!): Boolean
   login(username: String!, password: String!): User
   logout: Boolean!
-}
-input OrderInput {
-  details: [OrderDetailInput!]!
-}
-input OrderDetailInput {
-  productId: Int!
-  quantity: Int!
 }
 type Subscription {
   products: Product!
@@ -63,13 +53,6 @@ type Product {
   price: Float!
   isUp: Boolean!
 }
-input ProductInput {
-  name: String
-  image: String
-  quantity: Int
-  price: Float
-  isUp: Boolean
-}
 type User {
   username: String!
   isAdmin: Boolean!
@@ -78,5 +61,20 @@ enum CacheControlScope {
   PUBLIC
   PRIVATE
 }
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
+input OrderInput {
+  details: [OrderDetailInput!]!
+}
+input OrderDetailInput {
+  productId: Int!
+  quantity: Int!
+}
+input ProductInput {
+  name: String
+  image: String
+  quantity: Int
+  price: Float
+  isUp: Boolean
+}
+directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
+"Exposes a URL that specifies the behaviour of this scalar."
+directive @specifiedBy("The URL that specifies the behaviour of this scalar." url: String!) on SCALAR

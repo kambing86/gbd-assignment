@@ -6,5 +6,10 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "resolutions": {
+    "@types/node": "17.0.23",
+    "@types/react": "17.0.44"
+  },
+  "packageManager": "yarn@3.2.0"
 }

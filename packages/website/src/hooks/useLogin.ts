@@ -1,6 +1,6 @@
 import { useLoginMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { loadingActions } from "store/actions/loading";
 import { userActions } from "store/actions/user";
 import useStateWithRef from "./helpers/useStateWithRef";
@@ -14,7 +14,7 @@ function getUsername() {
 const LOGIN_LOADING_KEY = "loginLoading";
 
 export function useLogin() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [loginMutation, loginResult] = useLoginMutation({
     fetchPolicy: "no-cache",
   });
@@ -46,9 +46,9 @@ export function useLogin() {
       if (login) {
         userActions.setUser(login);
         if (login.isAdmin) {
-          history.push("/admin");
+          navigate("/admin");
         } else {
-          history.push("/customer");
+          navigate("/customer");
         }
       }
       loadingActions.setLoading({
@@ -56,7 +56,7 @@ export function useLogin() {
         isLoading: false,
       });
     }
-  }, [history, data, error, loading]);
+  }, [navigate, data, error, loading]);
   return {
     login: loginHandler,
     savedUsername,

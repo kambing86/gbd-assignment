@@ -23,7 +23,7 @@ export const useGetProducts = (onShelf?: boolean) => {
   const [query, result] = useGetProductsLazyQuery();
   const getProducts = useCallback(
     (skip: number, limit: number) => {
-      query({
+      void query({
         variables: {
           skip,
           limit,
@@ -97,7 +97,7 @@ export const useGetProductsByIds = () => {
   }, [called, loading, subscribeToMore]);
   const getProductsByIds = useCallback(
     (ids: number[]) => {
-      query({ variables: { ids } });
+      void query({ variables: { ids } });
     },
     [query],
   );
