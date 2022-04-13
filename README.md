@@ -10,16 +10,22 @@
 - Python 2
 - yarn
 
+## Installing packages
+
+```sh
+yarn install
+```
+
 ## Running Server
 
 ```sh
-yarn && yarn workspace server start
+yarn workspace server start
 ```
 
 ## Running Website
 
 ```sh
-yarn && yarn workspace website start
+yarn workspace website start
 ```
 
 ## Test Accounts
@@ -29,6 +35,7 @@ yarn && yarn workspace website start
 
 ## Other commands
 
-- `lerna run lint`
-- `lerna run prettier`
-- `lerna run build`
+- `yarn lerna run start`
+- `yarn lerna run lint`
+- `yarn lerna run prettier`
+- `yarn lerna run build`
