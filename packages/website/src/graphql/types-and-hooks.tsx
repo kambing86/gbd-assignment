@@ -2,10 +2,11 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -36,29 +37,29 @@ export type GraphQLMutationCreateOrderArgs = {
 
 
 export type GraphQLMutationLoginArgs = {
-  username: Scalars['String'];
   password: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
 export type GraphQLMutationUpdateProductArgs = {
-  id: Scalars['Int'];
   data: GraphQLProductInput;
+  id: Scalars['Int'];
 };
 
 export type GraphQLOrder = {
   __typename?: 'Order';
-  id: Scalars['Int'];
-  userId: Scalars['Int'];
   createdDate: Scalars['String'];
   details: Array<GraphQLOrderDetail>;
+  id: Scalars['Int'];
+  userId: Scalars['Int'];
 };
 
 export type GraphQLOrderDetail = {
   __typename?: 'OrderDetail';
+  price: Scalars['Float'];
   product: GraphQLProduct;
   quantity: Scalars['Int'];
-  price: Scalars['Float'];
 };
 
 export type GraphQLOrderDetailInput = {
@@ -72,35 +73,35 @@ export type GraphQLOrderInput = {
 
 export type GraphQLOrderResult = {
   __typename?: 'OrderResult';
+  limit: Scalars['Int'];
   rows: Array<GraphQLOrder>;
   skip: Scalars['Int'];
-  limit: Scalars['Int'];
   total: Scalars['Int'];
 };
 
 export type GraphQLProduct = {
   __typename?: 'Product';
   id: Scalars['Int'];
-  name: Scalars['String'];
   image?: Maybe<Scalars['String']>;
-  quantity: Scalars['Int'];
-  price: Scalars['Float'];
   isUp: Scalars['Boolean'];
+  name: Scalars['String'];
+  price: Scalars['Float'];
+  quantity: Scalars['Int'];
 };
 
 export type GraphQLProductInput = {
-  name?: Maybe<Scalars['String']>;
-  image?: Maybe<Scalars['String']>;
-  quantity?: Maybe<Scalars['Int']>;
-  price?: Maybe<Scalars['Float']>;
-  isUp?: Maybe<Scalars['Boolean']>;
+  image?: InputMaybe<Scalars['String']>;
+  isUp?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  price?: InputMaybe<Scalars['Float']>;
+  quantity?: InputMaybe<Scalars['Int']>;
 };
 
 export type GraphQLProductResult = {
   __typename?: 'ProductResult';
+  limit: Scalars['Int'];
   rows: Array<GraphQLProduct>;
   skip: Scalars['Int'];
-  limit: Scalars['Int'];
   total: Scalars['Int'];
 };
 
@@ -114,15 +115,15 @@ export type GraphQLQuery = {
 
 
 export type GraphQLQueryOrdersArgs = {
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
 export type GraphQLQueryProductsArgs = {
-  skip?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
-  onShelf?: Maybe<Scalars['Boolean']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  onShelf?: InputMaybe<Scalars['Boolean']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -132,8 +133,8 @@ export type GraphQLQueryProductsByIdsArgs = {
 
 export type GraphQLSubscription = {
   __typename?: 'Subscription';
-  products: GraphQLProduct;
   product: GraphQLProduct;
+  products: GraphQLProduct;
 };
 
 
@@ -143,8 +144,8 @@ export type GraphQLSubscriptionProductArgs = {
 
 export type GraphQLUser = {
   __typename?: 'User';
-  username: Scalars['String'];
   isAdmin: Scalars['Boolean'];
+  username: Scalars['String'];
 };
 
 export type GraphQLCreateOrderMutationVariables = Exact<{
@@ -152,10 +153,7 @@ export type GraphQLCreateOrderMutationVariables = Exact<{
 }>;
 
 
-export type GraphQLCreateOrderMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<GraphQLMutation, 'createOrder'>
-);
+export type GraphQLCreateOrderMutation = { __typename?: 'Mutation', createOrder?: boolean | null };
 
 export type GraphQLGetOrdersQueryVariables = Exact<{
   skip: Scalars['Int'];
@@ -163,57 +161,23 @@ export type GraphQLGetOrdersQueryVariables = Exact<{
 }>;
 
 
-export type GraphQLGetOrdersQuery = (
-  { __typename?: 'Query' }
-  & { orders: (
-    { __typename?: 'OrderResult' }
-    & Pick<GraphQLOrderResult, 'skip' | 'limit' | 'total'>
-    & { rows: Array<(
-      { __typename?: 'Order' }
-      & Pick<GraphQLOrder, 'id' | 'createdDate'>
-      & { details: Array<(
-        { __typename?: 'OrderDetail' }
-        & Pick<GraphQLOrderDetail, 'quantity' | 'price'>
-        & { product: (
-          { __typename?: 'Product' }
-          & Pick<GraphQLProduct, 'id'>
-        ) }
-      )> }
-    )> }
-  ) }
-);
+export type GraphQLGetOrdersQuery = { __typename?: 'Query', orders: { __typename?: 'OrderResult', skip: number, limit: number, total: number, rows: Array<{ __typename?: 'Order', id: number, createdDate: string, details: Array<{ __typename?: 'OrderDetail', quantity: number, price: number, product: { __typename?: 'Product', id: number } }> }> } };
 
 export type GraphQLGetProductsQueryVariables = Exact<{
   skip: Scalars['Int'];
   limit: Scalars['Int'];
-  onShelf?: Maybe<Scalars['Boolean']>;
+  onShelf?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type GraphQLGetProductsQuery = (
-  { __typename?: 'Query' }
-  & { products: (
-    { __typename?: 'ProductResult' }
-    & Pick<GraphQLProductResult, 'skip' | 'limit' | 'total'>
-    & { rows: Array<(
-      { __typename?: 'Product' }
-      & Pick<GraphQLProduct, 'id' | 'name' | 'image' | 'quantity' | 'price' | 'isUp'>
-    )> }
-  ) }
-);
+export type GraphQLGetProductsQuery = { __typename?: 'Query', products: { __typename?: 'ProductResult', skip: number, limit: number, total: number, rows: Array<{ __typename?: 'Product', id: number, name: string, image?: string | null, quantity: number, price: number, isUp: boolean }> } };
 
 export type GraphQLProductsByIdsQueryVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type GraphQLProductsByIdsQuery = (
-  { __typename?: 'Query' }
-  & { products: Array<(
-    { __typename?: 'Product' }
-    & Pick<GraphQLProduct, 'id' | 'name' | 'image' | 'quantity' | 'price' | 'isUp'>
-  )> }
-);
+export type GraphQLProductsByIdsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: number, name: string, image?: string | null, quantity: number, price: number, isUp: boolean }> };
 
 export type GraphQLUpdateProductMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -221,32 +185,17 @@ export type GraphQLUpdateProductMutationVariables = Exact<{
 }>;
 
 
-export type GraphQLUpdateProductMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<GraphQLMutation, 'updateProduct'>
-);
+export type GraphQLUpdateProductMutation = { __typename?: 'Mutation', updateProduct?: boolean | null };
 
 export type GraphQLProductsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GraphQLProductsSubscription = (
-  { __typename?: 'Subscription' }
-  & { products: (
-    { __typename?: 'Product' }
-    & Pick<GraphQLProduct, 'id' | 'name' | 'image' | 'quantity' | 'price' | 'isUp'>
-  ) }
-);
+export type GraphQLProductsSubscription = { __typename?: 'Subscription', products: { __typename?: 'Product', id: number, name: string, image?: string | null, quantity: number, price: number, isUp: boolean } };
 
 export type GraphQLGetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GraphQLGetUserQuery = (
-  { __typename?: 'Query' }
-  & { user?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<GraphQLUser, 'username' | 'isAdmin'>
-  )> }
-);
+export type GraphQLGetUserQuery = { __typename?: 'Query', user?: { __typename?: 'User', username: string, isAdmin: boolean } | null };
 
 export type GraphQLLoginMutationVariables = Exact<{
   username: Scalars['String'];
@@ -254,21 +203,12 @@ export type GraphQLLoginMutationVariables = Exact<{
 }>;
 
 
-export type GraphQLLoginMutation = (
-  { __typename?: 'Mutation' }
-  & { login?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<GraphQLUser, 'username' | 'isAdmin'>
-  )> }
-);
+export type GraphQLLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'User', username: string, isAdmin: boolean } | null };
 
 export type GraphQLLogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GraphQLLogoutMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<GraphQLMutation, 'logout'>
-);
+export type GraphQLLogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 
 export const CreateOrderDocument = gql`
@@ -351,7 +291,7 @@ export function useGetOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetOrdersQueryHookResult = ReturnType<typeof useGetOrdersQuery>;
 export type GetOrdersLazyQueryHookResult = ReturnType<typeof useGetOrdersLazyQuery>;
 export type GetOrdersQueryResult = Apollo.QueryResult<GraphQLGetOrdersQuery, GraphQLGetOrdersQueryVariables>;
-export function refetchGetOrdersQuery(variables?: GraphQLGetOrdersQueryVariables) {
+export function refetchGetOrdersQuery(variables: GraphQLGetOrdersQueryVariables) {
       return { query: GetOrdersDocument, variables: variables }
     }
 export const GetProductsDocument = gql`
@@ -401,7 +341,7 @@ export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
 export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
 export type GetProductsQueryResult = Apollo.QueryResult<GraphQLGetProductsQuery, GraphQLGetProductsQueryVariables>;
-export function refetchGetProductsQuery(variables?: GraphQLGetProductsQueryVariables) {
+export function refetchGetProductsQuery(variables: GraphQLGetProductsQueryVariables) {
       return { query: GetProductsDocument, variables: variables }
     }
 export const ProductsByIdsDocument = gql`
@@ -444,7 +384,7 @@ export function useProductsByIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProductsByIdsQueryHookResult = ReturnType<typeof useProductsByIdsQuery>;
 export type ProductsByIdsLazyQueryHookResult = ReturnType<typeof useProductsByIdsLazyQuery>;
 export type ProductsByIdsQueryResult = Apollo.QueryResult<GraphQLProductsByIdsQuery, GraphQLProductsByIdsQueryVariables>;
-export function refetchProductsByIdsQuery(variables?: GraphQLProductsByIdsQueryVariables) {
+export function refetchProductsByIdsQuery(variables: GraphQLProductsByIdsQueryVariables) {
       return { query: ProductsByIdsDocument, variables: variables }
     }
 export const UpdateProductDocument = gql`

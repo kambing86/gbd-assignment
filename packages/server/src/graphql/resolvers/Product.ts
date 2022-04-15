@@ -103,19 +103,24 @@ export default {
   },
   Subscription: {
     products: {
-      subscribe: () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
+      subscribe: () => ({
+        [Symbol.asyncIterator]: () =>
+          pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
+      }),
     },
     product: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
-        (
-          payload: { product: Product },
-          args: RequireFields<SubscriptionProductArgs, "id">,
-        ) => {
-          const id: number = args.id;
-          return payload.product.id === id;
-        },
-      ),
+      subscribe: (...args) => ({
+        [Symbol.asyncIterator]: () =>
+          withFilter(
+            () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
+            (
+              payload: { product: Product },
+              { id }: RequireFields<SubscriptionProductArgs, "id">,
+            ) => {
+              return payload.product.id === id;
+            },
+          )(...args),
+      }),
     },
   },
 } as Resolvers;
