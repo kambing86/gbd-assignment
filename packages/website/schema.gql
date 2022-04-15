@@ -3,8 +3,6 @@ schema {
   mutation: Mutation
   subscription: Subscription
 }
-"The `Upload` scalar type represents a file upload."
-scalar Upload
 type Query {
   orders(skip: Int = 0, limit: Int = 10): OrderResult!
   products(skip: Int = 0, limit: Int = 10, onShelf: Boolean): ProductResult!
@@ -57,10 +55,6 @@ type User {
   username: String!
   isAdmin: Boolean!
 }
-enum CacheControlScope {
-  PUBLIC
-  PRIVATE
-}
 input OrderInput {
   details: [OrderDetailInput!]!
 }
@@ -75,6 +69,5 @@ input ProductInput {
   price: Float
   isUp: Boolean
 }
-directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
 "Exposes a URL that specifies the behaviour of this scalar."
 directive @specifiedBy("The URL that specifies the behaviour of this scalar." url: String!) on SCALAR

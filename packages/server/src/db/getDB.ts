@@ -31,7 +31,7 @@ function getDB(filename: string) {
     },
     all: <Result>(sql: SqlStatement): Promise<Result[]> => {
       return new Promise((resolve, reject) => {
-        db.all(sql.sql, sql.values, (err, rows) => {
+        db.all(sql.sql, sql.values, (err, rows: Result[]) => {
           if (err) {
             return reject(err);
           }
@@ -41,7 +41,7 @@ function getDB(filename: string) {
     },
     get: <Result>(sql: SqlStatement): Promise<Result> => {
       return new Promise((resolve, reject) => {
-        db.get(sql.sql, sql.values, (err, data) => {
+        db.get(sql.sql, sql.values, (err, data: Result) => {
           if (err) {
             return reject(err);
           }

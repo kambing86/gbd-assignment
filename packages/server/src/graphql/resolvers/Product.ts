@@ -1,8 +1,13 @@
 import SQL, { glue } from "@nearform/sql";
-import { withFilter } from "apollo-server-express";
+import { withFilter } from "graphql-subscriptions";
 import initDb, { DB } from "~/db";
 import { DbProduct } from "~/db/schemas";
-import { Product, Resolvers } from "~/types/graphql";
+import {
+  Product,
+  RequireFields,
+  Resolvers,
+  SubscriptionProductArgs,
+} from "~/types/graphql";
 import pubsub, { PUBSUB_PRODUCT, publishProduct } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
@@ -103,7 +108,10 @@ export default {
     product: {
       subscribe: withFilter(
         () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
-        (payload, args) => {
+        (
+          payload: { product: Product },
+          args: RequireFields<SubscriptionProductArgs, "id">,
+        ) => {
           const id: number = args.id;
           return payload.product.id === id;
         },

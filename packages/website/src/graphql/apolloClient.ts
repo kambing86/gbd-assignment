@@ -1,16 +1,16 @@
 import { ApolloClient, HttpLink, from, split } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
 import { RetryLink } from "@apollo/client/link/retry";
-import { WebSocketLink } from "@apollo/client/link/ws";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient } from "graphql-ws";
 
 const cache = new InMemoryCache();
-const wsLink = new WebSocketLink({
-  uri: `ws://localhost:8010/graphql`,
-  options: {
-    reconnect: true,
-  },
-});
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: `ws://localhost:8010/graphql`,
+  }),
+);
 const httpLink = from([
   new RetryLink(),
   new HttpLink({
