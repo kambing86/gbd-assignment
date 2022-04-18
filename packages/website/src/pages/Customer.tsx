@@ -3,7 +3,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import MainLayout from "components/common/MainLayout";
-import ProductGrid from "components/customer/ProductGrid";
+import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useAddToCart } from "hooks/useCart";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
@@ -40,13 +40,13 @@ const Customer = () => {
   );
   const {
     loading,
+    hasData,
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
     prevPageHandler,
     nextPageHandler,
     productIds,
-    useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     dataClicked,
@@ -56,15 +56,15 @@ const Customer = () => {
     <MainLayout>
       <Container className={classes.cardGrid} maxWidth="md">
         <>
-          {loading && productIds.length === 0 && (
+          {loading && !hasData && (
             <div className={classes.loadingGrid}>
               <CircularProgress />
             </div>
           )}
           <ProductGrid
             {...{
+              type: PRODUCT_TYPE.CATALOG,
               productIds,
-              useGetProduct,
               itemClickHandler,
               buttonAction: "addToCart",
               buttonText: "Add to Cart",

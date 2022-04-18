@@ -1,7 +1,6 @@
 import { GraphQLGetOrdersQuery } from "graphql/types-and-hooks";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { orderActions } from "store/actions/order";
-import { useGetOrder } from "store/selectors/order";
 import { usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Order, useGetOrders } from "./useOrder";
 
@@ -30,5 +29,9 @@ export const usePaginatedOrders = ({ itemsPerPage, dataClicked }: options) => {
     if (!rowsData) return;
     orderActions.setOrders(rowsData.rows);
   }, [rowsData]);
-  return { ...paginatedResult, useGetOrder };
+  const idsChange = JSON.stringify(rowsData?.rows.map((r) => r.id));
+  const orderIds = useMemo(() => {
+    return rowsData?.rows.map((r) => r.id) || [];
+  }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
+  return { ...paginatedResult, orderIds };
 };

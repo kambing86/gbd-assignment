@@ -1,19 +1,25 @@
 import Grid from "@material-ui/core/Grid";
-import { Product as ProductData } from "hooks/useProducts";
 import React from "react";
+import { useGetCartProduct } from "store/selectors/cart";
+import { useGetProduct } from "store/selectors/product";
 import ProductItem from "./ProductItem";
 
+export enum PRODUCT_TYPE {
+  CATALOG = "CATALOG",
+  CART = "CART",
+}
+
 interface Props {
+  type: PRODUCT_TYPE;
   productIds: number[];
-  useGetProduct: (param: number) => ProductData | undefined;
   itemClickHandler: (id: number, action: string) => void;
   buttonAction: string;
   buttonText: string;
 }
 
 const ProductGrid = ({
+  type,
   productIds,
-  useGetProduct,
   itemClickHandler,
   buttonAction,
   buttonText,
@@ -25,7 +31,8 @@ const ProductGrid = ({
           key={id}
           {...{
             id,
-            useGetProduct,
+            useGetProduct:
+              type === PRODUCT_TYPE.CART ? useGetCartProduct : useGetProduct,
             itemClickHandler,
             buttonAction,
             buttonText,

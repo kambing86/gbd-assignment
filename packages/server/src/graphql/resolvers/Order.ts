@@ -1,8 +1,12 @@
 import SQL, { glue } from "@nearform/sql";
 import initDb, { DB } from "~/db";
 import { DbOrder, DbOrderDetail, DbProduct } from "~/db/schemas";
-import { Resolvers } from "~/types/graphql";
-import { publishProduct } from "../pubsub";
+import { Order, Product, Resolvers } from "~/types/graphql";
+import pubsub, {
+  PUBSUB_ORDER_CREATED,
+  publishOrderCreated,
+  publishProduct,
+} from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
 async function getOrderDetails(db: DB, order: DbOrder) {
@@ -108,6 +112,21 @@ export default {
               product.price
             })`);
           }
+          const order = await db.get<DbOrder>(
+            SQL`SELECT * FROM Orders WHERE id = ${orderId}`,
+          );
+          const orderDetails = await db.all<DbOrderDetail>(
+            SQL`SELECT * FROM OrderDetails WHERE orderId = ${orderId}`,
+          );
+          await publishOrderCreated({
+            ...order,
+            details: orderDetails.map((orderDetail) => ({
+              ...orderDetail,
+              product: products.find(
+                (p) => p.id === orderDetail.productId,
+              ) as Product,
+            })),
+          });
           await db.run(SQL`COMMIT TRANSACTION`);
           return true;
         } catch {
@@ -116,5 +135,13 @@ export default {
         }
       });
     }),
+  },
+  Subscription: {
+    orderCreated: {
+      subscribe: () => ({
+        [Symbol.asyncIterator]: () =>
+          pubsub.asyncIterator<Order>(PUBSUB_ORDER_CREATED),
+      }),
+    },
   },
 } as Resolvers;

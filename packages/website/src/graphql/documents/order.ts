@@ -26,3 +26,19 @@ export const GET_ORDERS = gql`
     }
   }
 `;
+
+export const ORDER_CREATED_SUBSCRIPTION = gql`
+  subscription orders {
+    orderCreated {
+      id
+      createdDate
+      details {
+        product {
+          id
+        }
+        quantity
+        price
+      }
+    }
+  }
+`;

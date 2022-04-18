@@ -1,8 +1,11 @@
+import { ORDER_CREATED_SUBSCRIPTION } from "graphql/documents/order";
 import {
   GraphQLGetOrdersQuery,
+  GraphQLOrdersSubscription,
   useCreateOrderMutation,
   useGetOrdersLazyQuery,
 } from "graphql/types-and-hooks";
+import produce from "immer";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { ValuesType } from "utility-types";
@@ -61,6 +64,21 @@ export const useGetOrders = () => {
     },
     [query],
   );
+  const { subscribeToMore, loading, called } = result;
+  useEffect(() => {
+    if (called && !loading && subscribeToMore) {
+      return subscribeToMore<GraphQLOrdersSubscription>({
+        document: ORDER_CREATED_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          const newOrder = subscriptionData.data.orderCreated;
+          return produce(prev, (state) => {
+            state.orders.rows.push(newOrder);
+            return state;
+          });
+        },
+      });
+    }
+  }, [subscribeToMore, loading, called]);
   return { result, getOrders };
 };
 

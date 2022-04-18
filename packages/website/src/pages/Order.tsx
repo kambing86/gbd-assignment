@@ -1,12 +1,11 @@
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import MainLayout from "components/common/MainLayout";
 import OrderDetailDialog from "components/customer/OrderDetailDialog";
-import OrderItem from "components/customer/OrderItem";
+import OrderList from "components/customer/OrderList";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { Order as OrderStructure } from "hooks/useOrder";
 import { usePaginatedOrders } from "hooks/usePaginatedOrders";
@@ -20,10 +19,6 @@ const useStyles = makeStyles((theme) => ({
   loading: {
     textAlign: "center",
     padding: theme.spacing(2),
-  },
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
   },
   inline: {
     display: "inline",
@@ -42,12 +37,13 @@ const Order = () => {
   const {
     rowsData,
     loading,
+    hasData,
     enablePrevPage,
     enableNextPage,
     itemClickHandler,
     prevPageHandler,
     nextPageHandler,
-    useGetOrder,
+    orderIds,
   } = usePaginatedOrders({
     itemsPerPage: ITEMS_PER_PAGE,
     dataClicked: setViewOrder,
@@ -57,7 +53,6 @@ const Order = () => {
   const closeDialogHandler = useCallback(() => {
     setViewOrder(undefined);
   }, []);
-  const hasData = (rowsData?.rows.length ?? 0) > 0;
 
   return (
     <MainLayout>
@@ -73,18 +68,7 @@ const Order = () => {
           </Typography>
         )}
         {!loading && rowsData && hasData && (
-          <List className={classes.root}>
-            {rowsData.rows.map(({ id }) => (
-              <OrderItem
-                key={id}
-                {...{
-                  id,
-                  useGetOrder,
-                  itemClickHandler,
-                }}
-              />
-            ))}
-          </List>
+          <OrderList {...{ orderIds, itemClickHandler }} />
         )}
         <div className={classes.seeMore}>
           <Button

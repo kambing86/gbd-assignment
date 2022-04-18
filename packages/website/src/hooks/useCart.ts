@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { cartActions } from "store/actions/cart";
 import { dialogActions } from "store/actions/dialog";
-import { useGetCartProduct } from "store/selectors/cart";
 import { useCartStore, useGetCartFromStore } from "store/selectors/cart";
 import { CartProducts, Cart as CartType } from "store/slices/cart";
 import { useRefInSync } from "./helpers/useRefInSync";
@@ -67,7 +66,6 @@ export const useGetCart = () => {
     cartProducts,
     productIds,
     isReady,
-    useGetProduct: useGetCartProduct,
   };
 };
 

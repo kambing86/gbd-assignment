@@ -133,6 +133,7 @@ export type QueryProductsByIdsArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  orderCreated: Order;
   product: Product;
   products: Product;
 };
@@ -312,6 +313,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
 };
 
 export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  orderCreated?: SubscriptionResolver<ResolversTypes['Order'], "orderCreated", ParentType, ContextType>;
   product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
   products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
 };

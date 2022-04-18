@@ -1,7 +1,6 @@
 import { GraphQLGetProductsQuery } from "graphql/types-and-hooks";
 import { useCallback, useEffect, useMemo } from "react";
 import { productActions } from "store/actions/product";
-import { useGetProduct } from "store/selectors/product";
 import { RowsData, usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Product, useGetProducts } from "./useProducts";
 
@@ -40,5 +39,5 @@ export const usePaginatedProducts = ({
   const productIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];
   }, [idsChange]); // eslint-disable-line react-hooks/exhaustive-deps
-  return { ...paginatedResult, productIds, useGetProduct };
+  return { ...paginatedResult, productIds };
 };

@@ -59,6 +59,7 @@ export const usePaginatedQuery = <D extends Data, T, V>(
   return {
     rowsData,
     loading,
+    hasData: (rowsData?.rows.length ?? 0) > 0,
     page,
     enablePrevPage,
     enableNextPage,

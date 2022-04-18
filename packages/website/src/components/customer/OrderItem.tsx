@@ -1,16 +1,16 @@
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
-import { Order, getLocalDate, getTotalAmount } from "hooks/useOrder";
+import { getLocalDate, getTotalAmount } from "hooks/useOrder";
 import React, { useCallback } from "react";
+import { useGetOrder } from "store/selectors/order";
 
 interface Props {
   id: number;
-  useGetOrder: (id: number) => Order | undefined;
   itemClickHandler?: (id: number) => void;
 }
 
-const OrderItem = ({ id, useGetOrder, itemClickHandler }: Props) => {
+const OrderItem = ({ id, itemClickHandler }: Props) => {
   const order = useGetOrder(id);
   const listItemClickHandler = useCallback(() => {
     itemClickHandler?.(id);

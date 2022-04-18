@@ -31,7 +31,6 @@ const ProductList = () => {
     prevPageHandler,
     nextPageHandler,
     productIds,
-    useGetProduct,
   } = usePaginatedProducts({
     itemsPerPage: ITEMS_PER_PAGE,
     dataClicked: setEditProduct,
@@ -48,7 +47,6 @@ const ProductList = () => {
       <ProductTable
         {...{
           productIds,
-          useGetProduct,
           itemClickHandler,
         }}
       />

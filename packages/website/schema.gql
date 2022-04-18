@@ -9,6 +9,18 @@ type Query {
   productsByIds(ids: [Int!]!): [Product!]!
   user: User
 }
+type Mutation {
+  createOrder(data: OrderInput!): Boolean
+  addProduct(data: ProductInput!): Boolean
+  updateProduct(id: Int!, data: ProductInput!): Boolean
+  login(username: String!, password: String!): User
+  logout: Boolean!
+}
+type Subscription {
+  orderCreated: Order!
+  products: Product!
+  product(id: Int!): Product!
+}
 type OrderResult {
   rows: [Order!]!
   skip: Int!
@@ -25,17 +37,6 @@ type OrderDetail {
   product: Product!
   quantity: Int!
   price: Float!
-}
-type Mutation {
-  createOrder(data: OrderInput!): Boolean
-  addProduct(data: ProductInput!): Boolean
-  updateProduct(id: Int!, data: ProductInput!): Boolean
-  login(username: String!, password: String!): User
-  logout: Boolean!
-}
-type Subscription {
-  products: Product!
-  product(id: Int!): Product!
 }
 type ProductResult {
   rows: [Product!]!

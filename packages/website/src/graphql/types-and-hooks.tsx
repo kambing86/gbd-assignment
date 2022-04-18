@@ -133,6 +133,7 @@ export type GraphQLQueryProductsByIdsArgs = {
 
 export type GraphQLSubscription = {
   __typename?: 'Subscription';
+  orderCreated: GraphQLOrder;
   product: GraphQLProduct;
   products: GraphQLProduct;
 };
@@ -162,6 +163,11 @@ export type GraphQLGetOrdersQueryVariables = Exact<{
 
 
 export type GraphQLGetOrdersQuery = { __typename?: 'Query', orders: { __typename?: 'OrderResult', skip: number, limit: number, total: number, rows: Array<{ __typename?: 'Order', id: number, createdDate: string, details: Array<{ __typename?: 'OrderDetail', quantity: number, price: number, product: { __typename?: 'Product', id: number } }> }> } };
+
+export type GraphQLOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GraphQLOrdersSubscription = { __typename?: 'Subscription', orderCreated: { __typename?: 'Order', id: number, createdDate: string, details: Array<{ __typename?: 'OrderDetail', quantity: number, price: number, product: { __typename?: 'Product', id: number } }> } };
 
 export type GraphQLGetProductsQueryVariables = Exact<{
   skip: Scalars['Int'];
@@ -294,6 +300,43 @@ export type GetOrdersQueryResult = Apollo.QueryResult<GraphQLGetOrdersQuery, Gra
 export function refetchGetOrdersQuery(variables: GraphQLGetOrdersQueryVariables) {
       return { query: GetOrdersDocument, variables: variables }
     }
+export const OrdersDocument = gql`
+    subscription orders {
+  orderCreated {
+    id
+    createdDate
+    details {
+      product {
+        id
+      }
+      quantity
+      price
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrdersSubscription__
+ *
+ * To run a query within a React component, call `useOrdersSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOrdersSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GraphQLOrdersSubscription, GraphQLOrdersSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GraphQLOrdersSubscription, GraphQLOrdersSubscriptionVariables>(OrdersDocument, options);
+      }
+export type OrdersSubscriptionHookResult = ReturnType<typeof useOrdersSubscription>;
+export type OrdersSubscriptionResult = Apollo.SubscriptionResult<GraphQLOrdersSubscription>;
 export const GetProductsDocument = gql`
     query getProducts($skip: Int!, $limit: Int!, $onShelf: Boolean) {
   products(skip: $skip, limit: $limit, onShelf: $onShelf) {

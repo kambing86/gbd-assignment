@@ -1,8 +1,8 @@
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
-import { Product as ProductData } from "hooks/useProducts";
 import React, { useCallback } from "react";
+import { useGetProduct } from "store/selectors/product";
 
 const useStyles = makeStyles(() => ({
   tableRow: {
@@ -12,11 +12,10 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   id: number;
-  useGetProduct: (param: number) => ProductData | undefined;
   itemClickHandler: (id: number) => void;
 }
 
-const ProductRow = ({ id, useGetProduct, itemClickHandler }: Props) => {
+const ProductRow = ({ id, itemClickHandler }: Props) => {
   const classes = useStyles();
   const product = useGetProduct(id);
   const rowClickHandler = useCallback(() => {

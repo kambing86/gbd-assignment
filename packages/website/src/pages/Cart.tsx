@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import MainLayout from "components/common/MainLayout";
 import PlaceOrder from "components/customer/PlaceOrder";
-import ProductGrid from "components/customer/ProductGrid";
+import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useGetCart } from "hooks/useCart";
 import React, { useCallback } from "react";
@@ -20,10 +20,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Cart() {
+const Cart = () => {
   useAuth(CUSTOMER);
   const classes = useStyles();
-  const { productIds, isReady, useGetProduct } = useGetCart();
+  const { productIds, isReady } = useGetCart();
   const itemClickHandler = useCallback((id: number, action: string) => {
     if (action === "removeFromCart") {
       cartActions.removeFromCart(id);
@@ -48,8 +48,8 @@ export default function Cart() {
           {isReady && (
             <ProductGrid
               {...{
+                type: PRODUCT_TYPE.CART,
                 productIds,
-                useGetProduct,
                 itemClickHandler,
                 buttonAction: "removeFromCart",
                 buttonText: "Remove from Cart",
@@ -61,4 +61,6 @@ export default function Cart() {
       </Container>
     </MainLayout>
   );
-}
+};
+
+export default React.memo(Cart);

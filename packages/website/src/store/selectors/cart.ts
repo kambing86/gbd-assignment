@@ -14,6 +14,7 @@ const cartProductSelector = (id: number) =>
     (cartProduct, quantity) =>
       cartProduct === undefined ? undefined : { ...cartProduct, quantity },
   );
+
 export const useGetCartProduct = (id: number) => {
   const selector = useMemo(() => cartProductSelector(id), [id]);
   return useSelector(selector);
