@@ -60,5 +60,7 @@ module.exports = {
     "@typescript-eslint/no-unsafe-return": ["warn"],
     "@typescript-eslint/no-unsafe-member-access": ["warn"],
     "@typescript-eslint/unbound-method": ["warn"],
+    "no-shadow": ["off"],
+    "@typescript-eslint/no-shadow": ["warn"]
   },
 };

@@ -57,6 +57,8 @@ module.exports = {
       "warn",
       { args: "all", argsIgnorePattern: "^_" },
     ],
+    "no-shadow": ["off"],
+    "@typescript-eslint/no-shadow": ["warn"],
     "react-hooks/exhaustive-deps": [
       "warn",
       {
