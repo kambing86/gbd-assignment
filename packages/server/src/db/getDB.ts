@@ -8,11 +8,13 @@ function getDB(filename: string) {
 
   function serialize(): Promise<void>;
   function serialize() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/unbound-method
     return promisify(db.serialize).bind(db);
   }
 
   function close(): Promise<void>;
   function close() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/unbound-method
     return promisify(db.close).bind(db);
   }
 

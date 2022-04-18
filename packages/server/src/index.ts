@@ -53,8 +53,6 @@ void (async () => {
     context: (expressContext) => {
       const { req } = expressContext;
       // req.user generated from express-jwt
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const user = req?.user ?? null;
       return { ...expressContext, user };
     },
