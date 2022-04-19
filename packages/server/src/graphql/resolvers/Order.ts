@@ -1,11 +1,18 @@
 import SQL, { glue } from "@nearform/sql";
+import { withFilter } from "graphql-subscriptions";
 import initDb, { DB } from "~/db";
 import { DbOrder, DbOrderDetail, DbProduct } from "~/db/schemas";
-import { Order, Product, Resolvers } from "~/types/graphql";
+import {
+  Order,
+  Product,
+  Resolvers,
+  Subscription,
+  SubscriptionOrderCreatedArgs,
+} from "~/types/graphql";
 import pubsub, {
   PUBSUB_ORDER_CREATED,
   publishOrderCreated,
-  publishProduct,
+  publishProductUpdated,
 } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
@@ -95,7 +102,7 @@ export default {
             UPDATE Products
             SET quantity = ${product.quantity - (detail?.quantity ?? 0)}
             WHERE id = ${product.id}`);
-            await publishProduct({
+            await publishProductUpdated({
               ...product,
               quantity,
             });
@@ -138,9 +145,18 @@ export default {
   },
   Subscription: {
     orderCreated: {
-      subscribe: () => ({
+      subscribe: (...args) => ({
         [Symbol.asyncIterator]: () =>
-          pubsub.asyncIterator<Order>(PUBSUB_ORDER_CREATED),
+          withFilter(
+            () => pubsub.asyncIterator<Order>(PUBSUB_ORDER_CREATED),
+            (
+              payload: Pick<Subscription, "orderCreated">,
+              subcribeArgs: SubscriptionOrderCreatedArgs,
+            ) => {
+              if (subcribeArgs.id == null) return true;
+              return payload.orderCreated.id === subcribeArgs.id;
+            },
+          )(...args),
       }),
     },
   },

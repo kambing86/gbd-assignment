@@ -134,13 +134,17 @@ export type QueryProductsByIdsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   orderCreated: Order;
-  product: Product;
-  products: Product;
+  productUpdated: Product;
 };
 
 
-export type SubscriptionProductArgs = {
-  id: Scalars['Int'];
+export type SubscriptionOrderCreatedArgs = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type SubscriptionProductUpdatedArgs = {
+  id?: InputMaybe<Scalars['Int']>;
 };
 
 export type User = {
@@ -313,9 +317,8 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
 };
 
 export type SubscriptionResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  orderCreated?: SubscriptionResolver<ResolversTypes['Order'], "orderCreated", ParentType, ContextType>;
-  product?: SubscriptionResolver<ResolversTypes['Product'], "product", ParentType, ContextType, RequireFields<SubscriptionProductArgs, 'id'>>;
-  products?: SubscriptionResolver<ResolversTypes['Product'], "products", ParentType, ContextType>;
+  orderCreated?: SubscriptionResolver<ResolversTypes['Order'], "orderCreated", ParentType, ContextType, Partial<SubscriptionOrderCreatedArgs>>;
+  productUpdated?: SubscriptionResolver<ResolversTypes['Product'], "productUpdated", ParentType, ContextType, Partial<SubscriptionProductUpdatedArgs>>;
 };
 
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

@@ -4,11 +4,14 @@ import initDb, { DB } from "~/db";
 import { DbProduct } from "~/db/schemas";
 import {
   Product,
-  RequireFields,
   Resolvers,
-  SubscriptionProductArgs,
+  Subscription,
+  SubscriptionProductUpdatedArgs,
 } from "~/types/graphql";
-import pubsub, { PUBSUB_PRODUCT, publishProduct } from "../pubsub";
+import pubsub, {
+  PUBSUB_PRODUCT_UPDATED,
+  publishProductUpdated,
+} from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
 interface Options {
@@ -95,29 +98,24 @@ export default {
         if (success) {
           const product = await db.get<DbProduct>(SQL`
           SELECT * From Products WHERE id = ${id}`);
-          await publishProduct(product);
+          await publishProductUpdated(product);
         }
         return success;
       });
     }),
   },
   Subscription: {
-    products: {
-      subscribe: () => ({
-        [Symbol.asyncIterator]: () =>
-          pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
-      }),
-    },
-    product: {
+    productUpdated: {
       subscribe: (...args) => ({
         [Symbol.asyncIterator]: () =>
           withFilter(
-            () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT]),
+            () => pubsub.asyncIterator<Product>([PUBSUB_PRODUCT_UPDATED]),
             (
-              payload: { product: Product },
-              { id }: RequireFields<SubscriptionProductArgs, "id">,
+              payload: Pick<Subscription, "productUpdated">,
+              subcribeArgs: SubscriptionProductUpdatedArgs,
             ) => {
-              return payload.product.id === id;
+              if (subcribeArgs.id == null) return true;
+              return payload.productUpdated.id === subcribeArgs.id;
             },
           )(...args),
       }),

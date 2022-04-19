@@ -17,9 +17,8 @@ type Mutation {
   logout: Boolean!
 }
 type Subscription {
-  orderCreated: Order!
-  products: Product!
-  product(id: Int!): Product!
+  orderCreated(id: Int): Order!
+  productUpdated(id: Int): Product!
 }
 type OrderResult {
   rows: [Order!]!

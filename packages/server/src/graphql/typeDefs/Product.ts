@@ -10,8 +10,7 @@ export default gql`
     updateProduct(id: Int!, data: ProductInput!): Boolean
   }
   type Subscription {
-    products: Product!
-    product(id: Int!): Product!
+    productUpdated(id: Int): Product!
   }
   type ProductResult {
     rows: [Product!]!

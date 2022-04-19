@@ -37,9 +37,9 @@ export const UPDATE_PRODUCT = gql`
   }
 `;
 
-export const PRODUCTS_SUBSCRIPTION = gql`
+export const PRODUCT_UPDATED_SUBSCRIPTION = gql`
   subscription products {
-    products {
+    productUpdated {
       id
       name
       image

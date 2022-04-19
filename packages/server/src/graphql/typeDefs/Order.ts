@@ -8,7 +8,7 @@ export default gql`
     createOrder(data: OrderInput!): Boolean
   }
   type Subscription {
-    orderCreated: Order!
+    orderCreated(id: Int): Order!
   }
   type OrderResult {
     rows: [Order!]!

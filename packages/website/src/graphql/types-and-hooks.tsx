@@ -134,13 +134,17 @@ export type GraphQLQueryProductsByIdsArgs = {
 export type GraphQLSubscription = {
   __typename?: 'Subscription';
   orderCreated: GraphQLOrder;
-  product: GraphQLProduct;
-  products: GraphQLProduct;
+  productUpdated: GraphQLProduct;
 };
 
 
-export type GraphQLSubscriptionProductArgs = {
-  id: Scalars['Int'];
+export type GraphQLSubscriptionOrderCreatedArgs = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type GraphQLSubscriptionProductUpdatedArgs = {
+  id?: InputMaybe<Scalars['Int']>;
 };
 
 export type GraphQLUser = {
@@ -196,7 +200,7 @@ export type GraphQLUpdateProductMutation = { __typename?: 'Mutation', updateProd
 export type GraphQLProductsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GraphQLProductsSubscription = { __typename?: 'Subscription', products: { __typename?: 'Product', id: number, name: string, image?: string | null, quantity: number, price: number, isUp: boolean } };
+export type GraphQLProductsSubscription = { __typename?: 'Subscription', productUpdated: { __typename?: 'Product', id: number, name: string, image?: string | null, quantity: number, price: number, isUp: boolean } };
 
 export type GraphQLGetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -464,7 +468,7 @@ export type UpdateProductMutationResult = Apollo.MutationResult<GraphQLUpdatePro
 export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<GraphQLUpdateProductMutation, GraphQLUpdateProductMutationVariables>;
 export const ProductsDocument = gql`
     subscription products {
-  products {
+  productUpdated {
     id
     name
     image

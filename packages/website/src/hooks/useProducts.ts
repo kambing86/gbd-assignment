@@ -1,4 +1,4 @@
-import { PRODUCTS_SUBSCRIPTION } from "graphql/documents/product";
+import { PRODUCT_UPDATED_SUBSCRIPTION } from "graphql/documents/product";
 import {
   GraphQLProduct,
   GraphQLProductsSubscription,
@@ -37,9 +37,9 @@ export const useGetProducts = (onShelf?: boolean) => {
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
       return subscribeToMore<GraphQLProductsSubscription>({
-        document: PRODUCTS_SUBSCRIPTION,
+        document: PRODUCT_UPDATED_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          const newProduct = subscriptionData.data.products;
+          const newProduct = subscriptionData.data.productUpdated;
           let rows = prev.products.rows.map((old) =>
             mapOldToNewProduct(old, newProduct),
           );
@@ -83,9 +83,9 @@ export const useGetProductsByIds = () => {
   useEffect(() => {
     if (called && !loading && subscribeToMore) {
       return subscribeToMore<GraphQLProductsSubscription>({
-        document: PRODUCTS_SUBSCRIPTION,
+        document: PRODUCT_UPDATED_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          const newProduct = subscriptionData.data.products;
+          const newProduct = subscriptionData.data.productUpdated;
           return produce(prev, (state) => {
             state.products = state.products.map((old) =>
               mapOldToNewProduct(old, newProduct),
