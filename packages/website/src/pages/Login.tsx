@@ -68,7 +68,8 @@ const Login = () => {
     [setPassword],
   );
   const changeSaveUsernameHandler = useCallback(
-    (_event, val: boolean) => setIsSaveUsername(val),
+    (_event: React.ChangeEvent<Record<string, unknown>>, val: boolean) =>
+      setIsSaveUsername(val),
     [setIsSaveUsername],
   );
   const clickLoginHandler = useCallback(
