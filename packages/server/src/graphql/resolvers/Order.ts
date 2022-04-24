@@ -17,14 +17,6 @@ import pubsub, {
 } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
-function mapToGraphQLOrder(order: OrderModel): Order {
-  return {
-    ...order.toJSON(),
-    createdDate: order.createdDate.toString(),
-    details: order.details,
-  };
-}
-
 export default {
   Query: {
     orders: withAuthResolver(async (_parent, args, context) => {
@@ -52,7 +44,7 @@ export default {
         },
       });
       return {
-        rows: result.rows.map(mapToGraphQLOrder),
+        rows: result.rows,
         skip,
         limit: allowLimit,
         total: result.count,
@@ -125,7 +117,7 @@ export default {
           transaction,
         });
         if (completedOrder != null) {
-          await publishOrderCreated(mapToGraphQLOrder(completedOrder));
+          await publishOrderCreated(completedOrder);
         }
         await transaction.commit();
         return true;

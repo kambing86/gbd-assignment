@@ -1,6 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { useCheckCart } from "hooks/useCart";
+import {
+  AdminPage,
+  CartPage,
+  CustomerPage,
+  NotFoundPage,
+  OrderPage,
+} from "preload";
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 import Copyright from "./Copyright";
 import TopSideBar from "./TopSideBar";
 
@@ -34,11 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
-  children?: React.ReactNode;
-}
-
-const MainLayout = ({ children }: Props) => {
+const MainLayout = () => {
   useCheckCart();
   const classes = useStyles();
   return (
@@ -47,7 +51,13 @@ const MainLayout = ({ children }: Props) => {
       <main className={classes.content}>
         <div className={classes.contentWrapper}>
           <div className={classes.appBarSpacer} />
-          {children}
+          <Routes>
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/customer" element={<CustomerPage />} />
+            <Route path="/customer/cart" element={<CartPage />} />
+            <Route path="/customer/order" element={<OrderPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
         </div>
         <footer className={classes.footer}>
           <Copyright />
@@ -57,4 +67,4 @@ const MainLayout = ({ children }: Props) => {
   );
 };
 
-export default MainLayout;
+export default React.memo(MainLayout);

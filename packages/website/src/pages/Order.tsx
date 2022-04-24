@@ -3,7 +3,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import MainLayout from "components/common/MainLayout";
 import OrderDetailDialog from "components/customer/OrderDetailDialog";
 import OrderList from "components/customer/OrderList";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
@@ -55,47 +54,42 @@ const Order = () => {
   }, []);
 
   return (
-    <MainLayout>
-      <Container className={classes.cardGrid} maxWidth="md">
-        {loading && (
-          <div className={classes.loading}>
-            <CircularProgress />
-          </div>
-        )}
-        {!loading && !hasData && (
-          <Typography variant="h5" align="center">
-            You have no order yet
-          </Typography>
-        )}
-        {!loading && rowsData && hasData && (
-          <OrderList {...{ orderIds, itemClickHandler }} />
-        )}
-        <div className={classes.seeMore}>
-          <Button
-            color="primary"
-            href="#"
-            onClick={prevPageHandler}
-            disabled={!enablePrevPage}
-          >
-            Prev
-          </Button>
-          <Button
-            color="primary"
-            href="#"
-            onClick={nextPageHandler}
-            disabled={!enableNextPage}
-          >
-            Next
-          </Button>
+    <Container className={classes.cardGrid} maxWidth="md">
+      {loading && (
+        <div className={classes.loading}>
+          <CircularProgress />
         </div>
-        {viewOrder !== undefined && (
-          <OrderDetailDialog
-            handleClose={closeDialogHandler}
-            order={viewOrder}
-          />
-        )}
-      </Container>
-    </MainLayout>
+      )}
+      {!loading && !hasData && (
+        <Typography variant="h5" align="center">
+          You have no order yet
+        </Typography>
+      )}
+      {!loading && rowsData && hasData && (
+        <OrderList {...{ orderIds, itemClickHandler }} />
+      )}
+      <div className={classes.seeMore}>
+        <Button
+          color="primary"
+          href="#"
+          onClick={prevPageHandler}
+          disabled={!enablePrevPage}
+        >
+          Prev
+        </Button>
+        <Button
+          color="primary"
+          href="#"
+          onClick={nextPageHandler}
+          disabled={!enableNextPage}
+        >
+          Next
+        </Button>
+      </div>
+      {viewOrder !== undefined && (
+        <OrderDetailDialog handleClose={closeDialogHandler} order={viewOrder} />
+      )}
+    </Container>
   );
 };
 

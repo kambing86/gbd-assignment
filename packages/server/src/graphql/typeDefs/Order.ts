@@ -19,7 +19,7 @@ export default gql`
   type Order {
     id: Int!
     userId: Int!
-    createdDate: String!
+    createdDate: DateTime!
     details: [OrderDetail!]!
   }
   type OrderDetail {

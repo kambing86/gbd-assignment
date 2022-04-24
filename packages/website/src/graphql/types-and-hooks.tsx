@@ -14,6 +14,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: string;
 };
 
 export type GraphQLMutation = {
@@ -49,7 +50,7 @@ export type GraphQLMutationUpdateProductArgs = {
 
 export type GraphQLOrder = {
   __typename?: 'Order';
-  createdDate: Scalars['String'];
+  createdDate: Scalars['DateTime'];
   details: Array<GraphQLOrderDetail>;
   id: Scalars['Int'];
   userId: Scalars['Int'];

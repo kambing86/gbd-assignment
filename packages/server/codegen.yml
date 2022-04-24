@@ -7,3 +7,6 @@ generates:
       - typescript
       - typescript-resolvers:
           contextType: ~/types/context#GraphQLContext
+    config:
+      scalars:
+        DateTime: Date

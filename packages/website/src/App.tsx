@@ -1,39 +1,12 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
-import React, { Suspense, useCallback, useEffect } from "react";
+import { ErrorPage, LoginPage, MainLayoutPage, preloadAll } from "preload";
+import { Suspense, useCallback, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
 import CommonDialog from "./components/common/CommonDialog";
 import LoadingBackdrop from "./components/common/LoadingBackdrop";
 import { useAppTheme } from "./hooks/useAppTheme";
 import Loading from "./pages/Loading";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyReactComponent = React.ComponentType<any>;
-type ReactComponentLazyFactory = () => Promise<{ default: AnyReactComponent }>;
-const lazyPreloadQueue: ReactComponentLazyFactory[] = [];
-
-// check https://medium.com/hackernoon/lazy-loading-and-preloading-components-in-react-16-6-804de091c82d
-function lazyWithPreload(
-  factory: ReactComponentLazyFactory,
-): React.LazyExoticComponent<AnyReactComponent> {
-  const Component = React.lazy(factory);
-  lazyPreloadQueue.push(factory);
-  return Component;
-}
-
-function preloadAll() {
-  for (const preload of lazyPreloadQueue) {
-    void preload();
-  }
-}
-
-const ErrorPage = lazyWithPreload(() => import("./pages/ErrorFallback"));
-const LoginPage = lazyWithPreload(() => import("./pages/Login"));
-const AdminPage = lazyWithPreload(() => import("./pages/Admin"));
-const CustomerPage = lazyWithPreload(() => import("./pages/Customer"));
-const CartPage = lazyWithPreload(() => import("./pages/Cart"));
-const OrderPage = lazyWithPreload(() => import("./pages/Order"));
-const NotFoundPage = lazyWithPreload(() => import("./pages/NotFound"));
 
 export default function App() {
   const { theme } = useAppTheme();
@@ -51,11 +24,7 @@ export default function App() {
           <Router basename={process.env.PUBLIC_URL ?? ""}>
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/customer" element={<CustomerPage />} />
-              <Route path="/customer/cart" element={<CartPage />} />
-              <Route path="/customer/order" element={<OrderPage />} />
-              <Route element={<NotFoundPage />} />
+              <Route path="*" element={<MainLayoutPage />} />
             </Routes>
           </Router>
         </ErrorBoundary>

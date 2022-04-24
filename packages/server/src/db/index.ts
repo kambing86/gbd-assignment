@@ -8,16 +8,6 @@ import { createSeeds } from "./seeds";
 export async function initDB() {
   const sequelize = getDB();
   await sequelize.authenticate();
-  UserModel.hasMany(OrderModel, {
-    sourceKey: "id",
-    foreignKey: "userId",
-    as: "orders",
-  });
-  OrderModel.belongsTo(UserModel, {
-    foreignKey: "userId",
-    targetKey: "id",
-    as: "user",
-  });
   OrderModel.hasMany(OrderDetailsModel, {
     sourceKey: "id",
     foreignKey: "orderId",

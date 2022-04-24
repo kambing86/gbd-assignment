@@ -4,10 +4,8 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
-  NonAttribute,
 } from "sequelize";
 import getDB from "../getDB";
-import OrderModel from "./OrderModel";
 
 class UserModel extends Model<
   InferAttributes<UserModel>,
@@ -19,7 +17,6 @@ class UserModel extends Model<
   declare isAdmin: boolean;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare orders: NonAttribute<OrderModel[]>;
 }
 
 UserModel.init(

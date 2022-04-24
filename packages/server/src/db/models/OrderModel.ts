@@ -19,7 +19,6 @@ class OrderModel extends Model<
   declare userId: ForeignKey<UserModel["id"]>;
   declare createdDate: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
-  declare user: NonAttribute<UserModel>;
   declare details: NonAttribute<OrderDetailsModel[]>;
 }
 

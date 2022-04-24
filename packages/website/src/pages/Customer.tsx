@@ -2,7 +2,6 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-import MainLayout from "components/common/MainLayout";
 import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useAddToCart } from "hooks/useCart";
@@ -53,42 +52,38 @@ const Customer = () => {
     onShelfOnly: true,
   });
   return (
-    <MainLayout>
-      <Container className={classes.cardGrid} maxWidth="md">
-        <>
-          {loading && !hasData && (
-            <div className={classes.loadingGrid}>
-              <CircularProgress />
-            </div>
-          )}
-          <ProductGrid
-            {...{
-              type: PRODUCT_TYPE.CATALOG,
-              productIds,
-              itemClickHandler,
-              buttonAction: "addToCart",
-              buttonText: "Add to Cart",
-            }}
-          />
-          <Button
-            color="primary"
-            href="#"
-            onClick={prevPageHandler}
-            disabled={!enablePrevPage}
-          >
-            Prev
-          </Button>
-          <Button
-            color="primary"
-            href="#"
-            onClick={nextPageHandler}
-            disabled={!enableNextPage}
-          >
-            Next
-          </Button>
-        </>
-      </Container>
-    </MainLayout>
+    <Container className={classes.cardGrid} maxWidth="md">
+      {loading && !hasData && (
+        <div className={classes.loadingGrid}>
+          <CircularProgress />
+        </div>
+      )}
+      <ProductGrid
+        {...{
+          type: PRODUCT_TYPE.CATALOG,
+          productIds,
+          itemClickHandler,
+          buttonAction: "addToCart",
+          buttonText: "Add to Cart",
+        }}
+      />
+      <Button
+        color="primary"
+        href="#"
+        onClick={prevPageHandler}
+        disabled={!enablePrevPage}
+      >
+        Prev
+      </Button>
+      <Button
+        color="primary"
+        href="#"
+        onClick={nextPageHandler}
+        disabled={!enableNextPage}
+      >
+        Next
+      </Button>
+    </Container>
   );
 };
 

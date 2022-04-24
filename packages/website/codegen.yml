@@ -9,5 +9,7 @@ generates:
       - typescript-operations
       - typescript-react-apollo
     config:
+      scalars:
+        DateTime: string
       typesPrefix: GraphQL
       withRefetchFn: true

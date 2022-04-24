@@ -10838,6 +10838,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql-scalars@npm:^1.17.0":
+  version: 1.17.0
+  resolution: "graphql-scalars@npm:1.17.0"
+  dependencies:
+    tslib: ~2.3.0
+  peerDependencies:
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: 4ac8f2ef7a387bac85e32381fc73067e7dd4ad4c1bef4cda3b5de4eb907ef9bc258372e1dcf225547390b5798a476073e6d83eb36ecdf6c3c06669c13d021962
+  languageName: node
+  linkType: hard
+
 "graphql-subscriptions@npm:^2.0.0":
   version: 2.0.0
   resolution: "graphql-subscriptions@npm:2.0.0"
@@ -18204,6 +18215,7 @@ __metadata:
     express: ^4.17.3
     express-jwt: ^6.1.2
     graphql: ^16.3.0
+    graphql-scalars: ^1.17.0
     graphql-subscriptions: ^2.0.0
     graphql-ws: ^5.7.0
     jsonwebtoken: ^8.5.1
