@@ -6,7 +6,7 @@ const Loading = () => {
     <Grid
       container
       alignContent="center"
-      justify="center"
+      justifyContent="center"
       style={{ height: "100vh" }}
     >
       <Typography variant="h3">Loading...</Typography>

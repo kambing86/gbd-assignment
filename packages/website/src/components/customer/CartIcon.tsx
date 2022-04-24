@@ -13,7 +13,11 @@ const CartIcon = () => {
   const { cart } = useGetCart();
   return (
     <IconButton color="inherit" onClick={clickCartHandler}>
-      <Badge badgeContent={totalCartCount(cart)} color="secondary">
+      <Badge
+        badgeContent={totalCartCount(cart)}
+        color="secondary"
+        overlap="rectangular"
+      >
         <ShoppingCartIcon />
       </Badge>
     </IconButton>

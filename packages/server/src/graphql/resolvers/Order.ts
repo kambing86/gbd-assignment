@@ -1,10 +1,11 @@
-import SQL, { glue } from "@nearform/sql";
 import { withFilter } from "graphql-subscriptions";
-import initDb, { DB } from "~/db";
-import { DbOrder, DbOrderDetail, DbProduct } from "~/db/schemas";
+import { Op } from "sequelize";
+import getDB from "~/db/getDB";
+import OrderDetailsModel from "~/db/models/OrderDetailsModel";
+import OrderModel from "~/db/models/OrderModel";
+import ProductModel from "~/db/models/ProductModel";
 import {
   Order,
-  Product,
   Resolvers,
   Subscription,
   SubscriptionOrderCreatedArgs,
@@ -16,131 +17,124 @@ import pubsub, {
 } from "../pubsub";
 import withAuthResolver from "../utils/withAuthResolver";
 
-async function getOrderDetails(db: DB, order: DbOrder) {
-  const details = await db.all<DbOrderDetail>(SQL`
-  SELECT * FROM OrderDetails
-  WHERE orderId = ${order.id}
-  `);
-  return Promise.all(
-    details.map(async (d) => ({
-      product: await db.get<DbProduct>(SQL`
-      SELECT * FROM Products
-      WHERE id = ${d.productId}
-      `),
-      quantity: d.quantity,
-      price: d.price,
-    })),
-  );
-}
-
-async function getOrders(db: DB, id: number, skip: number, limit: number) {
-  const orders = await db.all<DbOrder>(SQL`
-  SELECT * FROM Orders
-  WHERE userId = ${id}
-  LIMIT ${limit} OFFSET ${skip}
-  `);
-  return Promise.all(
-    orders.map(async (o) => ({
-      ...o,
-      details: await getOrderDetails(db, o),
-    })),
-  );
-}
-
-async function getTotalOrders(db: DB, id: number) {
-  const data = await db.get<{ COUNT: number }>(
-    SQL`SELECT COUNT(*) as COUNT FROM Orders
-    WHERE userId = ${id}`,
-  );
-  return data.COUNT;
+function mapToGraphQLOrder(order: OrderModel): Order {
+  return {
+    ...order.toJSON(),
+    createdDate: order.createdDate.toString(),
+    details: order.details,
+  };
 }
 
 export default {
   Query: {
-    orders: withAuthResolver((_parent, args, context) => {
+    orders: withAuthResolver(async (_parent, args, context) => {
       const { skip, limit } = args;
       const allowLimit = limit > 20 ? 20 : limit;
       const { user } = context;
       const id = user?.id ?? 0;
-      return initDb(async (db) => {
-        const orders = await getOrders(db, id, skip, allowLimit);
-        const total = await getTotalOrders(db, id);
-        return { rows: orders, skip, limit: allowLimit, total };
+      const result = await OrderModel.findAndCountAll({
+        include: [
+          {
+            model: OrderDetailsModel,
+            as: "details",
+            include: [
+              {
+                model: ProductModel,
+                as: "product",
+              },
+            ],
+          },
+        ],
+        offset: skip,
+        limit: allowLimit,
+        where: {
+          userId: id,
+        },
       });
+      return {
+        rows: result.rows.map(mapToGraphQLOrder),
+        skip,
+        limit: allowLimit,
+        total: result.count,
+      };
     }),
   },
   Mutation: {
-    createOrder: withAuthResolver((_parent, args, context) => {
+    createOrder: withAuthResolver(async (_parent, args, context) => {
       const {
         data: { details },
       } = args;
       const userId = context.user?.id ?? 0;
-      return initDb(async (db) => {
-        try {
-          await db.run(SQL`BEGIN TRANSACTION`);
-          const allProductIds = glue(
-            details.map((d) => SQL`${d.productId}`),
-            ",",
-          );
-          const products = await db.all<DbProduct>(
-            SQL`SELECT * FROM Products WHERE id in (`
-              .append(allProductIds)
-              .append(SQL`)`),
-          );
-          let valid = true;
-          for (const product of products) {
-            const detail = details.find((d) => d.productId === product.id);
-            if (!product.isUp || product.quantity < (detail?.quantity ?? 0)) {
-              valid = false;
-            }
-          }
-          if (!valid) throw new Error("not valid");
-          for (const product of products) {
-            const detail = details.find((d) => d.productId === product.id);
-            const quantity = product.quantity - (detail?.quantity ?? 0);
-            await db.run(SQL`
-            UPDATE Products
-            SET quantity = ${product.quantity - (detail?.quantity ?? 0)}
-            WHERE id = ${product.id}`);
-            await publishProductUpdated({
-              ...product,
-              quantity,
-            });
-          }
-          const result = await db.run(SQL`
-          INSERT INTO Orders (userId, createdDate)
-          VALUES (${userId}, datetime('now'))`);
-          const orderId = result.lastID;
-          for (const product of products) {
-            const detail = details.find((d) => d.productId === product.id);
-            await db.run(SQL`
-            INSERT INTO OrderDetails (orderId, productId, quantity, price)
-            VALUES (${orderId}, ${product.id}, ${detail?.quantity ?? 0}, ${
-              product.price
-            })`);
-          }
-          const order = await db.get<DbOrder>(
-            SQL`SELECT * FROM Orders WHERE id = ${orderId}`,
-          );
-          const orderDetails = await db.all<DbOrderDetail>(
-            SQL`SELECT * FROM OrderDetails WHERE orderId = ${orderId}`,
-          );
-          await publishOrderCreated({
-            ...order,
-            details: orderDetails.map((orderDetail) => ({
-              ...orderDetail,
-              product: products.find(
-                (p) => p.id === orderDetail.productId,
-              ) as Product,
-            })),
-          });
-          await db.run(SQL`COMMIT TRANSACTION`);
-          return true;
-        } catch {
-          await db.run(SQL`ROLLBACK TRANSACTION`);
-          return false;
-        }
+      const products = await ProductModel.findAll({
+        where: { id: { [Op.in]: details.map((d) => d.productId) } },
       });
+      if (products.length !== details.length) return false;
+      let valid = true;
+      for (const product of products) {
+        const detail = details.find((d) => d.productId === product.id);
+        if (!product.isUp || product.quantity < (detail?.quantity ?? 0)) {
+          valid = false;
+        }
+      }
+      if (!valid) return false;
+      const sequelize = getDB();
+      const transaction = await sequelize.transaction();
+      try {
+        for (const product of products) {
+          const detail = details.find((d) => d.productId === product.id);
+          const quantity = product.quantity - (detail?.quantity ?? 0);
+          await ProductModel.update(
+            { quantity },
+            { where: { id: product.id }, transaction },
+          );
+          await publishProductUpdated({
+            ...product.toJSON(),
+            quantity,
+          });
+        }
+        const order = await OrderModel.create(
+          {
+            userId,
+          },
+          { transaction },
+        );
+        for (const product of products) {
+          const detail = details.find((d) => d.productId === product.id);
+          await OrderDetailsModel.create(
+            {
+              orderId: order.id,
+              productId: product.id,
+              quantity: detail?.quantity ?? 0,
+              price: product.price,
+            },
+            { transaction },
+          );
+        }
+        const completedOrder = await OrderModel.findOne({
+          where: { id: order.id },
+          include: {
+            model: OrderDetailsModel,
+            as: "details",
+            include: [
+              {
+                model: ProductModel,
+                as: "product",
+              },
+            ],
+          },
+          transaction,
+        });
+        if (completedOrder != null) {
+          await publishOrderCreated(mapToGraphQLOrder(completedOrder));
+        }
+        await transaction.commit();
+        return true;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        await transaction.rollback();
+        return false;
+      }
     }),
   },
   Subscription: {

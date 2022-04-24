@@ -12,7 +12,7 @@ import expressJwt from "express-jwt";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
 import { algorithm, secret } from "./auth";
-import initDB from "./db";
+import { initDB } from "./db";
 import { schema } from "./graphql";
 import logger from "./logger";
 

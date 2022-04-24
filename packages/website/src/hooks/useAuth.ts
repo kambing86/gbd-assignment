@@ -1,4 +1,4 @@
-import { useGetUserLazyQuery } from "graphql/types-and-hooks";
+import { useGetUserQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
 import { loadingActions } from "store/actions/loading";
 import { userActions } from "store/actions/user";
@@ -16,20 +16,21 @@ export function useAuth(userType?: USER_TYPE) {
   const userState = useGetUser();
   const userRef = useRef(userState);
   const { pushHistory } = useRoute();
-  const [userQuery, userResult] = useGetUserLazyQuery({
+  const userResult = useGetUserQuery({
     fetchPolicy: "no-cache",
   });
+  const { data, error, loading } = userResult;
+  const loadingIsSet = useRef(false);
   useEffect(() => {
     // only show loading if user data is not ready
-    if (userRef.current === undefined) {
+    if (userRef.current === undefined && !loadingIsSet.current) {
+      loadingIsSet.current = true;
       loadingActions.setLoading({
         loadingKey: AUTH_LOADING_KEY,
         isLoading: true,
       });
     }
-    void userQuery();
-  }, [userQuery]);
-  const { data, error, loading } = userResult;
+  }, []);
   useEffect(() => {
     if (!loading && (error || data)) {
       const user = data?.user;

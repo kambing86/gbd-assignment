@@ -111,7 +111,6 @@ const EditProductDialog = ({ handleClose, product }: Props) => {
       open={true}
       onClose={handleClose}
       aria-labelledby="responsive-dialog-title"
-      disableBackdropClick={true}
     >
       <DialogTitle id="responsive-dialog-title">{product?.name}</DialogTitle>
       <form noValidate onSubmit={submitHandler}>

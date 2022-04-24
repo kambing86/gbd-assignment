@@ -68,7 +68,6 @@ const OrderDetailDialog = ({ handleClose, order }: Props) => {
       open={true}
       onClose={handleClose}
       aria-labelledby="responsive-dialog-title"
-      disableBackdropClick={true}
     >
       <DialogTitle id="responsive-dialog-title">
         Order ID: {order.id}

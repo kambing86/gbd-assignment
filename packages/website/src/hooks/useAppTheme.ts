@@ -1,9 +1,5 @@
-import {
-  PaletteType,
-  ThemeOptions,
-  createMuiTheme,
-  useMediaQuery,
-} from "@material-ui/core";
+import { PaletteType, ThemeOptions, useMediaQuery } from "@material-ui/core";
+import { createTheme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 import { themeActions } from "store/actions/theme";
 import { useThemeType } from "store/selectors/theme";
@@ -45,7 +41,7 @@ const getTheme = (themeType: PaletteType | null) => {
             },
           },
         };
-  return createMuiTheme(options);
+  return createTheme(options);
 };
 
 // if user change the theme, it should save to localStorage and use it

@@ -1,28 +1,38 @@
-import SQL from "@nearform/sql";
-import getDB, { DB } from "./getDB";
-import buildSchemas from "./schemas";
-import createSeeds from "./seeds";
+import getDB from "./getDB";
+import OrderDetailsModel from "./models/OrderDetailsModel";
+import OrderModel from "./models/OrderModel";
+import ProductModel from "./models/ProductModel";
+import UserModel from "./models/UserModel";
+import { createSeeds } from "./seeds";
 
-export { DB };
-
-function dbFunc<Result>(
-  fn: (db: DB) => Promise<Result> | Result,
-): Promise<Result>;
-function dbFunc(): Promise<void>;
-
-async function dbFunc<Result>(fn?: (db: DB) => Promise<Result> | Result) {
-  const dbInstance = getDB("./database.db");
-  await dbInstance.serialize();
+export async function initDB() {
+  const sequelize = getDB();
+  await sequelize.authenticate();
+  UserModel.hasMany(OrderModel, {
+    sourceKey: "id",
+    foreignKey: "userId",
+    as: "orders",
+  });
+  OrderModel.belongsTo(UserModel, {
+    foreignKey: "userId",
+    targetKey: "id",
+    as: "user",
+  });
+  OrderModel.hasMany(OrderDetailsModel, {
+    sourceKey: "id",
+    foreignKey: "orderId",
+    as: "details",
+  });
+  OrderDetailsModel.belongsTo(ProductModel, {
+    foreignKey: "productId",
+    targetKey: "id",
+    as: "product",
+  });
   try {
-    await dbInstance.all(SQL`SELECT * FROM Users`);
-  } catch {
+    await UserModel.findAndCountAll();
+  } catch (e) {
     // schema not exists
-    await buildSchemas(dbInstance);
-    await createSeeds(dbInstance);
+    await sequelize.sync({ force: true });
+    await createSeeds();
   }
-  const result = fn && (await fn(dbInstance));
-  await dbInstance.close();
-  return result;
 }
-
-export default dbFunc;

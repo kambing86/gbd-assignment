@@ -1,6 +1,6 @@
-import SQL from "@nearform/sql";
 import argon2 from "argon2";
-import { DB } from "./getDB";
+import ProductModel from "./models/ProductModel";
+import UserModel from "./models/UserModel";
 
 interface User {
   username: string;
@@ -122,18 +122,24 @@ const products: Product[] = [
   },
 ];
 
-export default async (db: DB) => {
+export async function createSeeds() {
   const users = await initUsers();
   for (const user of users) {
     const { username, password, isAdmin } = user;
-    await db.run(SQL`
-    INSERT INTO Users (username, password, isAdmin)
-    VALUES (${username}, ${password}, ${isAdmin})`);
+    await UserModel.create({
+      username,
+      password,
+      isAdmin,
+    });
   }
   for (const product of products) {
     const { name, image, quantity, price, isUp } = product;
-    await db.run(SQL`
-    INSERT INTO Products (name, image, quantity, price, isUp)
-    VALUES (${name}, ${image}, ${quantity}, ${price}, ${isUp})`);
+    await ProductModel.create({
+      name,
+      image,
+      quantity,
+      price,
+      isUp,
+    });
   }
-};
+}

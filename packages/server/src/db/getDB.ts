@@ -1,59 +1,17 @@
-import { promisify } from "util";
-import { SqlStatement } from "@nearform/sql";
-import Sqlite3, { RunResult } from "sqlite3";
+import { Sequelize } from "sequelize";
+import Sqlite3 from "sqlite3";
 
-function getDB(filename: string) {
-  const sqlite3 = Sqlite3.verbose();
-  const db = new sqlite3.Database(filename);
+let sequelize: Sequelize | null = null;
 
-  function serialize(): Promise<void>;
-  function serialize() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/unbound-method
-    return promisify(db.serialize).bind(db);
-  }
-
-  function close(): Promise<void>;
-  function close() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/unbound-method
-    return promisify(db.close).bind(db);
-  }
-
-  return {
-    serialize,
-    close,
-    run: (sql: SqlStatement): Promise<RunResult> => {
-      return new Promise((resolve, reject) => {
-        db.run(sql.sql, sql.values, function (err) {
-          if (err) {
-            return reject(err);
-          }
-          resolve(this);
-        });
-      });
+export default function getDB() {
+  if (sequelize != null) return sequelize;
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: "./database.db",
+    dialectOptions: {
+      readWriteMode: Sqlite3.OPEN_CREATE,
     },
-    all: <Result>(sql: SqlStatement): Promise<Result[]> => {
-      return new Promise((resolve, reject) => {
-        db.all(sql.sql, sql.values, (err, rows: Result[]) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(rows);
-        });
-      });
-    },
-    get: <Result>(sql: SqlStatement): Promise<Result> => {
-      return new Promise((resolve, reject) => {
-        db.get(sql.sql, sql.values, (err, data: Result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(data);
-        });
-      });
-    },
-  };
+    logging: false,
+  });
+  return sequelize;
 }
-
-export type DB = ReturnType<typeof getDB>;
-
-export default getDB;

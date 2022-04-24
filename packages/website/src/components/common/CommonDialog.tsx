@@ -26,7 +26,6 @@ const CommonDialog = () => {
       open={isOpen}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      disableBackdropClick={true}
     >
       <DialogTitle className={classes.notSelected} id="alert-dialog-title">
         {title}
