@@ -29,6 +29,10 @@ OrderModel.init(
       primaryKey: true,
       autoIncrement: true,
     },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     createdDate: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   },
