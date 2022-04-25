@@ -1,8 +1,9 @@
 import { useLoginMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
+import { loadingActions } from "store/slices/loading.slice";
+import { userActions } from "store/slices/user.slice";
 import useStateWithRef from "./helpers/useStateWithRef";
 
 const USERNAME_KEY = "username";
@@ -22,12 +23,15 @@ export function useLogin() {
   const [isSaveUsername, setIsSaveUsername] = useStateWithRef(
     savedUsername !== "",
   );
+  const dispatch = useDispatch();
   const loginHandler = useCallback(
     async (username: string, password: string) => {
-      loadingActions.setLoading({
-        loadingKey: LOGIN_LOADING_KEY,
-        isLoading: true,
-      });
+      dispatch(
+        loadingActions.setLoading({
+          loadingKey: LOGIN_LOADING_KEY,
+          isLoading: true,
+        }),
+      );
       if (isSaveUsername.current) {
         localStorage.setItem(USERNAME_KEY, username);
       } else {
@@ -37,26 +41,28 @@ export function useLogin() {
         variables: { username, password },
       });
     },
-    [loginMutation, isSaveUsername],
+    [dispatch, loginMutation, isSaveUsername],
   );
   const { data, error, loading } = loginResult;
   useEffect(() => {
     if (!loading && !error && data) {
       const { login } = data;
       if (login) {
-        userActions.setUser(login);
+        dispatch(userActions.setUser(login));
         if (login.isAdmin) {
           navigate("/admin");
         } else {
           navigate("/customer");
         }
       }
-      loadingActions.setLoading({
-        loadingKey: LOGIN_LOADING_KEY,
-        isLoading: false,
-      });
+      dispatch(
+        loadingActions.setLoading({
+          loadingKey: LOGIN_LOADING_KEY,
+          isLoading: false,
+        }),
+      );
     }
-  }, [navigate, data, error, loading]);
+  }, [navigate, data, error, loading, dispatch]);
   return {
     login: loginHandler,
     savedUsername,

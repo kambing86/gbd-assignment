@@ -1,6 +1,7 @@
 import { GraphQLGetOrdersQuery } from "graphql/types-and-hooks";
 import { useCallback, useEffect, useMemo } from "react";
-import { orderActions } from "store/actions/order";
+import { useDispatch } from "react-redux";
+import { orderActions } from "store/slices/order.slice";
 import { usePaginatedQuery } from "./helpers/usePaginatedQuery";
 import { Order, useGetOrders } from "./useOrder";
 
@@ -25,10 +26,11 @@ export const usePaginatedOrders = ({ itemsPerPage, dataClicked }: options) => {
     dataClicked,
   });
   const { rowsData } = paginatedResult;
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!rowsData) return;
-    orderActions.setOrders(rowsData.rows);
-  }, [rowsData]);
+    dispatch(orderActions.setOrders(rowsData.rows));
+  }, [rowsData, dispatch]);
   const idsChange = JSON.stringify(rowsData?.rows.map((r) => r.id));
   const orderIds = useMemo(() => {
     return rowsData?.rows.map((r) => r.id) || [];

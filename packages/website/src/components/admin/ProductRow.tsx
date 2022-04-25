@@ -2,7 +2,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback } from "react";
-import { useGetProduct } from "store/selectors/product";
+import { useGetProduct } from "store/selectors/product.selectors";
 
 const useStyles = makeStyles(() => ({
   tableRow: {

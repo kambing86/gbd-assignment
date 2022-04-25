@@ -1,8 +1,9 @@
 import { useGetUserQuery } from "graphql/types-and-hooks";
 import { useEffect, useRef } from "react";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
-import { useGetUser } from "store/selectors/user";
+import { useDispatch } from "react-redux";
+import { useGetUser } from "store/selectors/user.selectors";
+import { loadingActions } from "store/slices/loading.slice";
+import { userActions } from "store/slices/user.slice";
 import { useRoute } from "./helpers/useRoute";
 
 export const CUSTOMER = "CUSTOMER";
@@ -21,21 +22,24 @@ export function useAuth(userType?: USER_TYPE) {
   });
   const { data, error, loading } = userResult;
   const loadingIsSet = useRef(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     // only show loading if user data is not ready
     if (userRef.current === undefined && !loadingIsSet.current) {
       loadingIsSet.current = true;
-      loadingActions.setLoading({
-        loadingKey: AUTH_LOADING_KEY,
-        isLoading: true,
-      });
+      dispatch(
+        loadingActions.setLoading({
+          loadingKey: AUTH_LOADING_KEY,
+          isLoading: true,
+        }),
+      );
     }
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     if (!loading && (error || data)) {
       const user = data?.user;
       if (user) {
-        userActions.setUser(user);
+        dispatch(userActions.setUser(user));
         // for login page
         if (userType === undefined) {
           if (user.isAdmin) {
@@ -49,13 +53,15 @@ export function useAuth(userType?: USER_TYPE) {
           pushHistory("/customer");
         }
       } else {
-        userActions.setUser(undefined);
+        dispatch(userActions.setUser(undefined));
         pushHistory("/");
       }
-      loadingActions.setLoading({
-        loadingKey: AUTH_LOADING_KEY,
-        isLoading: false,
-      });
+      dispatch(
+        loadingActions.setLoading({
+          loadingKey: AUTH_LOADING_KEY,
+          isLoading: false,
+        }),
+      );
     }
-  }, [pushHistory, data, error, loading, userType]);
+  }, [pushHistory, data, error, loading, userType, dispatch]);
 }

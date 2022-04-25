@@ -1,8 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-export type LoadingState = {
+export type LoadingState = Readonly<{
   [key: string]: number | undefined;
-};
+}>;
+
 const initialState: LoadingState = {};
 
 type SetLoadingPayload = {
@@ -26,5 +27,7 @@ export const loadingSlice = createSlice({
     },
   },
 });
+
+export const loadingActions = loadingSlice.actions;
 
 export default loadingSlice.reducer;

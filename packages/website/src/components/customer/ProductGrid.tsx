@@ -1,7 +1,7 @@
 import Grid from "@material-ui/core/Grid";
 import React from "react";
-import { useGetCartProduct } from "store/selectors/cart";
-import { useGetProduct } from "store/selectors/product";
+import { useGetCartProduct } from "store/selectors/cart.selectors";
+import { useGetProduct } from "store/selectors/product.selectors";
 import ProductItem from "./ProductItem";
 
 export enum PRODUCT_TYPE {

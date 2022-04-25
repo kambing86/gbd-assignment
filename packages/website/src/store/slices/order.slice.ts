@@ -1,9 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Order } from "hooks/useOrder";
 
-type OrderState = {
+type OrderState = Readonly<{
   orders: Order[];
-};
+}>;
 
 const initialState: OrderState = { orders: [] };
 
@@ -17,5 +17,7 @@ export const orderSlice = createSlice({
     },
   },
 });
+
+export const orderActions = orderSlice.actions;
 
 export default orderSlice.reducer;

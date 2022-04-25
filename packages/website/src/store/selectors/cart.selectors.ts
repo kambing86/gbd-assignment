@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { Product } from "hooks/useProducts";
 import { useCallback, useMemo } from "react";
 import { useSelector, useStore } from "react-redux";
 import { State } from "store";
@@ -12,10 +13,10 @@ const cartProductSelector = (id: number) =>
     (state: State) => state.cart.cartProducts[id],
     (state: State) => state.cart.cart[id] || 0,
     (cartProduct, quantity) =>
-      cartProduct === undefined ? undefined : { ...cartProduct, quantity },
+      cartProduct == null ? undefined : { ...cartProduct, quantity },
   );
 
-export const useGetCartProduct = (id: number) => {
+export const useGetCartProduct = (id: number): Product | undefined => {
   const selector = useMemo(() => cartProductSelector(id), [id]);
   return useSelector(selector);
 };

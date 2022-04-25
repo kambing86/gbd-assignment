@@ -7,11 +7,11 @@ type User = {
   isAdmin: boolean;
 };
 
-type UserState = {
+type UserState = Readonly<{
   user: User | undefined;
   people: StarWarsPeople | null;
   peopleIsLoading: boolean;
-};
+}>;
 
 const initialState: UserState = {
   user: undefined,
@@ -19,7 +19,7 @@ const initialState: UserState = {
   peopleIsLoading: false,
 };
 
-export const userSlide = createSlice({
+export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -41,4 +41,10 @@ export const userSlide = createSlice({
   },
 });
 
-export default userSlide.reducer;
+export const userActions = userSlice.actions;
+
+export const userThunkActions = {
+  getData,
+};
+
+export default userSlice.reducer;

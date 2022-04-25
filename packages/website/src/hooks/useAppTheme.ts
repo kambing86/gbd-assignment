@@ -1,9 +1,9 @@
 import { PaletteType, ThemeOptions, useMediaQuery } from "@material-ui/core";
 import { createTheme } from "@material-ui/core/styles";
-import { useEffect, useState } from "react";
-import { themeActions } from "store/actions/theme";
-import { useThemeType } from "store/selectors/theme";
-import { DARK, LIGHT } from "store/slices/theme";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { State } from "store";
+import { DARK, LIGHT, themeActions } from "store/slices/theme.slice";
 
 // set it here https://material-ui.com/customization/default-theme/
 const getTheme = (themeType: PaletteType | null) => {
@@ -48,13 +48,17 @@ const getTheme = (themeType: PaletteType | null) => {
 // else will change the theme based on the machine dark mode
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const themeType = useThemeType();
+  const themeType = useSelector((state: State) => state.theme.themeType);
   const [theme, setTheme] = useState(getTheme(themeType));
+  const dispatch = useDispatch();
+  const toggleDarkMode = useCallback(() => {
+    dispatch(themeActions.toggleTheme());
+  }, [dispatch]);
   // if localStorage has no saved theme type, then set using media query
   useEffect(() => {
     if (!prefersDarkMode || themeType !== null) return;
-    themeActions.toggleTheme();
-  }, [prefersDarkMode, themeType]);
+    toggleDarkMode();
+  }, [prefersDarkMode, themeType, toggleDarkMode]);
   useEffect(() => {
     if (themeType === DARK) {
       setTheme(getTheme(DARK));
@@ -62,6 +66,5 @@ export const useAppTheme = () => {
       setTheme(getTheme(LIGHT));
     }
   }, [themeType]);
-  const toggleDarkMode = themeActions.toggleTheme;
   return { theme, toggleDarkMode };
 };

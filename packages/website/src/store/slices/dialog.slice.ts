@@ -1,10 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type DialogState = {
+type DialogState = Readonly<{
   isOpen: boolean;
   title: string;
   description: string;
-};
+}>;
+
 const initialState: DialogState = {
   isOpen: false,
   title: "",
@@ -28,5 +29,7 @@ export const dialogSlice = createSlice({
     },
   },
 });
+
+export const dialogActions = dialogSlice.actions;
 
 export default dialogSlice.reducer;

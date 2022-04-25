@@ -3,7 +3,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import { getLocalDate, getTotalAmount } from "hooks/useOrder";
 import React, { useCallback } from "react";
-import { useGetOrder } from "store/selectors/order";
+import { useGetOrder } from "store/selectors/order.selectors";
 
 interface Props {
   id: number;

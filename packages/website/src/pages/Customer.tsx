@@ -8,7 +8,9 @@ import { useAddToCart } from "hooks/useCart";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
 import React, { useCallback, useEffect } from "react";
-import { userThunkActions } from "store/actions/user";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "store";
+import { userThunkActions } from "store/slices/user.slice";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -23,9 +25,10 @@ const useStyles = makeStyles((theme) => ({
 const ITEMS_PER_PAGE = 8;
 
 const Customer = () => {
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    void userThunkActions.getData(1);
-  }, []);
+    void dispatch(userThunkActions.getData(1));
+  }, [dispatch]);
   useAuth(CUSTOMER);
   const classes = useStyles();
   const addToCart = useAddToCart();

@@ -1,8 +1,9 @@
 import { useLogoutMutation } from "graphql/types-and-hooks";
 import { useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadingActions } from "store/actions/loading";
-import { userActions } from "store/actions/user";
+import { loadingActions } from "store/slices/loading.slice";
+import { userActions } from "store/slices/user.slice";
 
 const LOGOUT_LOADING_KEY = "logoutLoading";
 
@@ -11,23 +12,28 @@ export function useLogout() {
   const [logoutMutation, logoutResult] = useLogoutMutation({
     fetchPolicy: "no-cache",
   });
+  const dispatch = useDispatch();
   const logoutHandler = useCallback(() => {
-    loadingActions.setLoading({
-      loadingKey: LOGOUT_LOADING_KEY,
-      isLoading: true,
-    });
+    dispatch(
+      loadingActions.setLoading({
+        loadingKey: LOGOUT_LOADING_KEY,
+        isLoading: true,
+      }),
+    );
     void logoutMutation();
-  }, [logoutMutation]);
+  }, [dispatch, logoutMutation]);
   const { data, error, loading } = logoutResult;
   useEffect(() => {
     if (!loading && (error || data)) {
-      userActions.setUser(undefined);
+      dispatch(userActions.setUser(undefined));
       navigate("/");
-      loadingActions.setLoading({
-        loadingKey: LOGOUT_LOADING_KEY,
-        isLoading: false,
-      });
+      dispatch(
+        loadingActions.setLoading({
+          loadingKey: LOGOUT_LOADING_KEY,
+          isLoading: false,
+        }),
+      );
     }
-  }, [navigate, data, error, loading]);
+  }, [navigate, data, error, loading, dispatch]);
   return { logout: logoutHandler };
 }

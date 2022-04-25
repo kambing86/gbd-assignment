@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { State } from "store";
-import { LoadingState } from "store/slices/loading";
+import { LoadingState } from "store/slices/loading.slice";
 
 const shouldShowLoading = (loadingState: LoadingState) => {
   for (const key in loadingState) {

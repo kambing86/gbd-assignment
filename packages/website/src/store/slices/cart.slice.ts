@@ -10,7 +10,7 @@ import { isEqual } from "lodash";
 const CART_KEY = "cart";
 
 export type Cart = {
-  [key: string]: number | undefined;
+  [key: number]: number | undefined;
 };
 
 type CartProduct = Omit<Product, "quantity">;
@@ -20,7 +20,7 @@ export type CartProducts = {
 };
 
 function getInitialCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY) || "{}") as Cart;
+  return JSON.parse(localStorage.getItem(CART_KEY) ?? "{}") as Cart;
 }
 
 function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
@@ -36,10 +36,10 @@ function cartProductDiff(newProduct: CartProduct, currProduct?: CartProduct) {
   return currProduct;
 }
 
-type CartState = {
+type CartState = Readonly<{
   cart: Cart;
   cartProducts: CartProducts;
-};
+}>;
 
 const initialState: CartState = {
   cart: getInitialCart(),
@@ -50,6 +50,7 @@ const cartSelector = createDraftSafeSelector(
   (state: CartState) => state.cart,
   (cart) => cart,
 );
+
 function saveCart(state: WritableDraft<CartState>) {
   const cart = cartSelector(state);
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -60,23 +61,21 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<Product>) {
-      const product = action.payload;
-      const id = String(product.id);
+      const { id, quantity } = action.payload;
       const existing = state.cart[id] || 0;
-      if (existing < product.quantity) {
+      if (existing < quantity) {
         state.cart[id] = existing + 1;
       }
       saveCart(state);
     },
     removeFromCart(state, action: PayloadAction<number>) {
       const productId = action.payload;
-      const id = String(productId);
-      const existing = state.cart[id] || 0;
+      const existing = state.cart[productId] || 0;
       const result = existing - 1;
       if (result <= 0) {
-        delete state.cart[id];
+        delete state.cart[productId];
       } else {
-        state.cart[id] = result;
+        state.cart[productId] = result;
       }
       saveCart(state);
     },
@@ -116,5 +115,7 @@ export const cartSlice = createSlice({
     },
   },
 });
+
+export const cartActions = cartSlice.actions;
 
 export default cartSlice.reducer;

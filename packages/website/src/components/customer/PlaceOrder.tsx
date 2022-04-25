@@ -7,7 +7,8 @@ import { useRoute } from "hooks/helpers/useRoute";
 import { totalAmountCount, totalCartCount, useGetCart } from "hooks/useCart";
 import { useCreateOrder } from "hooks/useOrder";
 import React, { useCallback, useEffect } from "react";
-import { cartActions } from "store/actions/cart";
+import { useDispatch } from "react-redux";
+import { cartActions } from "store/slices/cart.slice";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -27,14 +28,15 @@ const PlaceOrder = () => {
   }, [createOrder, cartRef]);
   const { pushHistory } = useRoute();
   const { loading, data } = result;
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!loading) {
       if (data) {
-        cartActions.clearCart();
+        dispatch(cartActions.clearCart());
         pushHistory("/customer/order");
       }
     }
-  }, [loading, data, pushHistory]);
+  }, [loading, data, dispatch, pushHistory]);
   return Object.keys(cart).length > 0 ? (
     <Grid container className={classes.grid}>
       <div>

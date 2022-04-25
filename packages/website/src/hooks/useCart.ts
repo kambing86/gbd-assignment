@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { cartActions } from "store/actions/cart";
-import { dialogActions } from "store/actions/dialog";
-import { useCartStore, useGetCartFromStore } from "store/selectors/cart";
-import { CartProducts, Cart as CartType } from "store/slices/cart";
+import { useDispatch } from "react-redux";
+import {
+  useCartStore,
+  useGetCartFromStore,
+} from "store/selectors/cart.selectors";
+import {
+  CartProducts,
+  Cart as CartType,
+  cartActions,
+} from "store/slices/cart.slice";
+import { dialogActions } from "store/slices/dialog.slice";
 import { useRefInSync } from "./helpers/useRefInSync";
 import { Product, useGetProductsByIds } from "./useProducts";
 
@@ -29,25 +36,30 @@ export const totalAmountCount = (cart: Cart, cartProducts: CartProducts) => {
 
 export const useAddToCart = () => {
   const getCart = useGetCartFromStore();
+  const dispatch = useDispatch();
   return useCallback(
     (product: Product) => {
       const cart = getCart();
-      const existing = cart[String(product.id)] || 0;
+      const existing = cart[product.id] || 0;
       if (existing >= product.quantity) {
-        dialogActions.open({ title: "Sorry", description: "No more stock" });
+        dispatch(
+          dialogActions.open({ title: "Sorry", description: "No more stock" }),
+        );
         return;
       }
       // limit to 10 different types of product
       if (existing === 0 && Object.keys(cart).length === 10) {
-        dialogActions.open({
-          title: "Sorry",
-          description: "We only allow add 10 types of items at once",
-        });
+        dispatch(
+          dialogActions.open({
+            title: "Sorry",
+            description: "We only allow add 10 types of items at once",
+          }),
+        );
         return;
       }
-      cartActions.addToCart(product);
+      dispatch(cartActions.addToCart(product));
     },
-    [getCart],
+    [getCart, dispatch],
   );
 };
 
@@ -90,9 +102,10 @@ export const useCheckCart = () => {
     }
     getProductsByIds(ids);
   }, [cart, calledRef, cartProductsRef, getProductsByIds]);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!loading && data) {
-      cartActions.setCartProducts(data.products);
+      dispatch(cartActions.setCartProducts(data.products));
     }
-  }, [loading, data]);
+  }, [loading, data, dispatch]);
 };

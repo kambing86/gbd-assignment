@@ -5,15 +5,18 @@ const THEME_KEY = "theme";
 export const LIGHT = "light";
 export const DARK = "dark";
 
-function getSavedType() {
-  return localStorage.getItem(THEME_KEY) as PaletteType | null;
+function getTheme() {
+  const saved = localStorage.getItem(THEME_KEY) as PaletteType | null;
+  if (saved != null) return saved;
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return isDarkMode ? DARK : LIGHT;
 }
 
-type ThemeState = {
+type ThemeState = Readonly<{
   themeType: PaletteType | null;
-};
+}>;
 
-const initialState: ThemeState = { themeType: getSavedType() };
+const initialState: ThemeState = { themeType: getTheme() };
 
 export const themeSlice = createSlice({
   name: "theme",
@@ -27,5 +30,7 @@ export const themeSlice = createSlice({
     },
   },
 });
+
+export const themeActions = themeSlice.actions;
 
 export default themeSlice.reducer;

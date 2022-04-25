@@ -7,7 +7,8 @@ import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useGetCart } from "hooks/useCart";
 import React, { useCallback } from "react";
-import { cartActions } from "store/actions/cart";
+import { useDispatch } from "react-redux";
+import { cartActions } from "store/slices/cart.slice";
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -23,11 +24,15 @@ const Cart = () => {
   useAuth(CUSTOMER);
   const classes = useStyles();
   const { productIds, isReady } = useGetCart();
-  const itemClickHandler = useCallback((id: number, action: string) => {
-    if (action === "removeFromCart") {
-      cartActions.removeFromCart(id);
-    }
-  }, []);
+  const dispatch = useDispatch();
+  const itemClickHandler = useCallback(
+    (id: number, action: string) => {
+      if (action === "removeFromCart") {
+        dispatch(cartActions.removeFromCart(id));
+      }
+    },
+    [dispatch],
+  );
 
   return (
     <Container className={classes.cardGrid} maxWidth="md">
