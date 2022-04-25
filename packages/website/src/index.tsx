@@ -1,20 +1,21 @@
 import { ApolloProvider } from "@apollo/client";
-import ReactDOM from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "store";
 import App from "./App";
 import { client } from "./graphql/apolloClient";
 import * as serviceWorker from "./serviceWorker";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
-);
-root.render(
-  <ApolloProvider client={client}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </ApolloProvider>,
+ReactDOM.render(
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ApolloProvider>
+  </React.StrictMode>,
+  document.getElementById("root"),
 );
 
 // If you want your app to work offline and load faster, you can change
