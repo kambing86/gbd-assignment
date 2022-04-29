@@ -1,4 +1,6 @@
-import { makeStyles } from "@material-ui/core/styles";
+import Box from "@mui/material/Box";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import { useCheckCart } from "hooks/useCart";
 import {
   AdminPage,
@@ -12,17 +14,7 @@ import { Route, Routes } from "react-router-dom";
 import Copyright from "./Copyright";
 import TopSideBar from "./TopSideBar";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto",
-    display: "flex",
-    flexDirection: "column",
-  },
+const useStyles = makeStyles<Theme>((theme) => ({
   contentWrapper: {
     flexGrow: 1,
   },
@@ -37,18 +29,28 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-  footer: {
-    padding: theme.spacing(4),
-  },
 }));
 
 const MainLayout = () => {
   useCheckCart();
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Box sx={{ display: "flex" }} color="text.primary">
       <TopSideBar />
-      <main className={classes.content}>
+      <Box
+        component="main"
+        sx={{
+          backgroundColor: (theme) =>
+            theme.palette.mode === "light"
+              ? theme.palette.grey[100]
+              : theme.palette.grey[900],
+          flexGrow: 1,
+          height: "100vh",
+          overflow: "auto",
+          display: "flex",
+          flexFlow: "column",
+        }}
+      >
         <div className={classes.contentWrapper}>
           <div className={classes.appBarSpacer} />
           <Routes>
@@ -59,11 +61,11 @@ const MainLayout = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
-        <footer className={classes.footer}>
+        <Box component="footer" sx={{ my: 2 }}>
           <Copyright />
-        </footer>
-      </main>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

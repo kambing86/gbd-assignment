@@ -1,9 +1,11 @@
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 
 export type GraphQLContext = {
-  user?: {
+  auth?: {
     id: number;
     username: string;
     isAdmin: boolean;
+    iat: number;
+    exp: number;
   };
 } & ExpressContext;

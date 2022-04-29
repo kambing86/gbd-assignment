@@ -1,21 +1,22 @@
-import Avatar from "@material-ui/core/Avatar";
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Icon from "@mui/material/Icon";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import Copyright from "components/common/Copyright";
 import useStateWithRef from "hooks/helpers/useStateWithRef";
 import { useAuth } from "hooks/useAuth";
 import { useLogin } from "hooks/useLogin";
 import React, { ChangeEvent, MouseEvent, useCallback } from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   root: {
     height: "100vh",
   },
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: "url(https://source.unsplash.com/random)",
     backgroundRepeat: "no-repeat",
     backgroundColor:
-      theme.palette.type === "light"
+      theme.palette.mode === "light"
         ? theme.palette.grey[50]
         : theme.palette.grey[900],
     backgroundSize: "cover",
@@ -68,8 +69,7 @@ const Login = () => {
     [setPassword],
   );
   const changeSaveUsernameHandler = useCallback(
-    (_event: React.ChangeEvent<Record<string, unknown>>, val: boolean) =>
-      setIsSaveUsername(val),
+    (_event: React.SyntheticEvent, val: boolean) => setIsSaveUsername(val),
     [setIsSaveUsername],
   );
   const clickLoginHandler = useCallback(
@@ -86,7 +86,7 @@ const Login = () => {
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
+            <Icon>lock_outlined</Icon>
           </Avatar>
           <Typography component="h1" variant="h5">
             Login

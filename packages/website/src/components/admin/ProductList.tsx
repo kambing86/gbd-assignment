@@ -1,14 +1,15 @@
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
 import React, { useCallback, useState } from "react";
 import EditProductDialog from "./EditProductDialog";
 import ProductTable from "./ProductTable";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   loading: {
     alignSelf: "center",
   },

@@ -8,7 +8,7 @@ import withAuthResolver from "../utils/withAuthResolver";
 export default {
   Query: {
     user: withAuthResolver((_parent, _args, context) => {
-      return context.user;
+      return context.auth;
     }),
   },
   Mutation: {

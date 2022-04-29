@@ -1,12 +1,12 @@
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import makeStyles from "@mui/styles/makeStyles";
 import { Product as ProductData } from "hooks/useProducts";
 import React, { useCallback } from "react";
 
@@ -21,9 +21,9 @@ const useStyles = makeStyles(() => ({
   },
   cardAction: {
     height: "100%",
-    display: "flex",
+    display: "flex !important",
     flexDirection: "column",
-    alignItems: "start",
+    alignItems: "start !important",
   },
   cardMedia: {
     paddingTop: "100%",

@@ -22,8 +22,8 @@ export default {
     orders: withAuthResolver(async (_parent, args, context) => {
       const { skip, limit } = args;
       const allowLimit = limit > 20 ? 20 : limit;
-      const { user } = context;
-      const id = user?.id ?? 0;
+      const { auth } = context;
+      const id = auth?.id ?? 0;
       const result = await OrderModel.findAndCountAll({
         include: [
           {
@@ -56,7 +56,7 @@ export default {
       const {
         data: { details },
       } = args;
-      const userId = context.user?.id ?? 0;
+      const userId = context.auth?.id ?? 0;
       const products = await ProductModel.findAll({
         where: { id: { [Op.in]: details.map((d) => d.productId) } },
       });

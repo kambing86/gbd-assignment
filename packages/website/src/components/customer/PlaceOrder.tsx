@@ -1,7 +1,8 @@
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import { useRefInSync } from "hooks/helpers/useRefInSync";
 import { useRoute } from "hooks/helpers/useRoute";
 import { totalAmountCount, totalCartCount, useGetCart } from "hooks/useCart";
@@ -10,7 +11,7 @@ import React, { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { cartActions } from "store/slices/cart.slice";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   grid: {
     padding: theme.spacing(2),
     alignItems: "center",

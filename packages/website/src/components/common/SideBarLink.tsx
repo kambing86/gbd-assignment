@@ -1,13 +1,14 @@
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import Icon from "@mui/material/Icon";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import { useRoute } from "hooks/helpers/useRoute";
 import React, { useCallback } from "react";
 
 interface Props {
   path: string;
   text: string;
-  icon: JSX.Element;
+  icon: string;
 }
 
 const SideBarLink = ({ path, text, icon }: Props) => {
@@ -21,7 +22,9 @@ const SideBarLink = ({ path, text, icon }: Props) => {
       onClick={clickHandler}
       selected={location.pathname === path ? true : false}
     >
-      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemIcon>
+        <Icon>{icon}</Icon>
+      </ListItemIcon>
       <ListItemText primary={text} />
     </ListItem>
   );

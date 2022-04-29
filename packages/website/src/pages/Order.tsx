@@ -1,8 +1,9 @@
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import OrderDetailDialog from "components/customer/OrderDetailDialog";
 import OrderList from "components/customer/OrderList";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
@@ -10,7 +11,7 @@ import { Order as OrderStructure } from "hooks/useOrder";
 import { usePaginatedOrders } from "hooks/usePaginatedOrders";
 import React, { useCallback, useState } from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),

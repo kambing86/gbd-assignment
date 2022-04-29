@@ -1,4 +1,4 @@
-import { PaletteType } from "@material-ui/core";
+import { Palette } from "@mui/material/styles";
 import { createSlice } from "@reduxjs/toolkit";
 
 const THEME_KEY = "theme";
@@ -6,27 +6,24 @@ export const LIGHT = "light";
 export const DARK = "dark";
 
 function getTheme() {
-  const saved = localStorage.getItem(THEME_KEY) as PaletteType | null;
+  const saved = localStorage.getItem(THEME_KEY) as Palette["mode"] | null;
   if (saved != null) return saved;
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
   return isDarkMode ? DARK : LIGHT;
 }
 
-type ThemeState = Readonly<{
-  themeType: PaletteType | null;
-}>;
+type State = Readonly<Palette["mode"] | null>;
 
-const initialState: ThemeState = { themeType: getTheme() };
+const initialState: State = getTheme();
 
 export const themeSlice = createSlice({
   name: "theme",
   initialState,
   reducers: {
     toggleTheme(state) {
-      const cur = state.themeType;
-      const newVal = cur === DARK ? LIGHT : DARK;
+      const newVal = state === DARK ? LIGHT : DARK;
       localStorage.setItem(THEME_KEY, newVal);
-      state.themeType = newVal;
+      return newVal;
     },
   },
 });

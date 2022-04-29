@@ -12,7 +12,7 @@ const withAuthResolver =
     context: TContext,
     info: GraphQLResolveInfo,
   ): Promise<TResult> | TResult => {
-    if (context.user === null) {
+    if (context.auth === null) {
       throw new Error("Auth Error");
     }
     return resolver(parent, args, context, info);

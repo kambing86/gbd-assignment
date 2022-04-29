@@ -1,6 +1,6 @@
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
 import { getLocalDate, getTotalAmount } from "hooks/useOrder";
 import React, { useCallback } from "react";
 import { useGetOrder } from "store/selectors/order.selectors";

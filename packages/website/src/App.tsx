@@ -1,4 +1,5 @@
-import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import CssBaseline from "@mui/material/CssBaseline";
+import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { ErrorPage, LoginPage, MainLayoutPage, preloadAll } from "preload";
 import { Suspense, useCallback, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";

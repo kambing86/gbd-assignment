@@ -1,6 +1,6 @@
-import Badge from "@material-ui/core/Badge";
-import IconButton from "@material-ui/core/IconButton";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import Badge from "@mui/material/Badge";
+import Icon from "@mui/material/Icon";
+import IconButton from "@mui/material/IconButton";
 import { useRoute } from "hooks/helpers/useRoute";
 import { totalCartCount, useGetCart } from "hooks/useCart";
 import React, { useCallback } from "react";
@@ -15,10 +15,15 @@ const CartIcon = () => {
     <IconButton color="inherit" onClick={clickCartHandler}>
       <Badge
         badgeContent={totalCartCount(cart)}
-        color="secondary"
+        color="success"
         overlap="rectangular"
+        sx={{
+          "& .MuiBadge-badge": {
+            backgroundColor: "success.light",
+          },
+        }}
       >
-        <ShoppingCartIcon />
+        <Icon>shopping_cart</Icon>
       </Badge>
     </IconButton>
   );

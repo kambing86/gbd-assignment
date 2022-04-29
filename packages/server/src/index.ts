@@ -8,7 +8,7 @@ import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request } from "express";
-import expressJwt from "express-jwt";
+import { ExpressJwtRequestUnrequired, expressjwt } from "express-jwt";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
 import { algorithm, secret } from "./auth";
@@ -28,16 +28,14 @@ void (async () => {
     }),
   );
   app.use(
-    expressJwt({
+    expressjwt({
       secret,
       algorithms: [algorithm],
       credentialsRequired: false,
       getToken: (req: Request) => {
-        if (
-          req.headers.authorization &&
-          req.headers.authorization.split(" ")[0] === "Bearer"
-        ) {
-          return req.headers.authorization.split(" ")[1];
+        const { authorization } = req.headers;
+        if (authorization?.split(" ")[0] === "Bearer") {
+          return authorization.split(" ")[1];
         }
         return (req.cookies as Record<string, string | undefined>).token;
       },
@@ -51,10 +49,10 @@ void (async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: (expressContext) => {
-      const { req } = expressContext;
-      // req.user generated from express-jwt
-      const user = req?.user ?? null;
-      return { ...expressContext, user };
+      const req = expressContext.req as ExpressJwtRequestUnrequired;
+      // req.auth generated from express-jwt
+      const auth = req?.auth ?? null;
+      return { ...expressContext, auth };
     },
     plugins: [
       process.env.NODE_ENV === "production"

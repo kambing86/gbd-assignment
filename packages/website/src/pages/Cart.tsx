@@ -1,7 +1,8 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import PlaceOrder from "components/customer/PlaceOrder";
 import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
@@ -10,7 +11,7 @@ import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { cartActions } from "store/slices/cart.slice";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),

@@ -1,7 +1,8 @@
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import ProductGrid, { PRODUCT_TYPE } from "components/customer/ProductGrid";
 import { CUSTOMER, useAuth } from "hooks/useAuth";
 import { useAddToCart } from "hooks/useCart";
@@ -12,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "store";
 import { userThunkActions } from "store/slices/user.slice";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),

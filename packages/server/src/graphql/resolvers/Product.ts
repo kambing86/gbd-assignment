@@ -44,7 +44,7 @@ export default {
   },
   Mutation: {
     updateProduct: withAuthResolver(async (_parent, args, context) => {
-      if (!context.user?.isAdmin) {
+      if (!context.auth?.isAdmin) {
         throw new Error("not allow to update");
       }
       const { id, data } = args;
