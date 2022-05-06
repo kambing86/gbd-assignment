@@ -72,4 +72,7 @@ input ProductInput {
   isUp: Boolean
 }
 "Exposes a URL that specifies the behavior of this scalar."
-directive @specifiedBy("The URL that specifies the behavior of this scalar." url: String!) on SCALAR
+directive @specifiedBy(
+    "The URL that specifies the behavior of this scalar."
+    url: String!
+  ) on SCALAR

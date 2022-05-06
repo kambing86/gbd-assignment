@@ -10,7 +10,6 @@ import { usePaginatedProducts } from "hooks/usePaginatedProducts";
 import { Product } from "hooks/useProducts";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "store";
 import { userThunkActions } from "store/slices/user.slice";
 
 const useStyles = makeStyles<Theme>((theme) => ({
@@ -26,7 +25,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
 const ITEMS_PER_PAGE = 8;
 
 const Customer = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   useEffect(() => {
     void dispatch(userThunkActions.getData(1));
   }, [dispatch]);
