@@ -20,9 +20,7 @@ export function preloadAll() {
   }
 }
 
-export const MainLayoutPage = lazyWithPreload(
-  () => import("./components/common/MainLayout"),
-);
+export const MainLayout = lazyWithPreload(() => import("./layout/MainLayout"));
 export const ErrorPage = lazyWithPreload(() => import("./pages/ErrorFallback"));
 export const LoginPage = lazyWithPreload(() => import("./pages/Login"));
 export const AdminPage = lazyWithPreload(() => import("./pages/Admin"));

@@ -10,10 +10,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Theme } from "@mui/material/styles";
 import makeStyles from "@mui/styles/makeStyles";
-import Copyright from "components/common/Copyright";
 import useStateWithRef from "hooks/helpers/useStateWithRef";
 import { useAuth } from "hooks/useAuth";
 import { useLogin } from "hooks/useLogin";
+import Copyright from "layout/Copyright";
 import React, { ChangeEvent, MouseEvent, useCallback } from "react";
 
 const useStyles = makeStyles<Theme>((theme) => ({

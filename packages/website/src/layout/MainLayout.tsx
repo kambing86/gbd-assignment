@@ -19,16 +19,6 @@ const useStyles = makeStyles<Theme>((theme) => ({
     flexGrow: 1,
   },
   appBarSpacer: theme.mixins.toolbar,
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-  },
 }));
 
 const MainLayout = () => {

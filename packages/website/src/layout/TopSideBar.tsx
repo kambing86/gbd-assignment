@@ -1,21 +1,14 @@
 import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import AdminListItems from "components/admin/AdminListItems";
-import CartIcon from "components/customer/CartIcon";
-import CustomerListItems from "components/customer/CustomerListItems";
 import { useAppTheme } from "hooks/useAppTheme";
-import { useLogout } from "hooks/useLogout";
+import Drawer from "layout/Drawer";
 import React, { useCallback, useState } from "react";
-import { useGetUser } from "store/selectors/user.selectors";
+import { LIGHT } from "store/slices/theme.slice";
 import AppBar from "./AppBar";
-import Drawer from "./Drawer";
+import SideBarLinkList from "./SideBarLinkList";
+import TopBar from "./TopBar";
 
 const TopSideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -26,10 +19,6 @@ const TopSideBar = () => {
     setIsOpen(false);
   }, []);
   const { theme, toggleDarkMode } = useAppTheme();
-  const { logout } = useLogout();
-  const user = useGetUser();
-  const isAdmin = Boolean(user?.isAdmin);
-  const isCustomer = Boolean(user && !user.isAdmin);
   return (
     <>
       <AppBar position="absolute" open={isOpen}>
@@ -50,18 +39,9 @@ const TopSideBar = () => {
           >
             <Icon>menu</Icon>
           </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            {`Hello ${user?.username ?? ""}`}
-          </Typography>
-          {isCustomer && <CartIcon />}
+          <TopBar />
           <IconButton color="inherit" onClick={toggleDarkMode}>
-            {theme.palette.mode === "light" ? (
+            {theme.palette.mode === LIGHT ? (
               <Icon>light_mode</Icon>
             ) : (
               <Icon>dark_mode</Icon>
@@ -83,19 +63,7 @@ const TopSideBar = () => {
           </IconButton>
         </Toolbar>
         <Divider />
-        <List>
-          {isAdmin && <AdminListItems />}
-          {isCustomer && <CustomerListItems />}
-        </List>
-        <Divider />
-        <List>
-          <ListItem button onClick={logout}>
-            <ListItemIcon>
-              <Icon>logout</Icon>
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
+        <SideBarLinkList />
       </Drawer>
     </>
   );

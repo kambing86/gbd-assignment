@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { State } from "store";
+import { RootState } from "store";
 
 export const useGetDialog = () => {
-  return useSelector((state: State) => state.dialog);
+  return useSelector((state: RootState) => state.dialog);
 };

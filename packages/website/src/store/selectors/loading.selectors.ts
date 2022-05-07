@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { State } from "store";
+import { RootState } from "store";
 import { LoadingState } from "store/slices/loading.slice";
 
 const shouldShowLoading = (loadingState: LoadingState) => {
@@ -12,6 +12,6 @@ const shouldShowLoading = (loadingState: LoadingState) => {
 };
 
 export const useShouldShowLoading = () => {
-  const loadingState = useSelector((state: State) => state.loading);
+  const loadingState = useSelector((state: RootState) => state.loading);
   return shouldShowLoading(loadingState);
 };

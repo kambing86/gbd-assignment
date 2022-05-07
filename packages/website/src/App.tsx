@@ -1,6 +1,6 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import { ErrorPage, LoginPage, MainLayoutPage, preloadAll } from "preload";
+import { ErrorPage, LoginPage, MainLayout, preloadAll } from "preload";
 import { Suspense, useCallback, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Route, HashRouter as Router, Routes } from "react-router-dom";
@@ -25,7 +25,7 @@ export default function App() {
           <Router basename={process.env.PUBLIC_URL ?? ""}>
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="*" element={<MainLayoutPage />} />
+              <Route path="*" element={<MainLayout />} />
             </Routes>
           </Router>
         </ErrorBoundary>

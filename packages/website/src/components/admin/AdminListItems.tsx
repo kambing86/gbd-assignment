@@ -1,4 +1,4 @@
-import SideBarLink from "components/common/SideBarLink";
+import SideBarLink from "layout/SideBarLink";
 import React from "react";
 
 const AdminListItems = () => (
