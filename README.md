@@ -1,31 +1,31 @@
 # GBD Assignment
 
 - it's built with monorepo in mind, so backend and frontend projects are in packages
-- it's managed by yarn workspaces with lerna
+- it's managed by pnpm workspace
 - using GraphQL and React
 
 ## Prerequisite
 
-- Node.js 12
+- Node.js 16.15.0
 - Python 2
-- yarn
+- pnpm
 
 ## Installing packages
 
 ```sh
-yarn install
+pnpm install
 ```
 
-## Running Server
+## Running Server only
 
 ```sh
-yarn workspace server start
+pnpm -r --filter=server start
 ```
 
-## Running Website
+## Running Website only
 
 ```sh
-yarn workspace website start
+pnpm -r --filter=website start
 ```
 
 ## Test Accounts
@@ -35,7 +35,7 @@ yarn workspace website start
 
 ## Other commands
 
-- `yarn lerna run start`
-- `yarn lerna run lint`
-- `yarn lerna run prettier`
-- `yarn lerna run build`
+- `pnpm run start:dev`
+- `pnpm run lint`
+- `pnpm run prettier`
+- `pnpm run build`

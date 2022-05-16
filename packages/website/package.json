@@ -27,19 +27,21 @@
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
     "typescript": "^4.6.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:dev": "yarn graphql:download && concurrently \"yarn start\" \"yarn graphql:generate --watch\"",
-    "build": "yarn graphql:generate && react-scripts build",
+    "start:dev": "pnpm graphql:download && concurrently \"pnpm start\" \"pnpm graphql:generate --watch\"",
+    "build": "pnpm graphql:generate && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --check 'src/**/*.*'",
     "prettier:write": "prettier --write 'src/**/*.*'",
     "lint": "eslint 'src/**/*.{j,t}s{,x}'",
     "lint:fix": "eslint --fix 'src/**/*.{j,t}s{,x}'",
-    "graphql:download": "rover graph introspect http://localhost:8010/graphql > schema.gql",
+    "graphql:download": "npx -y -p @apollo/rover rover graph introspect http://localhost:8010/graphql > schema.gql",
     "graphql:generate": "graphql-codegen"
   },
   "eslintConfig": {
@@ -58,19 +60,24 @@
     ]
   },
   "devDependencies": {
-    "@apollo/rover": "^0.6.0",
+    "@babel/core": "^7.17.10",
+    "@babel/plugin-syntax-flow": "^7.16.7",
+    "@babel/plugin-transform-react-jsx": "^7.17.3",
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/typescript": "^2.4.10",
     "@graphql-codegen/typescript-operations": "^2.3.7",
     "@graphql-codegen/typescript-react-apollo": "^3.2.13",
+    "@graphql-eslint/eslint-plugin": "^3.10.3",
+    "@testing-library/dom": "^8.13.0",
     "@types/lodash": "^4.14.182",
     "@types/react-router-dom": "^5.3.3",
     "concurrently": "^7.1.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "graphql": "^16.5.0",
+    "graphql-tag": "^2.12.6",
     "prettier": "^2.6.2",
     "utility-types": "^3.10.0"
   }
