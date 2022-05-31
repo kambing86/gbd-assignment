@@ -16,16 +16,22 @@
 pnpm install
 ```
 
+## Running both Server and Website
+
+```sh
+pnpm start
+```
+
 ## Running Server only
 
 ```sh
-pnpm -r --filter=server start
+pnpm --filter=server start
 ```
 
 ## Running Website only
 
 ```sh
-pnpm -r --filter=website start
+pnpm --filter=website start
 ```
 
 ## Test Accounts
